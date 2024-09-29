@@ -1,6 +1,6 @@
 "use client"
 
-import { Nav } from "@/components/Nav";
+import { Nav } from "@/components/nav/Nav";
 import Image from "next/image";
 
 export default function Home() {

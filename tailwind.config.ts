@@ -9,6 +9,15 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+		screens: {
+			'xl': '1200px',
+			'lg': '992px',
+			'md': '768px',
+			'sm': '576px',
+			'xs': '481px',
+			'xxs': '360px',
+			'xxxs': '320px'
+		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
