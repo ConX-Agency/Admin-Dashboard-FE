@@ -5,12 +5,23 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { CampaignsLink, MainMenuLink } from "@/data";
-import { Settings } from "../nav/Settings";
+import { CampaignsLink, ClientsLink, InfluencersLink, MainMenuLink, SettingsLink } from "@/data";
+import { Separator } from "@/components/ui/separator"
+import { ThemeChanger } from "../themer/ThemeChanger";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { IconBell } from "@tabler/icons-react";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("Dashboard"); // Active link state
+  const sections = [
+    { title: "Main Menu", links: MainMenuLink },
+    { title: "Campaigns", links: CampaignsLink },
+    { title: "Clients", links: ClientsLink },
+    { title: "Influencers", links: InfluencersLink },
+    { title: "Help & Settings", links: SettingsLink }
+  ];
 
   const handleLinkClick = (label: string) => {
     setActiveLink(label);
@@ -32,40 +43,35 @@ export function Nav() {
                 ConX Agency
               </span>
             </div>
-            <div className="mt-8 flex flex-col gap-2 mb-3">
-              <span className="text-[14px] text-neutral-200">Main Menu</span>
-              {MainMenuLink.map((link, idx) => (
+            <div className="mt-5 flex flex-col gap-1 mb-3">
+              {sections.map((section, idx) => (
                 <div key={idx}>
-                  <SidebarLink
-                    className={`opacity-50 hover:opacity-100 duration-300 ${
-                      activeLink === link.label ? "opacity-100" : "opacity-50"
-                    }`}
-                    link={link}
-                    onClick={() => handleLinkClick(link.label)}
-                  />
+                  {section.title == "Help & Settings" && (
+                    <Separator className="mb-2" />
+                  )}
+                  <span className="text-[11px] text-neutral-600 dark:text-neutral-200">
+                    {section.title}
+                  </span>
+                  {section.links.map((link, linkIdx) => (
+                    <div key={linkIdx}>
+                      <SidebarLink
+                        className={`opacity-50 hover:opacity-100 duration-300 text-[12px] ${activeLink === link.label ? "opacity-100 font-bold" : "opacity-50"
+                          }`}
+                        link={link}
+                        onClick={() => handleLinkClick(link.label)}
+                      />
+                    </div>
+                  ))}
                 </div>
               ))}
-              <span className="text-[14px] text-neutral-200 mt-4">Campaigns</span>
-              {CampaignsLink.map((link, idx) => (
-                <div key={idx}>
-                  <SidebarLink
-                    className={`opacity-50 hover:opacity-100 duration-300 ${
-                      activeLink === link.label ? "opacity-100" : "opacity-50"
-                    }`}
-                    link={link}
-                    onClick={() => handleLinkClick(link.label)}
-                  />
-                </div>
-              ))}
-              <div className="absolute bottom-0 pb-5">
-                <Settings />
-              </div>
             </div>
           </div>
         </SidebarBody>
       </Sidebar>
-      <DesktopHeader />
-      <Dashboard />
+      <div className="flex flex-col w-full">
+        <DesktopHeader />
+        <Dashboard />
+      </div>
     </div>
   );
 }
@@ -112,11 +118,23 @@ export const LogoIcon = () => {
 
 const DesktopHeader = () => {
   return (
-    <div className="justify-between">
-      {/* Breadcrumb */}
-      <div className=""></div>
+    <div className="flex w-full justify-between h-[80px] bg-neutral-50 dark:bg-neutral-800 border-b-[1px] 
+      border-b-neutral-200 dark:border-b-neutral-700 px-8 items-center">
+      <div className="">
+        Search Bar
+      </div>
       {/* Notification & User Icon */}
-      <div></div>
+      <div className="flex flex-row h-[35px] items-center">
+        <ThemeChanger />
+        <Button variant="ghost" size="icon" className="dark:hover:bg-neutral-700">
+          <IconBell className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
+        </Button>
+        <Separator orientation="vertical" className="mx-4" />
+        <Avatar>
+          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      </div>
     </div>
   );
 };

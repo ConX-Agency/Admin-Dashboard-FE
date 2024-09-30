@@ -38,3 +38,11 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## Commands
 - ```tsrfce``` to generate boilerplate for component.
+
+## Libraries Used
+1. ShadCN
+2. Aceternity
+3. Motion Framer
+4. Tabler
+5. Lucide React
+6. Radix
