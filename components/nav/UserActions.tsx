@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { IconBell, IconLogin, IconLogout, IconMoodPlus, IconSettings, IconUser } from '@tabler/icons-react'
+import { IconBell, IconChecks, IconLogin, IconLogout, IconMoodPlus, IconSettings, IconUser } from '@tabler/icons-react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -119,18 +119,46 @@ const DesktopNotificationPanel = () => {
                 <DropdownMenuContent className="w-[360px] p-4" align="end">
                     <div className='flex flex-row justify-between items-center mb-2'>
                         <span className='text-sm font-bold'>Notification</span>
-                        <IconSettings className="text-black dark:text-white h-4 w-4 flex-shrink-0 cursor-pointer" />
+                        <div className='flex flex-row'>
+                            <IconChecks className="text-black dark:text-white h-[18px] w-[18px] flex-shrink-0 cursor-pointer mr-2" />
+                            <IconSettings className="text-black dark:text-white h-[18px] w-[18px] flex-shrink-0 cursor-pointer duration-300 transition-all hover:rotate-90" />
+                        </div>
                     </div>
                     <Separator className='' />
-                    <div className='border border-neutral-400 dark:border-neutral-600 bg-neutral-200 dark:bg-neutral-700 
-                        rounded p-2 mt-3 flex flex-row'>
-                        <Image
-                            src="https://github.com/shadcn.png"
-                            width={50}
-                            height={50}
-                            alt="Profile Picture" // Use a more descriptive alt text
-                            className='rounded-full'
-                        />
+                    {Array(5).fill(0).map((_, index) => (
+                        <div key={index}>
+                            <div className='p-2 mt-3 flex flex-row'>
+                            <div className='w-[50px] h-full mr-3 relative'>
+                                <div className='rounded-full bg-blue-500 w-[7px] h-[7px] absolute top-0 left-[-5px]' />
+                                <Image
+                                    src="https://github.com/shadcn.png"
+                                    width={40}
+                                    height={40}
+                                    alt="Profile Picture"
+                                    className='rounded-full w-full h-full'
+                                />
+                            </div>
+                            <div className='flex flex-col'>
+                                <div className='justify-start text-sm mb-1'>
+                                <span className='font-semibold'>Mia Anders </span>
+                                <span>mentioned you in a comment in a thread</span>
+                                </div>
+                                <div className='flex flex-row items-center justify-start text-sm'>
+                                <div className='px-2 py-0 capitalize font-bold border bg-neutral-300 rounded-full mr-1 text-neutral-700'>
+                                    FA-1
+                                </div>
+                                <div>
+                                    1h ago
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                            <Separator className='mt-2' />
+                        </div>
+                    ))}
+                    <div className='mt-4 border bg-neutral-300 dark:bg-neutral-800 w-full p-2 text-center rounded-md cursor-pointer 
+                        dark:hover:bg-neutral-800/75 hover:bg-neutral-300/75 duration-300 transition-all'>
+                        <span className='text-[16px] tracking-[.5px] text-black dark:text-white opacity-100'>View More Notification</span>
                     </div>
                 </DropdownMenuContent>
             </DropdownMenu>
