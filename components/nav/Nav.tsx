@@ -1,16 +1,25 @@
 "use client";
-import React, { useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "../ui/sidebar";
+
+// React and Next.js imports
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import Image from "next/image";
+
+// Third-party imports
+import { motion } from "framer-motion";
+
+// Internal component imports
+import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import { ThemeChanger } from "../themer/ThemeChanger";
+import Search from "./Search";
+import { ProfileMenu, DesktopNotificationPanel } from "./UserActions";
+
+// Data imports
 import { cn } from "@/lib/utils";
 import { CampaignsLink, ClientsLink, InfluencersLink, MainMenuLink, SettingsLink } from "@/data";
-import { Separator } from "@/components/ui/separator"
-import { ThemeChanger } from "../themer/ThemeChanger";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
-import { IconBell } from "@tabler/icons-react";
+import Dashboard from "../content/Dashboard";
+
 
 export function Nav() {
   const [open, setOpen] = useState(false);
@@ -27,6 +36,14 @@ export function Nav() {
     setActiveLink(label);
   };
 
+  const handleLoggedInUser = () => {
+
+  }
+
+  const handleGuest = () => {
+
+  }
+
   return (
     <div
       className={cn(
@@ -37,12 +54,12 @@ export function Nav() {
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-            <div className="flex flex-row items-center justify-center">
+            <Link className="flex flex-row items-center justify-center cursor-pointer" href="/#">
               {open ? <Logo /> : <LogoIcon />}
               <span className="ml-2 font-bold text-black dark:text-white text-2xl">
                 ConX Agency
               </span>
-            </div>
+            </Link>
             <div className="mt-5 flex flex-col gap-1 mb-3">
               {sections.map((section, idx) => (
                 <div key={idx}>
@@ -77,9 +94,9 @@ export function Nav() {
 }
 
 export const Logo = () => {
+
   return (
-    <Link
-      href="#"
+    <div
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
       <Image
@@ -96,13 +113,13 @@ export const Logo = () => {
       >
         ConX Agency
       </motion.span>
-    </Link>
+    </div>
   );
 };
 export const LogoIcon = () => {
+
   return (
-    <Link
-      href="#"
+    <div
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
       <Image
@@ -112,54 +129,25 @@ export const LogoIcon = () => {
         height={50}
         alt="Avatar"
       />
-    </Link>
-  );
-};
-
-const DesktopHeader = () => {
-  return (
-    <div className="flex w-full justify-between h-[80px] bg-neutral-50 dark:bg-neutral-800 border-b-[1px] 
-      border-b-neutral-200 dark:border-b-neutral-700 px-8 items-center">
-      <div className="">
-        Search Bar
-      </div>
-      {/* Notification & User Icon */}
-      <div className="flex flex-row h-[35px] items-center">
-        <ThemeChanger />
-        <Button variant="ghost" size="icon" className="dark:hover:bg-neutral-700">
-          <IconBell className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
-        </Button>
-        <Separator orientation="vertical" className="mx-4" />
-        <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      </div>
     </div>
   );
 };
 
-const Dashboard = () => {
+const DesktopHeader = () => {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   return (
-    <div className="flex flex-1">
-      <div className="px-1 md:p-10 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
-        test
-        {/* <div className="flex gap-2">
-                    {[...new Array(4)].map((i) => (
-                        <div
-                            key={"first-array" + i}
-                            className="h-20 w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 animate-pulse"
-                        ></div>
-                    ))}
-                </div>
-                <div className="flex gap-2 flex-1">
-                    {[...new Array(2)].map((i) => (
-                        <div
-                            key={"second-array" + i}
-                            className="h-full w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 animate-pulse"
-                        ></div>
-                    ))}
-                </div> */}
+    <div className="flex w-full justify-between h-[80px] bg-neutral-50 dark:bg-neutral-900 border-b-[1px] 
+      border-b-neutral-200 dark:border-b-neutral-700 px-8 items-center">
+      {/* Search Command */}
+      <Search open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+
+      {/* Notification & User Icon */}
+      <div className="flex flex-row h-[35px] items-center gap-3">
+        <ThemeChanger />
+        <DesktopNotificationPanel />
+        {/* <Separator orientation="vertical" className="mx-4" /> */}
+        <ProfileMenu />
       </div>
     </div>
   );

@@ -9,6 +9,10 @@ import {
   IconFlag3,
   IconInfoCircle,
   IconSettings,
+  IconMoodPlus,
+  IconLogin,
+  IconUser,
+  IconLogout,
 
 } from "@tabler/icons-react";
 
@@ -96,3 +100,35 @@ export const SettingsLink = [
     ),
   }
 ];
+
+
+export const profileLinks = [
+  {
+    icon: (
+      <IconMoodPlus className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
+    ),
+    label: "Sign Up",
+    shortcut: "⇧⌘S"
+  },
+  {
+    icon: (
+      <IconLogin className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
+    ),
+    label: "Login",
+    shortcut: "⇧⌘G"
+  },
+  {
+    icon: (
+      <IconUser className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
+    ),
+    label: "Profile",
+    shortcut: "⇧⌘P"
+  },
+  {
+    icon: (
+      <IconLogout className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
+    ),
+    label: "Logout",
+    shortcut: "⇧⌘L"
+  },
+]

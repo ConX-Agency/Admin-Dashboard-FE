@@ -1,8 +1,8 @@
 "use client";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
 import React, { useState, createContext, useContext } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 
 interface Links {
@@ -89,7 +89,7 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          `h-full px-4 py-4 w-[240px] md:flex md:flex-col bg-neutral-50 dark:bg-neutral-800 border-r-[1px] 
+          `h-full px-4 py-4 w-[240px] md:flex md:flex-col bg-neutral-50 dark:bg-neutral-900 border-r-[1px] 
           border-r-neutral-200 dark:border-r-neutral-700 flex-shrink-0`, // Set fixed width for sidebar
           className
         )}
