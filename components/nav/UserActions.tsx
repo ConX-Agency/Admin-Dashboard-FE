@@ -146,10 +146,13 @@ const DesktopNotificationPanel = () => {
                                     <div className='flex flex-row items-center justify-between text-sm w-full'>
                                         <div className={`px-2 py-1 uppercase rounded-full mr-2 
                                             bg-neutral-200 text-xs font-semibold`}>
-                                            <span className={`
-                                                ${notifi.badgeColor} === 'red': 'text-red-600' ? text-neutral-600
-                                                ${notifi.badgeColor} === 'blue': 'text-blue-500' ? text-neutral-600
-                                                `}>{notifi.badge}</span>
+                                            <span className={`${
+                                                notifi.badgeColor === 'red' ? 'text-red-600' :
+                                                notifi.badgeColor === 'blue' ? 'text-blue-500' :
+                                                'text-neutral-600'
+                                            }`}>
+                                                {notifi.badge}
+                                            </span>
                                         </div>
                                         <div className='text-gray-400'>
                                             {notifi.time} ago
