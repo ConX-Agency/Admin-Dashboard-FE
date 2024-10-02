@@ -132,3 +132,46 @@ export const profileLinks = [
     shortcut: "⇧⌘L"
   },
 ]
+
+export const dummyNotificationData = [
+  {
+    userPfp: "https://github.com/shadcn.png",
+    username: "System",
+    description: "Completed system upgrade to Patch v1.10",
+    badge: "General",
+    badgeColor: "text-neutral-600",
+    time: "1h"
+  },
+  {
+    userPfp: "https://github.com/shadcn.png",
+    username: "Ryan Lim",
+    description: "has completed the TCG Campaign.",
+    badge: "Update",
+    badgeColor: "text-blue-500",
+    time: "2h"
+  },
+  {
+    userPfp: "https://github.com/shadcn.png",
+    username: "John Doe",
+    description: "asked where is the advertisement test?",
+    badge: "Client",
+    badgeColor: "text-red-600",
+    time: "3h"
+  },
+  {
+    userPfp: "https://github.com/shadcn.png",
+    username: "Jane Doe",
+    description: "asked when will she be receiving payment?",
+    badge: "Influencer",
+    badgeColor: "text-red-600",
+    time: "4h"
+  },
+  {
+    userPfp: "https://github.com/shadcn.png",
+    username: "Irfan Zafri",
+    description: "added 2 new influencers into the system.",
+    badge: "Update",
+    badgeColor: "text-blue-500",
+    time: "5h"
+  }
+]

@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { AnimatePresence, motion } from 'framer-motion'
-import { profileLinks } from '@/data'
+import { dummyNotificationData, profileLinks } from '@/data'
 import { Separator } from '../ui/separator'
 import Image from 'next/image'
 
@@ -118,40 +118,41 @@ const DesktopNotificationPanel = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-[360px] p-4" align="end">
                     <div className='flex flex-row justify-between items-center mb-2'>
-                        <span className='text-sm font-bold'>Notification</span>
+                        <span className='text-base font-bold'>Notification</span>
                         <div className='flex flex-row'>
                             <IconChecks className="text-black dark:text-white h-[18px] w-[18px] flex-shrink-0 cursor-pointer mr-2" />
                             <IconSettings className="text-black dark:text-white h-[18px] w-[18px] flex-shrink-0 cursor-pointer duration-300 transition-all hover:rotate-90" />
                         </div>
                     </div>
                     <Separator className='' />
-                    {Array(5).fill(0).map((_, index) => (
-                        <div key={index}>
-                            <div className='p-2 mt-3 flex flex-row'>
-                            <div className='w-[50px] h-full mr-3 relative'>
-                                <div className='rounded-full bg-blue-500 w-[7px] h-[7px] absolute top-0 left-[-5px]' />
-                                <Image
-                                    src="https://github.com/shadcn.png"
-                                    width={40}
-                                    height={40}
-                                    alt="Profile Picture"
-                                    className='rounded-full w-full h-full'
-                                />
-                            </div>
-                            <div className='flex flex-col'>
-                                <div className='justify-start text-sm mb-1'>
-                                <span className='font-semibold'>Mia Anders </span>
-                                <span>mentioned you in a comment in a thread</span>
+                    {dummyNotificationData.slice(0, 3).map((notifi, notifiId) => (
+                        <div key={notifiId}>
+                            <div className='p-2 mt-3 flex flex-row h-full gap-4'>
+                                <div className='w-[40px] h-[40px] relative flex-shrink-0'>
+                                    <div className='rounded-full bg-blue-500 w-[7px] h-[7px] absolute top-0 left-[-5px]' />
+                                    <Image
+                                        src={notifi.userPfp}
+                                        width={40}
+                                        height={40}
+                                        alt="Profile Picture"
+                                        className='rounded-full object-cover w-[40px] h-[40px] flex-shrink-0'
+                                    />
                                 </div>
-                                <div className='flex flex-row items-center justify-start text-sm'>
-                                <div className='px-2 py-0 capitalize font-bold border bg-neutral-300 rounded-full mr-1 text-neutral-700'>
-                                    FA-1
+                                <div className='flex flex-col'>
+                                    <div className='justify-start text-sm mb-2 w-full'>
+                                        <span className='font-semibold'>{notifi.username} </span>
+                                        <span className='text-wrap'>{notifi.description}</span>
+                                    </div>
+                                    <div className='flex flex-row items-center justify-between text-sm w-full'>
+                                        <div className={`px-2 py-1 uppercase rounded-full mr-2 
+                                            bg-neutral-200 text-xs font-semibold`}>
+                                            <span className={`${notifi.badgeColor}`}>{notifi.badge}</span>
+                                        </div>
+                                        <div className='text-gray-400'>
+                                            {notifi.time} ago
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    1h ago
-                                </div>
-                                </div>
-                            </div>
                             </div>
                             <Separator className='mt-2' />
                         </div>
