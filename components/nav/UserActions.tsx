@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { AnimatePresence, motion } from 'framer-motion'
-import { dummyNotificationData, profileLinks } from '@/data'
+import { dummyNotificationData, profileLinks } from '@/data/nav'
 import { Separator } from '../ui/separator'
 import Image from 'next/image'
 

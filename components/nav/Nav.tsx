@@ -17,8 +17,8 @@ import { ProfileMenu, DesktopNotificationPanel } from "./UserActions";
 
 // Data imports
 import { cn } from "@/lib/utils";
-import { CampaignsLink, ClientsLink, InfluencersLink, MainMenuLink, SettingsLink } from "@/data";
-import Dashboard from "../content/Dashboard";
+import { CampaignsLink, ClientsLink, InfluencersLink, MainMenuLink, SettingsLink } from "@/data/nav";
+import Dashboard from "../content/dashboard/Dashboard";
 
 
 export function Nav() {
@@ -85,7 +85,7 @@ export function Nav() {
           </div>
         </SidebarBody>
       </Sidebar>
-      <div className="flex flex-col w-full">
+      <div className="flex flex-col w-full overflow-y-scroll">
         <DesktopHeader />
         <Dashboard />
       </div>
@@ -138,7 +138,7 @@ const DesktopHeader = () => {
 
   return (
     <div className="flex w-full justify-between h-[80px] bg-neutral-50 dark:bg-neutral-900 border-b-[1px] 
-      border-b-neutral-200 dark:border-b-neutral-700 px-8 items-center">
+      border-b-neutral-200 dark:border-b-neutral-700 px-8 items-center py-4">
       {/* Search Command */}
       <Search open={isSearchOpen} onOpenChange={setIsSearchOpen} />
 
