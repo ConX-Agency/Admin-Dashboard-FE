@@ -83,7 +83,7 @@ function DashboardGridLayout({ tab }: LayoutProps) {
   );
 
   return (
-    <div className="w-full h-full mx-auto mb-0 relative max-w-[1201px] grid-div-container">
+    <div className="w-full h-full mx-auto mb-0 relative grid-div-container">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
