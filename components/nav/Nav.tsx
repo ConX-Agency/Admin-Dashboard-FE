@@ -47,7 +47,7 @@ export function Nav() {
   return (
     <div
       className={cn(
-        "flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto overflow-hidden",
+        "flex xxxs:flex-col lg:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto overflow-hidden",
         "h-screen"
       )}
     >
@@ -56,7 +56,7 @@ export function Nav() {
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <Link className="flex flex-row items-center justify-center cursor-pointer" href="/#">
               {open ? <Logo /> : <LogoIcon />}
-              <span className="ml-2 font-bold text-black dark:text-white text-2xl">
+              <span className="ml-2 font-bold text-black dark:text-white xxxs:text-xl md:text-3xl lg:text-2xl">
                 ConX Agency
               </span>
             </Link>
@@ -86,7 +86,7 @@ export function Nav() {
         </SidebarBody>
       </Sidebar>
       <div className="flex flex-col w-full overflow-y-scroll">
-        <DesktopHeader />
+        <DashboardHeader />
         <Dashboard />
       </div>
     </div>
@@ -106,13 +106,6 @@ export const Logo = () => {
         height={50}
         alt="Avatar"
       />
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="font-medium text-black dark:text-white whitespace-pre"
-      >
-        ConX Agency
-      </motion.span>
     </div>
   );
 };
@@ -133,17 +126,21 @@ export const LogoIcon = () => {
   );
 };
 
-const DesktopHeader = () => {
+const DashboardHeader = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <div className="flex w-full justify-between h-[80px] bg-neutral-50 dark:bg-neutral-900 border-b-[1px] 
-      border-b-neutral-200 dark:border-b-neutral-700 px-8 items-center py-4">
+    <div className="flex w-full lg:justify-between xxxs:justify-end h-auto bg-neutral-50 dark:bg-neutral-900 border-b-[1px] 
+      border-b-neutral-200 dark:border-b-neutral-700 md:px-8 xxxs:px-4 items-center py-4">
       {/* Search Command */}
-      <Search open={isSearchOpen} onOpenChange={setIsSearchOpen} />
-
+      <div className="xxxs:hidden lg:flex">
+        <Search open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+      </div>
       {/* Notification & User Icon */}
-      <div className="flex flex-row h-[35px] items-center gap-3">
+      <div className="flex flex-row h-[35px] items-center xxxs:gap-0 md:gap-2 lg:gap-3">
+        <div className="xxxs:flex lg:hidden">
+          <Search open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+        </div>
         <ThemeChanger />
         <DesktopNotificationPanel />
         {/* <Separator orientation="vertical" className="mx-4" /> */}

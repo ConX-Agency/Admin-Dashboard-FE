@@ -1,4 +1,4 @@
-import { IconCalendarStar, IconCoin, IconMessageCircle, IconUserStar, IconWorldStar } from "@tabler/icons-react";
+import { IconCalendarStar, IconCoin, IconList, IconMessageCircle, IconUserStar, IconWorldStar } from "@tabler/icons-react";
 
 export const dummyDashboardData = [
     {
@@ -85,6 +85,13 @@ export enum TabKey {
 }
 
 export const dashboardChartTypeFilters = [
+    {
+        label: "All",
+        key: TabKey.All,
+        icon: (
+            <IconList className="text-black dark:text-white h-4 w-4 flex-shrink-0" />
+        )
+    },
     {
         label: "Campaigns",
         key: TabKey.Campaigns,

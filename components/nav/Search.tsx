@@ -22,10 +22,10 @@ const SearchBox: React.FC<SearchProps> = ({ open, onOpenChange }) => {
 
     return (
         <div>
-            {/* Clickable search element */}
+            {/* Desktop Clickable search element */}
             <div
                 className="border border-neutral-300 dark:border-neutral-600 rounded-md p-2 py-1 w-max 
-                flex flex-row cursor-pointer items-center dark:bg-neutral-800 bg-neutral-100"
+                flex flex-row cursor-pointer items-center dark:bg-neutral-800 bg-neutral-100 lg:flex xxxs:hidden"
                 onClick={toggleSearch}
             >
                 <IconSearch className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
@@ -34,6 +34,15 @@ const SearchBox: React.FC<SearchProps> = ({ open, onOpenChange }) => {
                 text-black dark:text-white">
                     ⌘K
                 </span>
+            </div>
+
+            {/* Mobile Clickable search element */}
+            <div
+                className="flex flex-row cursor-pointer items-center 
+                    xxxs:flex lg:hidden h-[36px] w-[36px] justify-center"
+                onClick={toggleSearch}
+            >
+                <IconSearch className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
             </div>
 
             {/* Search dialog */}

@@ -116,7 +116,7 @@ const DesktopNotificationPanel = () => {
                             ${isOpen ? 'fill-black dark:fill-white' : ''}`} />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-[360px] p-4" align="end">
+                <DropdownMenuContent className="xxxs:max-w-[300px] xxxs:mr-2 xxs:mr-4 xs:w-[360px] p-4" align="center">
                     <div className='flex flex-row justify-between items-center mb-2'>
                         <span className='text-base font-bold'>Notification</span>
                         <div className='flex flex-row'>

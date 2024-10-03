@@ -76,7 +76,7 @@ body {
 }
 
 /* React Grid */
-@media (max-width: 1200px) {
+/* @media (max-width: 1200px) {
   .grid-div-container {
     max-width: 801px;
   }
@@ -92,7 +92,7 @@ body {
   .grid-div-container {
     max-width: 320px;
   }
-}
+} */
 
 .react-grid-layout {
   position: relative;

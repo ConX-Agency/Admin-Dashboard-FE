@@ -6,7 +6,7 @@ const Blocks = ({ keyProp, isFocused }: { keyProp: string, isFocused: boolean })
   return (
     <Card
       className={`h-full w-full flex flex-col justify-center items-center relative dark:text-white text-black 
-        dark:shadow-dark-box-shadow overflow-hidden text-3xl rounded-3xl`} 
+        dark:shadow-dark-box-shadow overflow-hidden text-3xl rounded-3xl noDrag`} 
         style={{ opacity: isFocused ? 1 : 0.25, transition: '.3s opacity ease-out'}}
     >
         {keyProp}

@@ -73,8 +73,8 @@ export const Sidebar = ({
 export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => {
   return (
     <>
-      <DesktopSidebar {...props} />
-      <MobileSidebar {...(props as React.ComponentProps<"div">)} />
+      <DesktopSidebar {...props} className="lg:flex xxxs:hidden"/>
+      <MobileSidebar {...(props as React.ComponentProps<"div">)} className="xxxs:flex lg:hidden"/>
     </>
   );
 };
@@ -89,7 +89,7 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          `h-full px-4 py-4 w-[240px] md:flex md:flex-col bg-neutral-50 dark:bg-neutral-900 border-r-[1px] 
+          `h-full px-4 py-4 w-[240px] md:flex-col bg-neutral-50 dark:bg-neutral-900 border-r-[1px] 
           border-r-neutral-200 dark:border-r-neutral-700 flex-shrink-0`, // Set fixed width for sidebar
           className
         )}
@@ -111,11 +111,11 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "h-15 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
+          "absolute top-0 xxxs:left-4 md:left-8 h-[67px] z-[1000] lg:hidden xxxs:flex"
         )}
         {...props}
       >
-        <div className="flex justify-start z-20 w-full">
+        <div className="flex justify-start z-20 w-full h-full items-center">
           <IconMenu2
             className="text-neutral-800 dark:text-neutral-200"
             onClick={() => setOpen(!open)}
