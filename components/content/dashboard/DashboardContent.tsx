@@ -23,7 +23,7 @@ const DashboardContent = () => {
             </div>
             {/* Right-Hand-Container */}
             <div className='rhc flex flex-col xxxs:w-[100%] lg:w-[30%] bg-red-400'>
-                <Image src="https://static.wikia.nocookie.net/meme-cats/images/c/ca/El_Gato_Original.png/revision/latest?cb=20240125003752"
+                <Image src="https://static.wikia.nocookie.net/meme-cats/images/c/ca/El_Gato_Original.png"
                     width={298}
                     height={317}
                     alt='cat.kpg'
