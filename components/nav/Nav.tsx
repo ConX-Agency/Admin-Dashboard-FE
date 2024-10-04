@@ -13,7 +13,7 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { ThemeChanger } from "../themer/ThemeChanger";
 import Search from "./Search";
-import { ProfileMenu, DesktopNotificationPanel } from "./UserActions";
+import { ProfileMenu, NotificationPanel } from "./UserActions";
 
 // Data imports
 import { cn } from "@/lib/utils";
@@ -116,7 +116,7 @@ export const LogoIcon = () => {
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
       <Image
-        src="/images/logo/logo.png"
+        src="https://static.vecteezy.com/system/resources/previews/046/853/019/non_2x/twitter-x-black-and-white-logo-transparent-background-free-png.png"
         className="h-8 w-8 flex-shrink-0 rounded-full invert-0 dark:invert"
         width={50}
         height={50}
@@ -142,7 +142,7 @@ const DashboardHeader = () => {
           <Search open={isSearchOpen} onOpenChange={setIsSearchOpen} />
         </div>
         <ThemeChanger />
-        <DesktopNotificationPanel />
+        <NotificationPanel />
         {/* <Separator orientation="vertical" className="mx-4" /> */}
         <ProfileMenu />
       </div>
