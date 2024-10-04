@@ -87,7 +87,9 @@ export function Nav() {
       </Sidebar>
       <div className="flex flex-col w-full overflow-y-scroll">
         <DashboardHeader />
-        <Dashboard />
+        <div className="pt-[68px]">
+          <Dashboard />
+        </div>
       </div>
     </div>
   );
@@ -131,7 +133,7 @@ const DashboardHeader = () => {
 
   return (
     <div className="flex w-full lg:justify-between xxxs:justify-end h-auto bg-neutral-50 dark:bg-neutral-900 border-b-[1px] 
-      border-b-neutral-200 dark:border-b-neutral-700 md:px-8 xxxs:px-4 items-center py-4">
+      border-b-neutral-200 dark:border-b-neutral-700 md:px-8 xxxs:px-4 items-center py-4 xxxs:fixed lg:static z-[999]">
       {/* Search Command */}
       <div className="xxxs:hidden lg:flex">
         <Search open={isSearchOpen} onOpenChange={setIsSearchOpen} />
