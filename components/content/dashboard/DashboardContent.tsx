@@ -1,7 +1,9 @@
 import { dummyDashboardCardData } from '@/data/dashboard';
-import { IconArrowDownRight, IconArrowUpRight, IconWorldStar } from '@tabler/icons-react'
+import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons-react'
 import Image from 'next/image'
 import React from 'react'
+import { SalesAnalyticsChart } from './Charts';
+import { calculateChanges } from '@/lib/calculateChanges';
 
 const DashboardContent = () => {
 
@@ -15,19 +17,19 @@ const DashboardContent = () => {
                     <StatsCard />
                 </div>
                 <div className='flex flex-col w-full'>
-
+                    <SalesAnalyticsChart />
                 </div>
                 <div className='flex flex-col w-full'>
 
                 </div>
             </div>
             {/* Right-Hand-Container */}
-            <div className='rhc flex flex-col xxxs:w-[100%] lg:w-[30%] bg-red-400'>
+            <div className='rhc flex flex-col xxxs:w-[100%] lg:w-[30%] bg-red-400 h-max'>
                 <Image src="https://static.wikia.nocookie.net/meme-cats/images/c/ca/El_Gato_Original.png"
                     width={298}
                     height={317}
                     alt='cat.kpg'
-                    className='w-full h-full'
+                    className='w-full h-[400px]'
                 />
             </div>
         </div>
@@ -38,25 +40,6 @@ const DashboardContent = () => {
 
 
 const StatsCard = () => {
-    function calculateChanges(previous: string | number, current: string | number): string {
-        // Convert percentage strings to numbers
-        if (typeof previous === 'string' && previous.includes('%')) {
-            previous = parseFloat(previous.replace('%', ''));
-            current = parseFloat((current as string).replace('%', ''));
-        } else {
-            previous = parseFloat(previous as string);
-            current = parseFloat(current as string);
-        }
-
-        if (previous === 0) return "N/A"; // Prevent division by zero
-
-        const change = ((current - previous) / previous) * 100;
-
-        // Add "+" sign for positive changes
-        const formattedChange = change > 0 ? `+${change.toFixed(2)}%` : `${change.toFixed(2)}%`;
-
-        return formattedChange;
-    }
 
     function updateDashboardData(dataArray: typeof dummyDashboardCardData) {
         return dataArray.map(item => ({
@@ -66,6 +49,7 @@ const StatsCard = () => {
     }
 
     const updatedDashboardCardData = updateDashboardData(dummyDashboardCardData);
+    
     return (
         updatedDashboardCardData.slice(0, 4).map((cardData, cardDataId) => (
             <div className='rounded-md bg-neutral-50 drop-shadow-md dark:bg-neutral-800 
