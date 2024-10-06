@@ -89,7 +89,7 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          `h-full px-4 py-4 w-[240px] md:flex-col bg-neutral-50 dark:bg-neutral-900 border-r-[1px] 
+          `h-screen px-4 py-4 w-[240px] md:flex-col bg-neutral-50 dark:bg-neutral-900 border-r-[1px] 
           border-r-neutral-200 dark:border-r-neutral-700 flex-shrink-0`, // Set fixed width for sidebar
           className
         )}
@@ -111,7 +111,7 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "absolute top-0 xxxs:left-4 md:left-8 h-[67px] z-[1000] lg:hidden xxxs:flex"
+          "fixed top-0 xxxs:left-4 md:left-8 h-[67px] z-[1000] lg:hidden xxxs:flex"
         )}
         {...props}
       >

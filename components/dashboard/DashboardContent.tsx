@@ -1,3 +1,5 @@
+"use client"
+
 import { dummyDashboardCardData } from '@/data/dashboard';
 import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons-react'
 import Image from 'next/image'
@@ -6,7 +8,6 @@ import { SalesAnalyticsChart } from './Charts';
 import { calculateChanges } from '@/lib/calculateChanges';
 
 const DashboardContent = () => {
-
     return (
         <div className='flex lg:flex-row xxxs:flex-col gap-5'>
             {/* Left-Hand-Container */}
@@ -35,9 +36,6 @@ const DashboardContent = () => {
         </div>
     )
 }
-
-
-
 
 const StatsCard = () => {
 
