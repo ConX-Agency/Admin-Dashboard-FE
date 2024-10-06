@@ -1,13 +1,11 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+"use client"
+
+import React from 'react'
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { chartConfig, chartData } from '@/data/chart'
-import { TrendingUp } from 'lucide-react'
-import React from 'react'
-import { CartesianGrid, AreaChart, XAxis, Area, BarChart, Bar } from 'recharts'
+import { CartesianGrid, XAxis, BarChart, Bar } from 'recharts'
 
 const SalesAnalyticsChart = () => {
-
-
     return (
         <div className='bg-neutral-200'>
             <ChartContainer config={chartConfig}>
