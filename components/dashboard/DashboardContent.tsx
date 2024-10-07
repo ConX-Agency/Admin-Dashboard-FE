@@ -4,7 +4,7 @@ import { dummyDashboardCardData } from '@/data/dashboard';
 import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons-react'
 import Image from 'next/image'
 import React from 'react'
-import { SalesAnalyticsChart } from './Charts';
+import { CampaignsChart, SalesAnalyticsChart } from './Charts';
 import { calculateChanges } from '@/lib/calculateChanges';
 
 const DashboardContent = () => {
@@ -17,8 +17,13 @@ const DashboardContent = () => {
                     {/* Cards */}
                     <StatsCard />
                 </div>
-                <div className='flex flex-col w-full'>
+                <div className='flex flex-row justify-between w-full flex-wrap xxxs:gap-3 xs:gap-2 xl:gap-3'>
                     <SalesAnalyticsChart />
+                    <CampaignsChart />
+                    <SalesAnalyticsChart />
+                    <CampaignsChart />
+                    <SalesAnalyticsChart />
+                    <CampaignsChart />
                 </div>
                 <div className='flex flex-col w-full'>
 

@@ -46,3 +46,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 4. Tabler
 5. Lucide React
 6. Radix
+
+## Issues Faced
+1. [Chart Issues](https://github.com/shadcn-ui/ui/issues/4231)
+2. 
