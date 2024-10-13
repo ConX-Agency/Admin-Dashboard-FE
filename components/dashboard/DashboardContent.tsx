@@ -107,7 +107,7 @@ const RecentCompletedCampaigns = () => {
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="flex flex-row justify-between items-center">
-                        <span className="text-black dark:text-white font-bold text-[15px] w-[125px] whitespace-nowrap overflow-hidden text-ellipsis
+                        <span className="text-black dark:text-white font-bold text-[15px] xxxs:w-[115px] xs:w-full xl:w-[115px] whitespace-nowrap overflow-hidden text-ellipsis
                             cursor-pointer transition-all duration-300 hover:text-black/75" title={data.label}>
                             {data.label}
                         </span>
@@ -159,7 +159,7 @@ const TopInfluencers = () => {
                 </div>
                 <div className="flex flex-col w-full">
                     <div className="flex flex-row justify-between w-full items-center">
-                        <span className="text-black dark:text-white font-bold text-[15px] w-[125px] whitespace-nowrap overflow-hidden text-ellipsis 
+                        <span className="text-black dark:text-white font-bold text-[15px] xxxs:w-[115px] xs:w-full xl:w-[115px] whitespace-nowrap overflow-hidden text-ellipsis 
                             cursor-pointer transition-all duration-300 hover:text-black/75" title={data.name}>
                             {data.name}
                         </span>
