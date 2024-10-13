@@ -35,7 +35,7 @@ import {
 const SalesAnalyticsChart = () => {
   return (
     <div className="bg-neutral-50 dark:bg-neutral-800 xxxs:h-[250px] xs:h-[300px] xxxs:w-[100%] 
-        md:w-[49%] p-4 rounded-md items-center justify-center flex drop-shadow-md">
+        chartCard p-4 rounded-md items-center justify-center flex drop-shadow-md flex-grow">
       <ChartContainer config={SalesAnalyticsChartConfigs} className="w-full">
         <BarChart accessibilityLayer data={SalesAnalyticsChartData}>
           <CartesianGrid vertical={false} />
@@ -69,7 +69,7 @@ const SalesAnalyticsChart = () => {
 const CampaignsChart = () => {
   return (
     <div className="bg-neutral-50 dark:bg-neutral-800 xxxs:h-[250px] xs:h-[300px] xxxs:w-[100%] 
-        md:w-[49%] p-4 rounded-md items-center justify-center flex drop-shadow-md">
+        chartCard p-4 rounded-md items-center justify-center flex drop-shadow-md flex-grow">
       <ChartContainer
         config={CampaignsChartConfigs}
         className="mx-auto aspect-square max-h-[250px]"

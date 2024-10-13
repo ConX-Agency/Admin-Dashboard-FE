@@ -1,4 +1,4 @@
-import { IconCalendarStar, IconClockPlay, IconUserStar, IconWorldStar } from "@tabler/icons-react";
+import { IconCalendarStar, IconClockPlay, IconCoffee, IconDeviceGamepad2, IconMeat, IconUserStar, IconWorldStar } from "@tabler/icons-react";
 
 export const dummyDashboardCardData = [
     {
@@ -36,6 +36,71 @@ export const dummyDashboardCardData = [
         previous: '30',
         current: '75',
         changes: ''
+    },
+]
+
+export const dummyLastCompletedData = [
+    {
+        label: 'SKT T1 Cafe & Arena',
+        icon: (
+            <IconDeviceGamepad2 className="text-blue-500 h-1/2 w-1/2" />
+        ),
+        date: '09/11/2024',
+        location: 'Busan, South Korea'
+    },
+    {
+        label: 'St. Elmo Steak House',
+        icon: (
+            <IconMeat className="text-blue-500 h-1/2 w-1/2" />
+        ),
+        date: '10/11/2024',
+        location: 'Indiana, United States'
+    },
+    {
+        label: 'Honey Toast Cafe Akihabara',
+        icon: (
+            <IconCoffee className="text-blue-500 h-1/2 w-1/2" />
+        ),
+        date: '11/11/2024',
+        location: 'Tokyo, Japan'
+    }
+]
+
+export const dummyTopInfluencerData = [
+    {
+        name: "Felix 'xQc' Lengyel",
+        previous: '900000',
+        current: '1000000',
+        changes: '',
+        pic: 'https://github.com/shadcn.png'
+    },
+    {
+        name: "Thomas 'Sykkuno'",
+        previous: '900000',
+        current: '1000000',
+        changes: '',
+        pic: 'https://github.com/shadcn.png'
+    },
+    {
+        name: "Lee 'Faker' Sang-hyeok",
+        previous: '900000',
+        current: '1000000',
+        changes: '',
+        pic: 'https://github.com/shadcn.png'
+    },
+    {
+        name: "Marc Robert 'Caedrel' Lamont",
+        previous: '900000',
+        current: '1000000',
+        changes: '',
+        pic: 'https://github.com/shadcn.png'
+    },
+    {
+        name: "Janne 'Gorgc' Stefanovski",
+        previous: '900000',
+        current: '1000000',
+        changes: '',
+        pic: 'https://github.com/shadcn.png'
     },
 ]
 

@@ -10,6 +10,7 @@ const config: Config = {
   theme: {
   	extend: {
 		screens: {
+			'xxl': '1400px',
 			'xl': '1200px',
 			'lg': '992px',
 			'md': '768px',
@@ -64,7 +65,7 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
   	}
   },
   plugins: [require("tailwindcss-animate")],
