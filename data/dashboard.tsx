@@ -104,6 +104,57 @@ export const dummyTopInfluencerData = [
     },
 ]
 
+export type Activity = {
+    id: string;
+    type: "Instagram" | "TikTok" | "RED Pos" | "Google Review";
+    quantity: number;
+    campaign: string;
+    influencer: string;
+    end_date: string;
+}
+
+export const dummyPendingActivitiesData: Activity[] = [
+    {
+        id: "m5gr84i9",
+        type: "Google Review",
+        quantity: 5,
+        campaign: "Summer Fiesta",
+        influencer: "Sykkuno",
+        end_date: "15/10/2024"
+    },
+    {
+        id: "3u1reuv4",
+        type: "Instagram",
+        quantity: 4,
+        campaign: "Go Green",
+        influencer: "Gorgc",
+        end_date: "16/10/2024"
+    },
+    {
+        id: "derv1ws0",
+        type: "TikTok",
+        quantity: 3,
+        campaign: "Children's Day",
+        influencer: "Caedrel",
+        end_date: "17/10/2024"
+    },
+    {
+        id: "5kma53ae",
+        type: "RED Pos",
+        quantity: 2,
+        campaign: "National Day",
+        influencer: "Faker",
+        end_date: "18/10/2024"
+    },
+    {
+        id: "bhqecj4p",
+        type: "Google Review",
+        quantity: 1,
+        campaign: "PWD Awareness",
+        influencer: "xQc",
+        end_date: "19/10/2024"
+    },
+]
 // export const dummyDashboardData = [
 //     {
 //         label: 'Total Live Campaign',

@@ -11,7 +11,7 @@ export const DashboardHeader = () => {
   return (
     <div
       className="flex w-full lg:justify-between xxxs:justify-end h-auto bg-neutral-50 dark:bg-neutral-900 border-b-[1px] 
-        border-b-neutral-200 dark:border-b-neutral-700 md:px-8 xxxs:px-4 items-center py-4 xxxs:fixed lg:static z-[999]"
+        border-b-neutral-200 dark:border-b-neutral-700 md:px-6 xxxs:px-4 items-center py-4 xxxs:fixed lg:static z-[999]"
     >
       {/* Search Command */}
       <div className="xxxs:hidden lg:flex">

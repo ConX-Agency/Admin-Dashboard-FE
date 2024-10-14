@@ -36,7 +36,7 @@ export function Nav() {
   return (
     <Sidebar open={open} setOpen={setOpen}>
       <SidebarBody className="justify-between gap-10">
-        <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden fixed">
           <Link className="flex flex-row items-center justify-center cursor-pointer" href="/#">
             {open ? <Logo /> : <LogoIcon />}
             <span className="ml-2 font-bold text-black dark:text-white xxxs:text-xl md:text-3xl lg:text-2xl">
