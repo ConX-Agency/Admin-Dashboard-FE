@@ -1,0 +1,11 @@
+import React from 'react'
+
+const Filters = () => {
+  return (
+    <div className='flex flex-row flex-wrap justify-between w-full'>
+      Filters
+    </div>
+  )
+}
+
+export default { Filters }

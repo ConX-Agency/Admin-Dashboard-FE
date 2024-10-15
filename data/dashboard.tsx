@@ -41,29 +41,29 @@ export const dummyDashboardCardData = [
 
 export const dummyLastCompletedData = [
     {
-        label: 'SKT T1 Cafe & Arena',
+        campaign: 'Korean 80th Independence Day',
         icon: (
             <IconDeviceGamepad2 className="text-blue-500 h-1/2 w-1/2" />
         ),
-        date: '09/11/2024',
+        date: '14/11/2024',
         location: 'Busan, South Korea'
     },
     {
-        label: 'St. Elmo Steak House',
-        icon: (
-            <IconMeat className="text-blue-500 h-1/2 w-1/2" />
-        ),
-        date: '10/11/2024',
-        location: 'Indiana, United States'
-    },
-    {
-        label: 'Honey Toast Cafe Akihabara',
+        campaign: 'Summer Fiesta',
         icon: (
             <IconCoffee className="text-blue-500 h-1/2 w-1/2" />
         ),
-        date: '11/11/2024',
+        date: '15/11/2024',
         location: 'Tokyo, Japan'
-    }
+    },
+    {
+        campaign: 'Children\'s Day',
+        icon: (
+            <IconMeat className="text-blue-500 h-1/2 w-1/2" />
+        ),
+        date: '16/11/2024',
+        location: 'Indiana, United States'
+    },
 ]
 
 export const dummyTopInfluencerData = [
@@ -96,7 +96,7 @@ export const dummyTopInfluencerData = [
         pic: 'https://github.com/shadcn.png'
     },
     {
-        name: "Janne 'Gorgc' Stefanovski",
+        name: "Brandon 'Atrioc' Ewing",
         previous: '900000',
         current: '1000000',
         changes: '',
@@ -119,7 +119,7 @@ export const dummyPendingActivitiesData: Activity[] = [
         type: "Google Review",
         quantity: 5,
         campaign: "Summer Fiesta",
-        influencer: "Sykkuno",
+        influencer: "Atrioc",
         end_date: "15/10/2024"
     },
     {
@@ -127,7 +127,7 @@ export const dummyPendingActivitiesData: Activity[] = [
         type: "Instagram",
         quantity: 4,
         campaign: "Go Green",
-        influencer: "Gorgc",
+        influencer: "Sykkuno",
         end_date: "16/10/2024"
     },
     {
@@ -142,7 +142,7 @@ export const dummyPendingActivitiesData: Activity[] = [
         id: "5kma53ae",
         type: "RED Pos",
         quantity: 2,
-        campaign: "National Day",
+        campaign: "Korean 80th Independence Day",
         influencer: "Faker",
         end_date: "18/10/2024"
     },

@@ -10,38 +10,6 @@ import { MapPin } from "lucide-react";
 import { DashboardTable } from "./DashboardTable";
 import { Separator } from "../ui/separator";
 
-const DashboardContent = () => {
-  return (
-    <>
-      <div className="flex flex-row justify-between flex-wrap xxxs:gap-2">
-        <h1 className="text-3xl font-semibold items-center">Dashboard</h1>
-      </div>
-      <Separator className="mt-0 mb-3" />
-      <div className="flex xl:flex-row xxxs:flex-col xxxs:gap-3 xl:gap-4 xxl:gap-5">
-        {/* Left-Hand-Container */}
-        <div className="lhc flex flex-col xxxs:w-[100%] xl:w-[70%] xxl:w-[75%] xxxs:gap-3 xs:gap-2 xl:gap-3">
-          {/* Cards' Container */}
-          <div className="flex flex-row w-full flex-wrap xxxs:gap-3 xs:gap-2 xl:gap-3">
-            {/* Cards */}
-            <StatsCard />
-          </div>
-          <div className="flex flex-row w-full flex-wrap xxxs:gap-3 xs:gap-2 xl:gap-3">
-            <SalesAnalyticsChart />
-            <CampaignsChart />
-            <RecentOrders />
-          </div>
-          <div className="flex flex-col w-full"></div>
-        </div>
-        {/* Right-Hand-Container */}
-        <div className="rhc flex flex-col xxxs:w-[100%] xl:w-[30%] xxl:w-[25%] h-max xxxs:gap-3 xs:gap-2 xl:gap-3">
-          <RecentCompletedCampaigns />
-          <TopInfluencers />
-        </div>
-      </div>
-    </>
-  );
-};
-
 const StatsCard = () => {
   function updateDashboardData(dataArray: typeof dummyDashboardCardData) {
     return dataArray.map((item) => ({
@@ -120,9 +88,10 @@ const RecentCompletedCampaigns = () => {
             </div>
             <div className="flex flex-col w-full">
               <div className="flex flex-row justify-between items-center">
-                <span className="text-black dark:text-white font-bold text-[15px] xxxs:w-[115px] xs:w-full xl:w-[115px] whitespace-nowrap overflow-hidden text-ellipsis
-                            cursor-pointer transition-all duration-300 hover:text-black/75" title={data.label}>
-                  {data.label}
+                <span className="text-black dark:text-white font-bold text-[15px] xxxs:w-[115px] xs:w-full xl:w-[115px] whitespace-nowrap 
+                  overflow-hidden text-ellipsis cursor-pointer transition-all duration-300 hover:text-black/75 dark:hover:text-white/75" 
+                  title={data.campaign}>
+                  {data.campaign}
                 </span>
                 <span className="text-neutral-400 text-[12px]">
                   {data.date}
@@ -197,4 +166,4 @@ const TopInfluencers = () => {
   );
 };
 
-export default DashboardContent;
+export {StatsCard, RecentOrders, RecentCompletedCampaigns, TopInfluencers};

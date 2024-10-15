@@ -191,7 +191,7 @@ const NotificationPanel = () => {
                         dark:hover:bg-neutral-800/75 hover:bg-neutral-300/75 duration-300 transition-all"
           >
             <span className="text-[16px] tracking-[.5px] text-black dark:text-white opacity-100">
-              View More Notification
+              View All Notification
             </span>
           </div>
         </DropdownMenuContent>

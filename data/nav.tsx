@@ -20,7 +20,7 @@ import {
 export const MainMenuLink = [
   {
     label: "Dashboard",
-    href: "#",
+    href: "/",
     icon: (
       <IconLayoutDashboard className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
@@ -30,14 +30,14 @@ export const MainMenuLink = [
 export const CampaignsLink = [
   {
     label: "All Campaigns",
-    href: "#",
+    href: "/campaigns/all-campaigns",
     icon: (
       <IconCalendarMonth className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Pending Services",
-    href: "#",
+    href: "/campaigns/pending-services",
     icon: (
       <IconCalendarClock className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
@@ -47,14 +47,14 @@ export const CampaignsLink = [
 export const ClientsLink = [
   {
     label: "Add Clients",
-    href: "#",
+    href: "/clients/add-clients",
     icon: (
       <IconUserPlus className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
   },
   {
-    label: "View / Edit Clients",
-    href: "#",
+    label: "Manage Clients",
+    href: "/clients/manage-clients",
     icon: (
       <IconUserCog className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
@@ -64,14 +64,14 @@ export const ClientsLink = [
 export const InfluencersLink = [
   {
     label: "Add Influencers",
-    href: "#",
+    href: "/influencers/add-influencers",
     icon: (
       <IconWorldPlus className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
   },
   {
-    label: "View / Edit Influencers",
-    href: "#",
+    label: "Manage Influencers",
+    href: "/influencers/manage-influencers",
     icon: (
       <IconWorldCog className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
@@ -81,21 +81,21 @@ export const InfluencersLink = [
 export const SettingsLink = [
   {
     label: "Help Center",
-    href: "#",
+    href: "/settings/help-center",
     icon: (
       <IconInfoCircle className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Settings",
-    href: "#",
+    href: "/settings/settings",
     icon: (
       <IconSettings className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Report",
-    href: "#",
+    href: "/settings/report",
     icon: (
       <IconFlag3 className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
