@@ -8,4 +8,12 @@ const Filters = () => {
   )
 }
 
-export default { Filters }
+const CampaignCards = () => {
+  return (
+    <div className=''>
+
+    </div>
+  )
+}
+
+export { Filters, CampaignCards }
