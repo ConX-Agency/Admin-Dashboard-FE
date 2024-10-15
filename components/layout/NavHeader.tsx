@@ -5,7 +5,7 @@ import Search from "@/components/layout/Search";
 import { NotificationPanel, ProfileMenu } from "@/components/layout/UserActions";
 import { ThemeChanger } from "../themer/ThemeChanger";
 
-export const DashboardHeader = () => {
+export const NavHeader = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (

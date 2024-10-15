@@ -51,7 +51,10 @@ export const columns: ColumnDef<Activity>[] = [
         accessorKey: "influencer",
         header: "Influencer",
         cell: ({ row }) => (
-            <div className="">{row.getValue("influencer")}</div>
+            <div className="cursor-pointer transition-all duration-300 
+                hover:text-black/75 dark:hover:text-white/75">
+                {row.getValue("influencer")}
+            </div>
         ),
     },
     {
