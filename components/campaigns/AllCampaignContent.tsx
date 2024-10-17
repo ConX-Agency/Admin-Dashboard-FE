@@ -75,7 +75,7 @@ const CampaignCards = () => {
             ))}
           </div>
           {/* Bottom Half */}
-          <div className='mt-4 bg-blue-500 p-2 px-3 rounded-b-md w-full flex flex-row items-center justify-between'>
+          <div className='mt-4 bg-black p-2 px-3 rounded-b-md w-full flex flex-row items-center justify-between'>
             <div className='flex flex-col justify-center'>
               <span className='text-[11px] text-neutral-200 font-semibold tracking-[.3px]'>Due Date</span>
               <span className='text-[14px] text-neutral-50'>{data.end_date}</span>
@@ -109,7 +109,7 @@ const CampaignCards = () => {
 const IconWithTooltip: React.FC<IconWithToolTipProps> = ({ IconComponent, tooltip }) => (
   <div
     className='flex items-center justify-center bg-neutral-50 rounded-full w-[30px] h-[30px] transition-all duration-300 
-      text-blue-500 hover:bg-neutral-200'
+      text-black hover:bg-neutral-200'
     title={tooltip}
   >
     <IconComponent className='w-[15px] h-[15px]' />
