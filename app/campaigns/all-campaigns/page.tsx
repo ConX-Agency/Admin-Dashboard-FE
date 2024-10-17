@@ -1,3 +1,5 @@
+"use client"
+
 import { CampaignCards, Filters } from "@/components/campaigns/AllCampaignContent";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
