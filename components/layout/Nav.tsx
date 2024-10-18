@@ -1,11 +1,10 @@
 "use client";
 
 // React and Next.js imports
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
-// Third-party imports
+import { usePathname } from "next/navigation"; // Import the usePathname hook
 
 // Internal component imports
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
@@ -17,6 +16,7 @@ import { CampaignsLink, ClientsLink, InfluencersLink, MainMenuLink, SettingsLink
 export function Nav() {
   const [open, setOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("Dashboard"); // Active link state
+  const pathname = usePathname(); // Get the current URL path
   const sections = [
     { title: "Main Menu", links: MainMenuLink },
     { title: "Campaigns", links: CampaignsLink },
@@ -25,9 +25,26 @@ export function Nav() {
     { title: "Help & Settings", links: SettingsLink }
   ];
 
+  // Check if the link's href matches the current path
+  const checkActiveLink = (linkHref: string) => {
+    return pathname === linkHref;
+  };
+
+  // Set active link on click
   const handleLinkClick = (label: string) => {
     setActiveLink(label);
   };
+
+  // Set the active link based on the current path when the component mounts
+  useEffect(() => {
+    sections.forEach(section => {
+      section.links.forEach(link => {
+        if (checkActiveLink(link.href)) {
+          setActiveLink(link.label);
+        }
+      });
+    });
+  }, [pathname]);
 
   const handleLoggedInUser = () => { }
 

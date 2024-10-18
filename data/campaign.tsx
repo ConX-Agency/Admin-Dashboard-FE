@@ -1,4 +1,35 @@
-export const dummyCampaignsData = [
+import { Influencer } from "./influencer";
+
+export interface Campaign {
+    id: string;
+    campaign: string;
+    name: string;
+    location: string;
+    description: string;
+    tags: string[];
+    min_influencers: number;
+    max_influencers: number;
+    influencers: Influencer[];
+    activities_remaining: number;
+    start_date: string; // You might want to change this to `Date` if you are handling dates properly.
+    end_date: string;   // Same as above, consider using `Date`.
+    status: 'Active' | 'Cancelled' | 'Completed'; // Enum of possible statuses.
+}
+
+export interface IconWithToolTipProps {
+    IconComponent: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    popoverText: string;
+}
+
+export interface FiltersProps {
+    onFilterChange: (filteredData: Campaign[]) => void;
+}
+
+export interface CampaignCardsProps {
+    campaigns: Campaign[];
+}
+
+export const dummyCampaignsData: Campaign[] = [
     {
         id: "m5gr84i9",
         campaign: "80th Korean Independence Day",
@@ -120,9 +151,3 @@ export const dummyCampaignsData = [
         status: 'Completed'
     },
 ];
-
-
-export interface IconWithToolTipProps {
-    IconComponent: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-    tooltip: string;
-}

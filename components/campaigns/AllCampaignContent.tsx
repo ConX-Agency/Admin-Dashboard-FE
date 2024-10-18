@@ -1,17 +1,71 @@
-import { dummyCampaignsData, IconWithToolTipProps } from '@/data/campaign'
+import { CampaignCardsProps, dummyCampaignsData, FiltersProps, IconWithToolTipProps } from '@/data/campaign'
 import { formatURL } from '@/lib/urlFormatter'
-import { Calendar, Clock, Globe, MapPinned } from 'lucide-react'
-import React, { useRef } from 'react'
+import { Calendar, Clock, Filter, FilterX, Globe, MapPinned } from 'lucide-react'
+import React, { useRef, useState } from 'react'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import { Button } from '../ui/button'
+import { AnimatePresence, motion } from 'framer-motion'
 
-const Filters = () => {
+const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
+  const [isFiltered, setIsFiltered] = useState(false);
+
+  // Example filter logic (you can replace this with actual filter conditions)
+  const filterCampaigns = () => {
+    const filteredData = dummyCampaignsData.filter((campaign) => {
+      // Apply your filtering logic here (e.g., filter by status or date)
+      return campaign.status === 'Active';
+    });
+
+    // Pass the filtered data to the parent component
+    onFilterChange(filteredData);
+    setIsFiltered(true);
+  };
+
+  const unfilterCampaigns = () => {
+    onFilterChange(dummyCampaignsData);
+    setIsFiltered(false);
+  }
+
   return (
     <div className='flex flex-row flex-wrap justify-between w-full'>
-      Filters
-    </div>
-  )
-}
+      <AnimatePresence>
+        {!isFiltered && (
+          <Button
+            variant='ghost'
+            className='h-[40px] w-[40px] p-2 flex justify-center items-center cursor-default hover:bg-transparent'
+          >
+            <motion.div
+              initial={{ translateX: -20, opacity: 0 }}
+              animate={{ translateX: 0, opacity: 1 }}
+              exit={{ translateX: 20, opacity: 0 }}
+            >
+              <Filter className='h-[20px] w-[20px]' />
+            </motion.div>
+          </Button>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isFiltered && (
+          <Button
+            variant='outline'
+            className='h-[40px] w-[40px] p-2 flex justify-center items-center'
+            onClick={unfilterCampaigns}
+          >
+            <motion.div
+              initial={{ translateX: -20, opacity: 0 }}
+              animate={{ translateX: 0, opacity: 1 }}
+              exit={{ translateX: 20, opacity: 0 }}
+            >
+              <FilterX className='h-[20px] w-[20px]' />
+            </motion.div>
+          </Button>
+        )}
+      </AnimatePresence>
+    </div >
+  );
+};
 
-const CampaignCards = () => {
+const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
 
   const scrollRefs = useRef<(HTMLDivElement | null)[]>([]); // Store refs in an array
 
@@ -46,7 +100,7 @@ const CampaignCards = () => {
 
   return (
     <div className='grid xxxs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 h-full'>
-      {dummyCampaignsData.map((data, idx) => (
+      {campaigns.map((data, idx) => (
         <div className='shadow-md rounded-md cursor-pointer group bg-neutral-50 hover:bg-neutral-200/25 dark:bg-neutral-800 
           dark:hover:bg-neutral-700 transition-all duration-300 relative max-h-[300px]'
           key={data.id} onClick={() => directToCampaign(data.campaign)}>
@@ -83,19 +137,19 @@ const CampaignCards = () => {
             <div className='flex flex-row flex-wrap gap-2 justify-end items-center'>
               <IconWithTooltip
                 IconComponent={MapPinned}
-                tooltip={data.location}
+                popoverText={data.location}
               />
               <IconWithTooltip
                 IconComponent={Calendar}
-                tooltip={`${data.start_date} - ${data.end_date}`}
+                popoverText={`${data.start_date} - ${data.end_date}`}
               />
               <IconWithTooltip
                 IconComponent={Globe}
-                tooltip={`${data.influencers.length} Active Influencer(s)`}
+                popoverText={`${data.influencers.length} Active Influencer(s)`}
               />
               <IconWithTooltip
                 IconComponent={Clock}
-                tooltip={`${data.activities_remaining} Activities Left`}
+                popoverText={`${data.activities_remaining} Activities Left`}
               />
             </div>
           </div>
@@ -106,14 +160,22 @@ const CampaignCards = () => {
   )
 }
 
-const IconWithTooltip: React.FC<IconWithToolTipProps> = ({ IconComponent, tooltip }) => (
-  <div
-    className='flex items-center justify-center bg-neutral-50 rounded-full w-[30px] h-[30px] transition-all duration-300 
+const IconWithTooltip: React.FC<IconWithToolTipProps> = ({ IconComponent, popoverText }) => (
+  <Popover>
+    <PopoverTrigger asChild>
+      <div
+        className='flex items-center justify-center bg-neutral-50 rounded-full w-[30px] h-[30px] transition-all duration-300 
       text-black hover:bg-neutral-200'
-    title={tooltip}
-  >
-    <IconComponent className='w-[15px] h-[15px]' />
-  </div>
+      >
+        <IconComponent className='w-[15px] h-[15px]' />
+      </div>
+    </PopoverTrigger>
+    <PopoverContent className="w-full px-2 py-1" side='top' align='center'>
+      <span className='text-[12px]'>
+        {popoverText}
+      </span>
+    </PopoverContent>
+  </Popover>
 );
 
 export { Filters, CampaignCards }
