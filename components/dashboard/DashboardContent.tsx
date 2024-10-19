@@ -1,14 +1,12 @@
 "use client";
 
 import { dummyDashboardCardData, dummyLastCompletedData, dummyTopInfluencerData } from "@/data/dashboard";
-import { IconArrowDownRight, IconArrowUpRight, IconSpeakerphone } from "@tabler/icons-react";
+import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
 import Image from "next/image";
 import React from "react";
-import { CampaignsChart, SalesAnalyticsChart } from "./Charts";
-import { calculateChanges } from "@/lib/calculateChanges";
+import { calculateChanges } from "@/lib/utils";
 import { MapPin } from "lucide-react";
 import { DashboardTable } from "./DashboardTable";
-import { Separator } from "../ui/separator";
 
 const StatsCard = () => {
   function updateDashboardData(dataArray: typeof dummyDashboardCardData) {

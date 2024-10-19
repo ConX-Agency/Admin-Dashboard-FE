@@ -7,8 +7,6 @@ export interface Campaign {
     location: string;
     description: string;
     tags: string[];
-    min_influencers: number;
-    max_influencers: number;
     influencers: Influencer[];
     activities_remaining: number;
     start_date: string; // You might want to change this to `Date` if you are handling dates properly.
@@ -42,8 +40,6 @@ export const dummyCampaignsData: Campaign[] = [
             "Event",
             "Korean Culture"
         ],
-        min_influencers: 10,
-        max_influencers: 50,
         influencers: [
             {
                 name: "Faker",
@@ -66,8 +62,6 @@ export const dummyCampaignsData: Campaign[] = [
             "Event",
             "Celebration"
         ],
-        min_influencers: 10,
-        max_influencers: 50,
         influencers: [
             {
                 name: "Atrioc",
@@ -90,8 +84,6 @@ export const dummyCampaignsData: Campaign[] = [
             "Family",
             "Event"
         ],
-        min_influencers: 10,
-        max_influencers: 50,
         influencers: [
             {
                 name: "Caedrel",
@@ -114,8 +106,6 @@ export const dummyCampaignsData: Campaign[] = [
             "Health",
             "Eco-Friendly"
         ],
-        min_influencers: 10,
-        max_influencers: 50,
         influencers: [
             {
                 name: "Sykkuno",
@@ -138,8 +128,6 @@ export const dummyCampaignsData: Campaign[] = [
             "Disability",
             "Social Impact"
         ],
-        min_influencers: 10,
-        max_influencers: 50,
         influencers: [
             {
                 name: "xQc",
@@ -151,3 +139,17 @@ export const dummyCampaignsData: Campaign[] = [
         status: 'Completed'
     },
 ];
+
+export const dummyCountries = [
+    "Japan",
+    "Korea",
+    "United States",
+    "Malaysia"
+]
+
+export const status = [
+    "All",
+    "Active",
+    "Cancelled",
+    "Completed",
+]
