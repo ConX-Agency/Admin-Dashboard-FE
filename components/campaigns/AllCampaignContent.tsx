@@ -1,11 +1,13 @@
-import { CampaignCardsProps, dummyCampaignsData, FiltersProps, IconWithToolTipProps, status } from "@/data/campaign";
-import { Calendar, ChevronDown, Clock, Filter, FilterX, Globe, MapPinned } from "lucide-react";
+import { CampaignCardsProps, dummyCampaignsData, dummyCountries, FiltersProps, IconWithToolTipProps, status, types } from "@/data/campaign";
+import { Calendar as LucideCalendar, ChevronDown, Clock, Filter, FilterX, Globe, MapPinned } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { cn, dateParser, formatURL } from "@/lib/utils";
+import { cn, parseDate, formatURL } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuRadioItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuRadioGroup } from "../ui/dropdown-menu";
+import { Calendar } from "@/components/ui/calendar"
+import { DateRange } from "react-day-picker";
 
 const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   const defaultFilter = {
@@ -13,13 +15,26 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
     type: "All",
     location: "All",
     dateRange: {
-      start: new Date("2024-09-01"),
-      end: new Date("2024-11-30"),
-    },
+      from: new Date(), // Start date is today
+      to: new Date(new Date().setDate(new Date().getDate() + 30)), // End date is 30 days from today
+    } as DateRange,
   };
 
   const [isFiltered, setIsFiltered] = useState(false);
   const [multiFilter, setMultiFilter] = useState(defaultFilter);
+
+  const handleSelect = (date?: DateRange) => {
+    if (date && date.from && date.to) {
+      // Update the multiFilter state with the selected date range
+      setMultiFilter((prev) => ({
+        ...prev,
+        dateRange: {
+          from: date.from,
+          to: date.to,
+        },
+      }));
+    }
+  };
 
   const filterCampaigns = () => {
     const { status, type, location, dateRange } = multiFilter;
@@ -33,12 +48,12 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
       let matchesDateRange = true;
 
       // Apply date range filter
-      if (dateRange.start && dateRange.end) {
-        const campaignStartDate = dateParser(campaign.start_date);
-        const campaignEndDate = dateParser(campaign.end_date);
+      if (dateRange.from && dateRange.to) {
+        const campaignStartDate = parseDate(campaign.dateRange.from);
+        const campaignEndDate = parseDate(campaign.dateRange.to);
 
-        const selectedStartDate = new Date(dateRange.start);
-        const selectedEndDate = new Date(dateRange.end);
+        const selectedStartDate = dateRange.from;
+        const selectedEndDate = dateRange.to;
 
         matchesDateRange =
           (campaignStartDate >= selectedStartDate &&
@@ -74,16 +89,16 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
       multiFilter.status === defaultFilter.status &&
       multiFilter.type === defaultFilter.type &&
       multiFilter.location === defaultFilter.location &&
-      multiFilter.dateRange.start.getTime() === defaultFilter.dateRange.start.getTime() &&
-      multiFilter.dateRange.end.getTime() === defaultFilter.dateRange.end.getTime()
+      multiFilter.dateRange.from === defaultFilter.dateRange.from &&
+      multiFilter.dateRange.to === defaultFilter.dateRange.to
     );
   };
 
   // Apply filter when multiFilter changes
   useEffect(() => {
     if (isDefaultFilter()) {
-      setIsFiltered(false); // Reset isFiltered if multiFilter is default
       onFilterChange(dummyCampaignsData); //Reset to default data
+      setIsFiltered(false); // Reset isFiltered if multiFilter is default
     } else {
       filterCampaigns();
       setIsFiltered(true);  // Set isFiltered to true if filters are applied
@@ -111,7 +126,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
             >
               <Filter className="h-[20px] w-[20px]" />
             </motion.div>
-          )}
+          )}  
           {isFiltered && (
             <motion.div
               initial={{ translateX: -20, opacity: 0 }}
@@ -124,41 +139,104 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
         </Button>
       </AnimatePresence>
 
-      {/* Filter by Status */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+      {/* Filter Status */}
+      <FilterDropdown
+        label="Status"
+        items={status}
+        value={multiFilter.status}
+        onValueChange={(value) => handleFilterChange("status", value)}
+        minWidth="105px"
+      />
+
+      {/* Filter Location */}
+      <FilterDropdown
+        label="Location"
+        items={dummyCountries}
+        value={multiFilter.location}
+        onValueChange={(value) => handleFilterChange("location", value)}
+        minWidth="126px"
+      />
+
+      {/* Filter Type */}
+      <FilterDropdown
+        label="Type"
+        items={types}
+        value={multiFilter.type}
+        onValueChange={(value) => handleFilterChange("type", value)}
+        minWidth="115px"
+      />
+
+      {/* Filter by Date */}
+      <Popover>
+        <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="h-[40px] min-w-[105px] p-2 flex justify-between items-center"
+            className="h-[40px] min-w-[190px] p-2 flex justify-between items-center"
           >
-            <span>{multiFilter.status}</span>
-            <ChevronDown className="h-[20px] w-[20px] ml-1" />
+            <span>
+              {multiFilter.dateRange.from!.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })} 
+              <span> - </span> 
+              {multiFilter.dateRange.to!.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })}
+            </span>
+            <LucideCalendar className="h-[20px] w-[20px] ml-1" />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-max">
-          <DropdownMenuRadioGroup value={multiFilter.status} onValueChange={(value) => handleFilterChange('status', value)}>
-            {status.map((data, idx) => (
-              <DropdownMenuRadioItem value={data} key={idx}>{data}</DropdownMenuRadioItem>
-            ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      {/* Filter by Location */}
-      <Button
-        variant="outline"
-        className="h-[40px] min-w-[126px] p-2 flex justify-between items-center"
-        onClick={() => handleFilterChange("location", "United States")}
-      >
-        <span>{multiFilter.location}</span>
-        <ChevronDown className="h-[20px] w-[20px] ml-1" />
-      </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="range"
+            selected={multiFilter.dateRange} // Ensure this is correctly structured as { from: Date, to: Date }
+            onSelect={handleSelect}
+            className="rounded-md border"
+            />
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };
 
 
-const FilterWithDropDown = () => {};
+const FilterDropdown = ({
+  label,
+  items,
+  value,
+  onValueChange,
+  minWidth,
+}: {
+  label: string;
+  items: string[];
+  value: string;
+  onValueChange: (value: string) => void;
+  minWidth: string;
+}) => (
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button
+        variant="outline"
+        className={`h-[40px] min-w-[${minWidth}] p-2 flex justify-between items-center`}
+      >
+        <span>{value}</span>
+        <ChevronDown className="h-[20px] w-[20px] ml-1" />
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent className="w-max">
+      <DropdownMenuRadioGroup value={value} onValueChange={onValueChange}>
+        {items.map((item, idx) => (
+          <DropdownMenuRadioItem value={item} key={idx}>
+            {item}
+          </DropdownMenuRadioItem>
+        ))}
+      </DropdownMenuRadioGroup>
+    </DropdownMenuContent>
+  </DropdownMenu>
+);
 
 const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
   const scrollRefs = useRef<(HTMLDivElement | null)[]>([]); // Store refs in an array
@@ -248,7 +326,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
                 Due Date
               </span>
               <span className="text-[14px] text-neutral-50">
-                {data.end_date}
+                {data.dateRange.to}
               </span>
             </div>
             <div className="flex flex-row flex-nowrap gap-2 justify-end items-center">
@@ -257,8 +335,8 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
                 popoverText={data.location}
               />
               <IconWithTooltip
-                IconComponent={Calendar}
-                popoverText={`${data.start_date} - ${data.end_date}`}
+                IconComponent={LucideCalendar}
+                popoverText={`${data.dateRange.from} - ${data.dateRange.to}`}
               />
               <IconWithTooltip
                 IconComponent={Globe}

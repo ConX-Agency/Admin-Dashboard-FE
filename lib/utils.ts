@@ -5,10 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const dateParser = (dateString: string) => {
-  const [day, month, year] = dateString.split("/"); // Split the string into [day, month, year]
-  return new Date(`${year}-${month}-${day}`); // Return a new Date object in the correct format (YYYY-MM-DD)
-}
+export const parseDate = (dateString: string) => {
+  const [day, month, year] = dateString.split("/").map(Number); // Split "14/10/2024" into [14, 10, 2024]
+  return new Date(year, month, day); // Months are 0-indexed in JavaScript's Date object
+};
 
 export function calculateChanges(previous: string | number, current: string | number): string {
   // Convert percentage strings to numbers
