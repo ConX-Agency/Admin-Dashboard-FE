@@ -145,7 +145,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
         items={status}
         value={multiFilter.status}
         onValueChange={(value) => handleFilterChange("status", value)}
-        minWidth="105px"
+        minWidth="min-w-[105px]"
       />
 
       {/* Filter Location */}
@@ -154,7 +154,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
         items={dummyCountries}
         value={multiFilter.location}
         onValueChange={(value) => handleFilterChange("location", value)}
-        minWidth="126px"
+        minWidth="min-w-[126px]"
       />
 
       {/* Filter Type */}
@@ -163,7 +163,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
         items={types}
         value={multiFilter.type}
         onValueChange={(value) => handleFilterChange("type", value)}
-        minWidth="115px"
+        minWidth="min-w-[115px]"
       />
 
       {/* Filter by Date */}
@@ -220,7 +220,7 @@ const FilterDropdown = ({
     <DropdownMenuTrigger asChild>
       <Button
         variant="outline"
-        className={`h-[40px] min-w-[${minWidth}] p-2 flex justify-between items-center`}
+        className={`h-[40px] ${minWidth} p-2 flex justify-between items-center`}
       >
         <span>{value}</span>
         <ChevronDown className="h-[20px] w-[20px] ml-1" />
@@ -344,7 +344,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
               />
               <IconWithTooltip
                 IconComponent={Clock}
-                popoverText={`${data.activities_remaining} Activities Left`}
+                popoverText={`${data.services.length} Activities Left`}
               />
             </div>
           </div>
