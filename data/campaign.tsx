@@ -1,21 +1,29 @@
 import { Influencer } from "./influencer";
 
 export interface Services {
-  type: "Instagram" | "RED Pos" | "TikTok" | "Google Review";
-  task_description: string;
+  platform: "Instagram" | "RED" | "TikTok" | "Google Review";
   assigned_influencer: string;
   assigned_date: string;
   due_date: string;
   status: "Active" | "Cancelled" | "Completed";
 }
 
+export interface Offering {
+  offering_type: string;
+  offering_description: string;
+  featured_food: string;
+  maximum_pax: number;
+}
+
 export interface Campaign {
   id: string;
-  campaign: string;
-  name: string;
+  campaign_name: string;
+  campaign_description: string;
+  campaign_key_messages: string;
+  organizer: string;
   location: string;
-  description: string;
   tags: string[];
+  offering: Offering;
   influencers: Influencer[];
   services: Services[];
   dateRange: {
@@ -50,11 +58,18 @@ export interface Offerings {
 export const dummyCampaignsData: Campaign[] = [
   {
     id: "m5gr84i9",
-    campaign: "80th Korean Independence Day",
-    name: "SKT T1 Cafe & Arena",
+    campaign_name: "80th Korean Independence Day",
+    campaign_description: "T1 to celebrate the 80th Korea's Independence Day occasion.",
+    campaign_key_messages: "Celebrate Korea's 80th Independece Day with the T1's ZOFGK members and get a chance to meet Faker!",
+    organizer: "SKT T1 Cafe & Arena",
     location: "Busan, Korea",
-    description: "To celebrate Korea's 80th Independence Day with Faker!",
     tags: ["Cafe", "Independence Day", "Event", "Korean Culture"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "10000₩ Food Credit",
+      featured_food: "Limited Edition One Piece Honey Toast Set",
+      maximum_pax: 2
+    },
     influencers: [
       {
         name: "Faker",
@@ -62,43 +77,38 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
-        type: "Instagram",
-        task_description: "Post a story about the new autumn collection",
+        platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "2024-10-01",
-        due_date: "2024-10-05",
+        due_date: "15/10/2024",
         status: "Active"
       },
       {
-        type: "TikTok",
-        task_description: "Create a fun, engaging video featuring our restaurant's signature dish",
+        platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "2024-09-28",
-        due_date: "2024-10-10",
+        due_date: "16/10/2024",
         status: "Completed"
       },
       {
-        type: "Google Review",
-        task_description: "Leave a detailed review of the new branch opening experience",
+        platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "2024-10-02",
-        due_date: "2024-10-07",
+        due_date: "17/10/2024",
         status: "Cancelled"
       },
       {
-        type: "RED Pos",
-        task_description: "Create a post on RED featuring our limited-time dessert menu",
+        platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "2024-10-03",
-        due_date: "2024-10-15",
+        due_date: "18/10/2024",
         status: "Active"
       },
       {
-        type: "Instagram",
-        task_description: "Share a carousel post highlighting our seasonal specials",
+        platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "2024-09-30",
-        due_date: "2024-10-12",
+        due_date: "19/10/2024",
         status: "Completed"
       }
     ],
@@ -110,11 +120,18 @@ export const dummyCampaignsData: Campaign[] = [
   },
   {
     id: "3u1reuv4",
-    campaign: "Summer Fiesta",
-    name: "Honey Toast Cafe Akihabara",
+    campaign_name: "One Piece Summer Fiesta",
+    campaign_description: "A collaboration with One Piece to celebrate the summers.",
+    campaign_key_messages: "Time to chill out during the summers with One Piece!",
+    organizer: "Honey Toast Cafe Akihabara",
     location: "Tokyo, Japan",
-    description: "Time to chill out at Akihabara for the summers!",
     tags: ["Cafe", "Summer", "Event", "Celebration"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "1000¥ Food Credit",
+      featured_food: "Limited Edition One Piece Honey Toast Set",
+      maximum_pax: 2
+    },
     influencers: [
       {
         name: "Atrioc",
@@ -122,43 +139,38 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
-        type: "Instagram",
-        task_description: "Post a story about the new autumn collection",
+        platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "2024-10-01",
-        due_date: "2024-10-05",
+        due_date: "15/10/2024",
         status: "Active"
       },
       {
-        type: "TikTok",
-        task_description: "Create a fun, engaging video featuring our restaurant's signature dish",
+        platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "2024-09-28",
-        due_date: "2024-10-10",
+        due_date: "16/10/2024",
         status: "Completed"
       },
       {
-        type: "Google Review",
-        task_description: "Leave a detailed review of the new branch opening experience",
+        platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "2024-10-02",
-        due_date: "2024-10-07",
+        due_date: "17/10/2024",
         status: "Cancelled"
       },
       {
-        type: "RED Pos",
-        task_description: "Create a post on RED featuring our limited-time dessert menu",
+        platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "2024-10-03",
-        due_date: "2024-10-15",
+        due_date: "18/10/2024",
         status: "Active"
       },
       {
-        type: "Instagram",
-        task_description: "Share a carousel post highlighting our seasonal specials",
+        platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "2024-09-30",
-        due_date: "2024-10-12",
+        due_date: "19/10/2024",
         status: "Completed"
       }
     ],
@@ -170,11 +182,18 @@ export const dummyCampaignsData: Campaign[] = [
   },
   {
     id: "derv1ws0",
-    campaign: "Children's Day",
-    name: "St. Elmo Steak House",
+    campaign_name: "Children's Day",
+    campaign_description: "To allow parents to celebrate children's day with their children.",
+    campaign_key_messages: "Eat as much as you want for Children's Day!",
+    organizer: "St. Elmo Steak House",
     location: "Indiana, United States",
-    description: "Eat as much as you want for Children's Day!",
     tags: ["Restaurant", "Children's Day", "Family", "Event"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "RM5 Food Credit",
+      featured_food: "Children's Day Specials Beef Steak",
+      maximum_pax: 5
+    },
     influencers: [
       {
         name: "Caedrel",
@@ -182,43 +201,38 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
-        type: "Instagram",
-        task_description: "Post a story about the new autumn collection",
+        platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "2024-10-01",
-        due_date: "2024-10-05",
+        due_date: "15/10/2024",
         status: "Active"
       },
       {
-        type: "TikTok",
-        task_description: "Create a fun, engaging video featuring our restaurant's signature dish",
+        platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "2024-09-28",
-        due_date: "2024-10-10",
+        due_date: "16/10/2024",
         status: "Completed"
       },
       {
-        type: "Google Review",
-        task_description: "Leave a detailed review of the new branch opening experience",
+        platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "2024-10-02",
-        due_date: "2024-10-07",
+        due_date: "17/10/2024",
         status: "Cancelled"
       },
       {
-        type: "RED Pos",
-        task_description: "Create a post on RED featuring our limited-time dessert menu",
+        platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "2024-10-03",
-        due_date: "2024-10-15",
+        due_date: "18/10/2024",
         status: "Active"
       },
       {
-        type: "Instagram",
-        task_description: "Share a carousel post highlighting our seasonal specials",
+        platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "2024-09-30",
-        due_date: "2024-10-12",
+        due_date: "19/10/2024",
         status: "Completed"
       }
     ],
@@ -230,11 +244,18 @@ export const dummyCampaignsData: Campaign[] = [
   },
   {
     id: "5kma53ae",
-    campaign: "Go Green",
-    name: "Real Food",
+    campaign_name: "Go Green",
+    campaign_description: "Have some real food for once and enjoy the green scenery!",
+    campaign_key_messages: "Have some real food for once and enjoy the green scenery!",
+    organizer: "Real Food",
     location: "Kuala Lumpur, Malaysia",
-    description: "Have some real food for once and enjoy the green scenery!",
     tags: ["Restaurant", "Sustainability", "Health", "Eco-Friendly"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "RM10 Food Credit",
+      featured_food: "Japanese-Malaysian Fusion Salmon & Chicken Fresh Salad",
+      maximum_pax: 1
+    },
     influencers: [
       {
         name: "Sykkuno",
@@ -242,43 +263,38 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
-        type: "Instagram",
-        task_description: "Post a story about the new autumn collection",
+        platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "2024-10-01",
-        due_date: "2024-10-05",
+        due_date: "15/10/2024",
         status: "Active"
       },
       {
-        type: "TikTok",
-        task_description: "Create a fun, engaging video featuring our restaurant's signature dish",
+        platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "2024-09-28",
-        due_date: "2024-10-10",
+        due_date: "16/10/2024",
         status: "Completed"
       },
       {
-        type: "Google Review",
-        task_description: "Leave a detailed review of the new branch opening experience",
+        platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "2024-10-02",
-        due_date: "2024-10-07",
+        due_date: "17/10/2024",
         status: "Cancelled"
       },
       {
-        type: "RED Pos",
-        task_description: "Create a post on RED featuring our limited-time dessert menu",
+        platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "2024-10-03",
-        due_date: "2024-10-15",
+        due_date: "18/10/2024",
         status: "Active"
       },
       {
-        type: "Instagram",
-        task_description: "Share a carousel post highlighting our seasonal specials",
+        platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "2024-09-30",
-        due_date: "2024-10-12",
+        due_date: "19/10/2024",
         status: "Completed"
       }
     ],
@@ -290,11 +306,18 @@ export const dummyCampaignsData: Campaign[] = [
   },
   {
     id: "bhqecj4p",
-    campaign: "PWD Awareness",
-    name: "Stand Pie Me Cafe",
+    campaign_name: "PWD Awareness",
+    campaign_description: "A campaign to promote awareness for Person with Disabilities (PWD) and their capabilities to contribute to society",
+    campaign_key_messages: "Fill yourself up with our delicious pie while also contributing to social issues, a win-win!",
+    organizer: "Stand Pie Me Cafe",
     location: "Petaling Jaya, Malaysia",
-    description: "Fill yourself up with our delicious pie while also contributing to social issues, a win-win!",
     tags: ["Cafe", "Awareness", "Disability", "Social Impact"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "RM3 Food Credit",
+      featured_food: "",
+      maximum_pax: 1
+    },
     influencers: [
       {
         name: "xQc",
@@ -302,43 +325,38 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
-        type: "Instagram",
-        task_description: "Post a story about the new autumn collection",
+        platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "2024-10-01",
-        due_date: "2024-10-05",
+        due_date: "15/10/2024",
         status: "Active"
       },
       {
-        type: "TikTok",
-        task_description: "Create a fun, engaging video featuring our restaurant's signature dish",
+        platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "2024-09-28",
-        due_date: "2024-10-10",
+        due_date: "16/10/2024",
         status: "Completed"
       },
       {
-        type: "Google Review",
-        task_description: "Leave a detailed review of the new branch opening experience",
+        platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "2024-10-02",
-        due_date: "2024-10-07",
+        due_date: "17/10/2024",
         status: "Cancelled"
       },
       {
-        type: "RED Pos",
-        task_description: "Create a post on RED featuring our limited-time dessert menu",
+        platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "2024-10-03",
-        due_date: "2024-10-15",
+        due_date: "18/10/2024",
         status: "Active"
       },
       {
-        type: "Instagram",
-        task_description: "Share a carousel post highlighting our seasonal specials",
+        platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "2024-09-30",
-        due_date: "2024-10-12",
+        due_date: "19/10/2024",
         status: "Completed"
       }
     ],

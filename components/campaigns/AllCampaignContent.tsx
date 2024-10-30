@@ -277,18 +277,18 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
           className="shadow-md rounded-md cursor-pointer group bg-neutral-50 hover:bg-neutral-200/25 dark:bg-neutral-800 
           dark:hover:bg-neutral-700 transition-all duration-300 relative max-h-[300px]"
           key={data.id}
-          onClick={() => directToCampaign(data.campaign)}
+          onClick={() => directToCampaign(data.campaign_name)}
         >
           <div className="pt-3 px-3 w-full text-ellipsis text-nowrap overflow-hidden">
             <span
               className="font-semibold text-[17px] text-black hover:text-black/50
               transition-all duration-300 dark:text-white dark:hover:text-white/75"
-              title={data.campaign}
+              title={data.campaign_name}
             >
-              {data.campaign}
+              {data.campaign_name}
             </span>
             <div className="w-full">
-              <span className="text-[12px]">{data.name}</span>
+              <span className="text-[12px]">{data.organizer}</span>
             </div>
           </div>
           {/* Tags */}

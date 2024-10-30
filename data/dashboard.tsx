@@ -106,7 +106,7 @@ export const dummyTopInfluencerData = [
 
 export type Activity = {
     id: string;
-    type: "Instagram" | "TikTok" | "RED Pos" | "Google Review";
+    type: "Instagram" | "TikTok" | "RED" | "Google Review";
     quantity: number;
     campaign: string;
     influencer: string;
@@ -140,7 +140,7 @@ export const dummyPendingActivitiesData: Activity[] = [
     },
     {
         id: "5kma53ae",
-        type: "RED Pos",
+        type: "RED",
         quantity: 2,
         campaign: "Korean 80th Independence Day",
         influencer: "Faker",
