@@ -8,6 +8,7 @@ import { cn, parseDate, formatURL } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuRadioItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuRadioGroup } from "../ui/dropdown-menu";
 import { Calendar } from "@/components/ui/calendar"
 import { DateRange } from "react-day-picker";
+import { useRouter } from 'next/navigation';
 
 const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   const defaultFilter = {
@@ -202,7 +203,6 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   );
 };
 
-
 const FilterDropdown = ({
   label,
   items,
@@ -240,6 +240,7 @@ const FilterDropdown = ({
 
 const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
   const scrollRefs = useRef<(HTMLDivElement | null)[]>([]); // Store refs in an array
+  const router = useRouter();
 
   const handleWheel = (e: React.WheelEvent, index: number) => {
     if (scrollRefs.current[index]) {
@@ -267,7 +268,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
   };
 
   function directToCampaign(campaign: string) {
-    console.log(formatURL(campaign));
+    router.push(`/campaigns/campaign-details?name=${campaign}`);
   }
 
   return (
@@ -293,7 +294,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
           </div>
           {/* Tags */}
           <div
-            className="mt-6 flex flex-row flex-nowrap w-full px-3 gap-2 overflow-x-scroll scroll-smooth scrollbar-hide"
+            className="mt-6 flex flex-row flex-nowrap w-full px-3 gap-2 overflow-x-scroll scroll-smooth scrollbar-hide cursor-default"
             ref={(el) => {
               scrollRefs.current[idx] = el;
             }}
@@ -303,8 +304,8 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
               className={cn(
                 "rounded-3xl px-2 py-[2px] text-black dark:text-white text-[13px] text-nowrap font-bold tracking-[0.5px]",
                 data.status === "Active" && "bg-yellow-400 dark:bg-yellow-600",
-                data.status === "Cancelled" && "bg-red-500",
-                data.status === "Completed" && "bg-green-500"
+                data.status === "Cancelled" && "bg-red-400 dark:bg-red-500",
+                data.status === "Completed" && "bg-green-400 dark:bg-green-500"
               )}
             >
               {data.status}
