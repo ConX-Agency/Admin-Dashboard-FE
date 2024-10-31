@@ -7,7 +7,8 @@ import {
     CommandGroup,
     CommandItem
 } from '@/components/ui/command';
-import { IconSearch } from "@tabler/icons-react";
+import { IconGps } from "@tabler/icons-react";
+import { Button } from '../ui/button';
 
 interface SearchProps {
     open: boolean;
@@ -23,27 +24,27 @@ const SearchBox: React.FC<SearchProps> = ({ open, onOpenChange }) => {
     return (
         <div>
             {/* Desktop Clickable search element */}
-            <div
+            {/* <div
                 className="border border-neutral-300 dark:border-neutral-600 rounded-md p-2 py-1 w-max 
                 flex flex-row cursor-pointer items-center dark:bg-neutral-800 bg-neutral-100 lg:flex xxxs:hidden"
                 onClick={toggleSearch}
             >
-                <IconSearch className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
+                <IconGps className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
                 <span className="ml-3 text-[14px] text-black dark:text-white">Search Anything Here...</span>
                 <span className="ml-4 flex flex-row text-[12px] px-2 py-1 border bg-neutral-200 dark:bg-neutral-700 rounded-sm 
                 text-black dark:text-white">
                     ⌘K
                 </span>
-            </div>
+            </div> */}
 
             {/* Mobile Clickable search element */}
-            <div
+            <Button variant="ghost" size="icon"
                 className="flex flex-row cursor-pointer items-center 
-                    xxxs:flex lg:hidden h-[36px] w-[36px] justify-center"
+                    xxxs:flex justify-center dark:hover:bg-neutral-700 xxxs:mr-0 lg:mr-2"
                 onClick={toggleSearch}
             >
-                <IconSearch className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
-            </div>
+                <IconGps className="text-black dark:text-white h-[20px] w-[20px] flex-shrink-0" />
+            </Button>
 
             {/* Search dialog */}
             <CommandDialog open={open} onOpenChange={onOpenChange}>

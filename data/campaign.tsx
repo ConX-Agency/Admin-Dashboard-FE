@@ -1,14 +1,31 @@
 import { Influencer } from "./influencer";
 
+export interface Services {
+  platform: "Instagram" | "RED" | "TikTok" | "Google Review";
+  assigned_influencer: string;
+  assigned_date: string;
+  due_date: string;
+  status: "Active" | "Cancelled" | "Completed";
+}
+
+export interface Offering {
+  offering_type: string;
+  offering_description: string;
+  featured_food: string;
+  maximum_pax: number;
+}
+
 export interface Campaign {
   id: string;
-  campaign: string;
-  name: string;
+  campaign_name: string;
+  campaign_description: string;
+  campaign_key_messages: string;
+  organizer: string;
   location: string;
-  description: string;
   tags: string[];
+  offering: Offering;
   influencers: Influencer[];
-  activities_remaining: number;
+  services: Services[];
   dateRange: {
     from: string,
     to: string
@@ -34,99 +51,318 @@ export interface DateRange {
   to?: Date | undefined;
 }
 
+export interface Offerings {
+  
+}
+
 export const dummyCampaignsData: Campaign[] = [
   {
     id: "m5gr84i9",
-    campaign: "80th Korean Independence Day",
-    name: "SKT T1 Cafe & Arena",
+    campaign_name: "80th Korean Independence Day",
+    campaign_description: "T1 to celebrate the 80th Korea's Independence Day occasion.",
+    campaign_key_messages: "Celebrate Korea's 80th Independece Day with the T1's ZOFGK members and get a chance to meet Faker!",
+    organizer: "SKT T1 Cafe & Arena",
     location: "Busan, Korea",
-    description: "",
     tags: ["Cafe", "Independence Day", "Event", "Korean Culture"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "10000₩ Food Credit",
+      featured_food: "Limited Edition One Piece Honey Toast Set",
+      maximum_pax: 2
+    },
     influencers: [
       {
         name: "Faker",
       },
     ],
-    activities_remaining: 10,
+    services: [
+      {
+        platform: "Instagram",
+        assigned_influencer: "Alice Brown",
+        assigned_date: "2024-10-01",
+        due_date: "15/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "TikTok",
+        assigned_influencer: "John Doe",
+        assigned_date: "2024-09-28",
+        due_date: "16/10/2024",
+        status: "Completed"
+      },
+      {
+        platform: "Google Review",
+        assigned_influencer: "Emma Wang",
+        assigned_date: "2024-10-02",
+        due_date: "17/10/2024",
+        status: "Cancelled"
+      },
+      {
+        platform: "RED",
+        assigned_influencer: "Liam Smith",
+        assigned_date: "2024-10-03",
+        due_date: "18/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "Instagram",
+        assigned_influencer: "Sophia Lee",
+        assigned_date: "2024-09-30",
+        due_date: "19/10/2024",
+        status: "Completed"
+      }
+    ],
     dateRange: {
-        from: "14/10/2024",
-        to: "14/11/2024",
+      from: "14/10/2024",
+      to: "14/11/2024",
     },
     status: "Active",
   },
   {
     id: "3u1reuv4",
-    campaign: "Summer Fiesta",
-    name: "Honey Toast Cafe Akihabara",
+    campaign_name: "One Piece Summer Fiesta",
+    campaign_description: "A collaboration with One Piece to celebrate the summers.",
+    campaign_key_messages: "Time to chill out during the summers with One Piece!",
+    organizer: "Honey Toast Cafe Akihabara",
     location: "Tokyo, Japan",
-    description: "",
     tags: ["Cafe", "Summer", "Event", "Celebration"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "1000¥ Food Credit",
+      featured_food: "Limited Edition One Piece Honey Toast Set",
+      maximum_pax: 2
+    },
     influencers: [
       {
         name: "Atrioc",
       },
     ],
-    activities_remaining: 10,
+    services: [
+      {
+        platform: "Instagram",
+        assigned_influencer: "Alice Brown",
+        assigned_date: "2024-10-01",
+        due_date: "15/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "TikTok",
+        assigned_influencer: "John Doe",
+        assigned_date: "2024-09-28",
+        due_date: "16/10/2024",
+        status: "Completed"
+      },
+      {
+        platform: "Google Review",
+        assigned_influencer: "Emma Wang",
+        assigned_date: "2024-10-02",
+        due_date: "17/10/2024",
+        status: "Cancelled"
+      },
+      {
+        platform: "RED",
+        assigned_influencer: "Liam Smith",
+        assigned_date: "2024-10-03",
+        due_date: "18/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "Instagram",
+        assigned_influencer: "Sophia Lee",
+        assigned_date: "2024-09-30",
+        due_date: "19/10/2024",
+        status: "Completed"
+      }
+    ],
     dateRange: {
-        from: "15/10/2024",
-        to: "15/11/2024",
+      from: "15/10/2024",
+      to: "15/11/2024",
     },
     status: "Cancelled",
   },
   {
     id: "derv1ws0",
-    campaign: "Children's Day",
-    name: "St. Elmo Steak House",
+    campaign_name: "Children's Day",
+    campaign_description: "To allow parents to celebrate children's day with their children.",
+    campaign_key_messages: "Eat as much as you want for Children's Day!",
+    organizer: "St. Elmo Steak House",
     location: "Indiana, United States",
-    description: "",
     tags: ["Restaurant", "Children's Day", "Family", "Event"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "RM5 Food Credit",
+      featured_food: "Children's Day Specials Beef Steak",
+      maximum_pax: 5
+    },
     influencers: [
       {
         name: "Caedrel",
       },
     ],
-    activities_remaining: 10,
+    services: [
+      {
+        platform: "Instagram",
+        assigned_influencer: "Alice Brown",
+        assigned_date: "2024-10-01",
+        due_date: "15/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "TikTok",
+        assigned_influencer: "John Doe",
+        assigned_date: "2024-09-28",
+        due_date: "16/10/2024",
+        status: "Completed"
+      },
+      {
+        platform: "Google Review",
+        assigned_influencer: "Emma Wang",
+        assigned_date: "2024-10-02",
+        due_date: "17/10/2024",
+        status: "Cancelled"
+      },
+      {
+        platform: "RED",
+        assigned_influencer: "Liam Smith",
+        assigned_date: "2024-10-03",
+        due_date: "18/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "Instagram",
+        assigned_influencer: "Sophia Lee",
+        assigned_date: "2024-09-30",
+        due_date: "19/10/2024",
+        status: "Completed"
+      }
+    ],
     dateRange: {
-        from: "16/10/2024",
-        to: "16/11/2024",
+      from: "16/10/2024",
+      to: "16/11/2024",
     },
     status: "Active",
   },
   {
     id: "5kma53ae",
-    campaign: "Go Green",
-    name: "Real Food",
+    campaign_name: "Go Green",
+    campaign_description: "Have some real food for once and enjoy the green scenery!",
+    campaign_key_messages: "Have some real food for once and enjoy the green scenery!",
+    organizer: "Real Food",
     location: "Kuala Lumpur, Malaysia",
-    description: "",
     tags: ["Restaurant", "Sustainability", "Health", "Eco-Friendly"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "RM10 Food Credit",
+      featured_food: "Japanese-Malaysian Fusion Salmon & Chicken Fresh Salad",
+      maximum_pax: 1
+    },
     influencers: [
       {
         name: "Sykkuno",
       },
     ],
-    activities_remaining: 10,
+    services: [
+      {
+        platform: "Instagram",
+        assigned_influencer: "Alice Brown",
+        assigned_date: "2024-10-01",
+        due_date: "15/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "TikTok",
+        assigned_influencer: "John Doe",
+        assigned_date: "2024-09-28",
+        due_date: "16/10/2024",
+        status: "Completed"
+      },
+      {
+        platform: "Google Review",
+        assigned_influencer: "Emma Wang",
+        assigned_date: "2024-10-02",
+        due_date: "17/10/2024",
+        status: "Cancelled"
+      },
+      {
+        platform: "RED",
+        assigned_influencer: "Liam Smith",
+        assigned_date: "2024-10-03",
+        due_date: "18/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "Instagram",
+        assigned_influencer: "Sophia Lee",
+        assigned_date: "2024-09-30",
+        due_date: "19/10/2024",
+        status: "Completed"
+      }
+    ],
     dateRange: {
-        from: "17/10/2024",
-        to: "17/11/2024",
+      from: "17/10/2024",
+      to: "17/11/2024",
     },
     status: "Active",
   },
   {
     id: "bhqecj4p",
-    campaign: "PWD Awareness",
-    name: "Stand Pie Me Cafe",
+    campaign_name: "PWD Awareness",
+    campaign_description: "A campaign to promote awareness for Person with Disabilities (PWD) and their capabilities to contribute to society",
+    campaign_key_messages: "Fill yourself up with our delicious pie while also contributing to social issues, a win-win!",
+    organizer: "Stand Pie Me Cafe",
     location: "Petaling Jaya, Malaysia",
-    description: "",
     tags: ["Cafe", "Awareness", "Disability", "Social Impact"],
+    offering: {
+      offering_type: "Food Credit",
+      offering_description: "RM3 Food Credit",
+      featured_food: "",
+      maximum_pax: 1
+    },
     influencers: [
       {
         name: "xQc",
       },
     ],
-    activities_remaining: 10,
+    services: [
+      {
+        platform: "Instagram",
+        assigned_influencer: "Alice Brown",
+        assigned_date: "2024-10-01",
+        due_date: "15/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "TikTok",
+        assigned_influencer: "John Doe",
+        assigned_date: "2024-09-28",
+        due_date: "16/10/2024",
+        status: "Completed"
+      },
+      {
+        platform: "Google Review",
+        assigned_influencer: "Emma Wang",
+        assigned_date: "2024-10-02",
+        due_date: "17/10/2024",
+        status: "Cancelled"
+      },
+      {
+        platform: "RED",
+        assigned_influencer: "Liam Smith",
+        assigned_date: "2024-10-03",
+        due_date: "18/10/2024",
+        status: "Active"
+      },
+      {
+        platform: "Instagram",
+        assigned_influencer: "Sophia Lee",
+        assigned_date: "2024-09-30",
+        due_date: "19/10/2024",
+        status: "Completed"
+      }
+    ],
     dateRange: {
-        from: "18/10/2024",
-        to: "18/11/2024",
+      from: "18/10/2024",
+      to: "18/11/2024",
     },
     status: "Completed",
   },

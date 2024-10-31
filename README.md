@@ -50,3 +50,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Issues Faced
 1. [Chart Issues](https://github.com/shadcn-ui/ui/issues/4231)
 2. 
+
+## Graphics Resources Used
+1. https://tabler.io/icons
+2. https://lucide.dev/icons/
+3. https://brandfetch.com/
