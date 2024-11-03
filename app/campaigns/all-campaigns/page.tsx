@@ -1,17 +1,10 @@
 "use client"
 
-import { CampaignCards, Filters } from "@/components/campaigns/AllCampaignContent";
+import { AllCampaignContent } from "@/components/campaigns/AllCampaignContent";
 import { Separator } from "@/components/ui/separator";
-import { Campaign, dummyCampaignsData } from "@/data/campaign";
-import React, { useState } from "react";
+import React from "react";
 
 const AllCampaigns = () => {
-  const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
-
-  // Function to update filtered campaigns
-  const handleFilterChange = (filteredData: Campaign[]) => {
-    setFilteredCampaignData(filteredData);
-  };
 
   return (
     <>
@@ -19,8 +12,7 @@ const AllCampaigns = () => {
         <h1 className="text-3xl font-semibold items-center">All Campaigns</h1>
       </div>
       <Separator className="mt-0 mb-0" />
-      <Filters onFilterChange={handleFilterChange} />
-      <CampaignCards campaigns={filteredCampaignData} />
+      <AllCampaignContent />
     </>
   );
 };

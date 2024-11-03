@@ -51,9 +51,21 @@ export interface DateRange {
   to?: Date | undefined;
 }
 
-export interface Offerings {
-  
-}
+export const monthRanges: { [key: string]: { from: Date; to: Date } } = {
+  January: { from: new Date(new Date().getFullYear(), 0, 1), to: new Date(new Date().getFullYear(), 0, 31) },
+  February: { from: new Date(new Date().getFullYear(), 1, 1), to: new Date(new Date().getFullYear(), 1, 29) },
+  March: { from: new Date(new Date().getFullYear(), 2, 1), to: new Date(new Date().getFullYear(), 2, 31) },
+  April: { from: new Date(new Date().getFullYear(), 3, 1), to: new Date(new Date().getFullYear(), 3, 30) },
+  May: { from: new Date(new Date().getFullYear(), 4, 1), to: new Date(new Date().getFullYear(), 4, 31) },
+  June: { from: new Date(new Date().getFullYear(), 5, 1), to: new Date(new Date().getFullYear(), 5, 30) },
+  July: { from: new Date(new Date().getFullYear(), 6, 1), to: new Date(new Date().getFullYear(), 6, 31) },
+  August: { from: new Date(new Date().getFullYear(), 7, 1), to: new Date(new Date().getFullYear(), 7, 31) },
+  September: { from: new Date(new Date().getFullYear(), 8, 1), to: new Date(new Date().getFullYear(), 8, 30) },
+  October: { from: new Date(new Date().getFullYear(), 9, 1), to: new Date(new Date().getFullYear(), 9, 31) },
+  November: { from: new Date(new Date().getFullYear(), 10, 1), to: new Date(new Date().getFullYear(), 10, 30) },
+  December: { from: new Date(new Date().getFullYear(), 11, 1), to: new Date(new Date().getFullYear(), 11, 31) },
+};
+
 
 export const dummyCampaignsData: Campaign[] = [
   {
@@ -79,36 +91,36 @@ export const dummyCampaignsData: Campaign[] = [
       {
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
-        assigned_date: "2024-10-01",
-        due_date: "15/10/2024",
+        assigned_date: "15/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "TikTok",
         assigned_influencer: "John Doe",
-        assigned_date: "2024-09-28",
-        due_date: "16/10/2024",
+        assigned_date: "16/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       },
       {
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
-        assigned_date: "2024-10-02",
-        due_date: "17/10/2024",
+        assigned_date: "17/10/2024",
+        due_date: "14/11/2024",
         status: "Cancelled"
       },
       {
         platform: "RED",
         assigned_influencer: "Liam Smith",
-        assigned_date: "2024-10-03",
-        due_date: "18/10/2024",
+        assigned_date: "18/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
-        assigned_date: "2024-09-30",
-        due_date: "19/10/2024",
+        assigned_date: "19/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       }
     ],
@@ -141,36 +153,36 @@ export const dummyCampaignsData: Campaign[] = [
       {
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
-        assigned_date: "2024-10-01",
-        due_date: "15/10/2024",
+        assigned_date: "15/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "TikTok",
         assigned_influencer: "John Doe",
-        assigned_date: "2024-09-28",
-        due_date: "16/10/2024",
+        assigned_date: "16/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       },
       {
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
-        assigned_date: "2024-10-02",
-        due_date: "17/10/2024",
+        assigned_date: "17/10/2024",
+        due_date: "14/11/2024",
         status: "Cancelled"
       },
       {
         platform: "RED",
         assigned_influencer: "Liam Smith",
-        assigned_date: "2024-10-03",
-        due_date: "18/10/2024",
+        assigned_date: "18/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
-        assigned_date: "2024-09-30",
-        due_date: "19/10/2024",
+        assigned_date: "19/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       }
     ],
@@ -203,36 +215,36 @@ export const dummyCampaignsData: Campaign[] = [
       {
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
-        assigned_date: "2024-10-01",
-        due_date: "15/10/2024",
+        assigned_date: "15/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "TikTok",
         assigned_influencer: "John Doe",
-        assigned_date: "2024-09-28",
-        due_date: "16/10/2024",
+        assigned_date: "16/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       },
       {
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
-        assigned_date: "2024-10-02",
-        due_date: "17/10/2024",
+        assigned_date: "17/10/2024",
+        due_date: "14/11/2024",
         status: "Cancelled"
       },
       {
         platform: "RED",
         assigned_influencer: "Liam Smith",
-        assigned_date: "2024-10-03",
-        due_date: "18/10/2024",
+        assigned_date: "18/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
-        assigned_date: "2024-09-30",
-        due_date: "19/10/2024",
+        assigned_date: "19/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       }
     ],
@@ -265,36 +277,36 @@ export const dummyCampaignsData: Campaign[] = [
       {
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
-        assigned_date: "2024-10-01",
-        due_date: "15/10/2024",
+        assigned_date: "15/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "TikTok",
         assigned_influencer: "John Doe",
-        assigned_date: "2024-09-28",
-        due_date: "16/10/2024",
+        assigned_date: "16/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       },
       {
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
-        assigned_date: "2024-10-02",
-        due_date: "17/10/2024",
+        assigned_date: "17/10/2024",
+        due_date: "14/11/2024",
         status: "Cancelled"
       },
       {
         platform: "RED",
         assigned_influencer: "Liam Smith",
-        assigned_date: "2024-10-03",
-        due_date: "18/10/2024",
+        assigned_date: "18/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
-        assigned_date: "2024-09-30",
-        due_date: "19/10/2024",
+        assigned_date: "19/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       }
     ],
@@ -327,36 +339,36 @@ export const dummyCampaignsData: Campaign[] = [
       {
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
-        assigned_date: "2024-10-01",
-        due_date: "15/10/2024",
+        assigned_date: "15/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "TikTok",
         assigned_influencer: "John Doe",
-        assigned_date: "2024-09-28",
-        due_date: "16/10/2024",
+        assigned_date: "16/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       },
       {
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
-        assigned_date: "2024-10-02",
-        due_date: "17/10/2024",
+        assigned_date: "17/10/2024",
+        due_date: "14/11/2024",
         status: "Cancelled"
       },
       {
         platform: "RED",
         assigned_influencer: "Liam Smith",
-        assigned_date: "2024-10-03",
-        due_date: "18/10/2024",
+        assigned_date: "18/10/2024",
+        due_date: "14/11/2024",
         status: "Active"
       },
       {
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
-        assigned_date: "2024-09-30",
-        due_date: "19/10/2024",
+        assigned_date: "19/10/2024",
+        due_date: "14/11/2024",
         status: "Completed"
       }
     ],
@@ -393,5 +405,5 @@ export const months = [
   "September",
   "October",
   "November",
-  "December",
+  "December"
 ];

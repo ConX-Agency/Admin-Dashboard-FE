@@ -1,4 +1,4 @@
-import { CampaignCardsProps, dummyCampaignsData, dummyCountries, FiltersProps, IconWithToolTipProps, status, types } from "@/data/campaign";
+import { Campaign, CampaignCardsProps, dummyCampaignsData, dummyCountries, FiltersProps, IconWithToolTipProps, status, types } from "@/data/campaign";
 import { Calendar as LucideCalendar, ChevronDown, Clock, Filter, FilterX, Globe, MapPinned } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -9,6 +9,22 @@ import { DropdownMenu, DropdownMenuRadioItem, DropdownMenuContent, DropdownMenuT
 import { Calendar } from "@/components/ui/calendar"
 import { DateRange } from "react-day-picker";
 import { useRouter } from 'next/navigation';
+
+const AllCampaignContent = () => {
+  const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
+
+  // Function to update filtered campaigns
+  const handleFilterChange = (filteredData: Campaign[]) => {
+    setFilteredCampaignData(filteredData);
+  };
+
+  return (
+    <>
+      <Filters onFilterChange={handleFilterChange} />
+      <CampaignCards campaigns={filteredCampaignData} />
+    </>
+  )
+}
 
 const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   const defaultFilter = {
@@ -278,13 +294,13 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
           className="shadow-md rounded-md cursor-pointer group bg-neutral-50 hover:bg-neutral-200/25 dark:bg-neutral-800 
           dark:hover:bg-neutral-700 transition-all duration-300 relative max-h-[300px]"
           key={data.id}
-          onClick={() => directToCampaign(data.campaign_name)}
         >
           <div className="pt-3 px-3 w-full text-ellipsis text-nowrap overflow-hidden">
             <span
               className="font-semibold text-[17px] text-black hover:text-black/50
               transition-all duration-300 dark:text-white dark:hover:text-white/75"
               title={data.campaign_name}
+              onClick={() => directToCampaign(data.campaign_name)}
             >
               {data.campaign_name}
             </span>
@@ -374,4 +390,4 @@ const IconWithTooltip: React.FC<IconWithToolTipProps> = ({
   </Popover>
 );
 
-export { Filters, CampaignCards };
+export { FilterDropdown, AllCampaignContent };
