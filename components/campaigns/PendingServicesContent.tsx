@@ -111,11 +111,11 @@ const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
 }
 
 const PendingServicesAccordion: React.FC<CampaignCardsProps> = ({ campaigns }) => {
-  console.log(campaigns);
+  const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
 
   const platformIcons = {
     Instagram: {
-      src: "/images/logo/instagram.svg",
+      src: `${basePath}/images/logo/instagram.svg`,
       width: 35,
       height: 35,
       alt: 'instagram.svg',
@@ -123,7 +123,7 @@ const PendingServicesAccordion: React.FC<CampaignCardsProps> = ({ campaigns }) =
       containerClassName: 'bg-white dark:bg-black'
     },
     TikTok: {
-      src: "/images/logo/tiktok.svg",
+      src: `${basePath}/images/logo/tiktok.svg`,
       width: 25,
       height: 25,
       alt: 'tiktok.svg',
@@ -131,7 +131,7 @@ const PendingServicesAccordion: React.FC<CampaignCardsProps> = ({ campaigns }) =
       containerClassName: 'bg-white dark:bg-black'
     },
     "Google Review": {
-      src: "/images/logo/google.svg",
+      src: `${basePath}/images/logo/google.svg`,
       width: 35,
       height: 35,
       alt: 'google.svg',
@@ -139,7 +139,7 @@ const PendingServicesAccordion: React.FC<CampaignCardsProps> = ({ campaigns }) =
       containerClassName: 'bg-white dark:bg-black'
     },
     RED: {
-      src: "/images/logo/red.svg",
+      src: `${basePath}/images/logo/red.svg`,
       width: 35,
       height: 35,
       alt: 'red.svg',
