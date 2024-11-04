@@ -89,12 +89,14 @@ export function Nav() {
 }
 
 export const Logo = () => {
+  const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
+
   return (
     <div
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
       <Image
-        src="/images/logo/logo.png"
+        src={`${basePath}/images/logo/logo.png`}
         className="h-8 w-8 flex-shrink-0 rounded-full invert-0 dark:invert"
         width={50}
         height={50}
@@ -105,12 +107,14 @@ export const Logo = () => {
 };
 
 export const LogoIcon = () => {
+  const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
+
   return (
     <div
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
       <Image
-        src="https://static.vecteezy.com/system/resources/previews/046/853/019/non_2x/twitter-x-black-and-white-logo-transparent-background-free-png.png"
+        src={`${basePath}/images/logo/logo.png`}
         className="h-8 w-8 flex-shrink-0 rounded-full invert-0 dark:invert"
         width={50}
         height={50}
