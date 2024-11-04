@@ -4,8 +4,11 @@ import Image from 'next/image'
 import { Separator } from '../ui/separator'
 import { Campaign, CampaignCardsProps, dummyCampaignsData, FiltersProps, monthRanges, months } from '@/data/campaign'
 import { cn, parseDate } from '@/lib/utils'
-import { IconCircleCheckFilled, IconClockHour2Filled, IconCircleXFilled } from '@tabler/icons-react'
+import { IconCircleCheckFilled, IconClockHour2Filled, IconCircleXFilled, IconSearch, IconArrowUpRight, IconMoodEmpty } from '@tabler/icons-react'
 import { FilterDropdown } from './AllCampaignContent'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Filter, FilterX } from 'lucide-react'
+import { Button } from '../ui/button'
 
 const PendingServicesContent = () => {
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
@@ -17,7 +20,7 @@ const PendingServicesContent = () => {
 
   return (
     <div className='flex flex-col gap-3'>
-      <PendingServicesFilter onFilterChange={handleFilterChange}/>
+      <PendingServicesFilter onFilterChange={handleFilterChange} />
       <PendingServicesAccordion campaigns={filteredCampaignData} />
     </div>
   )
@@ -25,7 +28,6 @@ const PendingServicesContent = () => {
 
 const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
   const defaultFilter = {
-    status: "All",
     month: "All",
     name: ""
   };
@@ -34,31 +36,30 @@ const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
   const [multiFilter, setMultiFilter] = useState(defaultFilter);
 
   const filterCampaigns = () => {
-    const { status, name, month } = multiFilter;
+    const { name, month } = multiFilter;
 
     const filteredData = dummyCampaignsData.filter((campaign) => {
-      let matchesStatus = status === "All" || campaign.status === status;
       let matchesMonth = month === "All";
       let matchesName = name === null || campaign.campaign_name.toLowerCase().includes(name.toLowerCase());
-    
-    // Add month logic
-    if (month !== "All") {
-      const { from, to } = monthRanges[month];
 
-      const campaignStartDate = parseDate(campaign.dateRange.from);
-      const campaignEndDate = parseDate(campaign.dateRange.to);
+      // Add month logic
+      if (month !== "All") {
+        const { from, to } = monthRanges[month];
 
-      // Log campaign details for debugging
-      // console.log(`Campaign: ${campaign.campaign_name}, Status: ${matchesStatus}, Start Date: ${campaignStartDate}, End Date: ${campaignEndDate}, Month: ${month}, From: ${from}, To: ${to}`);
+        const campaignStartDate = parseDate(campaign.dateRange.from);
+        const campaignEndDate = parseDate(campaign.dateRange.to);
 
-      // Check if the campaign's date falls within the month range
-      matchesMonth =
-        (campaignStartDate >= from && campaignStartDate <= to) || // Campaign starts in the month of?
-        (campaignEndDate >= from && campaignEndDate <= to) ||     // Campaign ends in the month of?
-        (campaignStartDate < from && campaignEndDate > to);      // Campaign spans the month
-    }
+        // Log campaign details for debugging
+        // console.log(`Campaign: ${campaign.campaign_name}, Status: ${matchesStatus}, Start Date: ${campaignStartDate}, End Date: ${campaignEndDate}, Month: ${month}, From: ${from}, To: ${to}`);
 
-      return matchesStatus && matchesMonth && matchesName;
+        // Check if the campaign's date falls within the month range
+        matchesMonth =
+          (campaignStartDate >= from && campaignStartDate <= to) || // Campaign starts in the month of?
+          (campaignEndDate >= from && campaignEndDate <= to) ||     // Campaign ends in the month of?
+          (campaignStartDate < from && campaignEndDate > to);      // Campaign spans the month
+      }
+
+      return matchesMonth && matchesName;
     });
 
     onFilterChange(filteredData);
@@ -80,7 +81,6 @@ const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
   // Check if the current filter is the default filter
   const isDefaultFilter = () => {
     return (
-      multiFilter.status === defaultFilter.status &&
       multiFilter.name === defaultFilter.name &&
       multiFilter.month === defaultFilter.month
     );
@@ -98,7 +98,52 @@ const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
   }, [multiFilter]);
 
   return (
-    <div>
+    <div className='flex flex-row gap-1 flex-wrap'>
+      <AnimatePresence>
+        <Button
+          variant={isFiltered ? "outline" : "ghost"}
+          className={cn(
+            `h-[40px] w-[40px] p-2 flex justify-center items-center`,
+            isFiltered
+              ? "cursor-pointer"
+              : "cursor-default hover:bg-transparent"
+          )}
+          onClick={isFiltered ? unfilterCampaigns : undefined}
+        >
+          {!isFiltered && (
+            <motion.div
+              initial={{ translateX: -20, opacity: 0 }}
+              animate={{ translateX: 0, opacity: 1 }}
+              exit={{ translateX: 20, opacity: 0 }}
+            >
+              <Filter className="h-[20px] w-[20px]" />
+            </motion.div>
+          )}
+          {isFiltered && (
+            <motion.div
+              initial={{ translateX: -20, opacity: 0 }}
+              animate={{ translateX: 0, opacity: 1 }}
+              exit={{ translateX: 20, opacity: 0 }}
+            >
+              <FilterX className="h-[20px] w-[20px]" />
+            </motion.div>
+          )}
+        </Button>
+      </AnimatePresence>
+
+      <div className="flex items-center border border-muted rounded-sm w-[230px] bg-neutral-950">
+        <span className="pl-2">
+          {/* Replace with your custom icon */}
+          <IconSearch className="h-4 w-4 text-neutral-400" />
+        </span>
+        <input
+          className="flex-1 border-0 focus-visible:outline-none px-2 py-2 text-[14px] 
+            placeholder-neutral-400 text-neutral-100 bg-neutral-950"
+          value={multiFilter.name}
+          placeholder='Campaign Name Filter'
+          onChange={(event) => handleFilterChange("name", event?.target.value)}
+        />
+      </div>
       <FilterDropdown
         label='Month'
         items={months}
@@ -156,51 +201,62 @@ const PendingServicesAccordion: React.FC<CampaignCardsProps> = ({ campaigns }) =
 
   return (
     <div>
-    <Accordion type="single" collapsible>
-      {campaigns.map(campaign => (
-        <AccordionItem key={campaign.id} value={`item-${campaign.id}`}>
-          <AccordionTrigger>
-            <span className='text-xl font-bold xxxs:text-[16px] xxs:text-[18px] xs:text-[20px]'>
-              {campaign.campaign_name}
-            </span>
-          </AccordionTrigger>
-          <AccordionContent>
-          {Array.from(new Set(campaign.services.map(service => service.platform))).map(platform => {
-            // Filter services by platform and group by influencers for that platform
-            const platformServices = campaign.services.filter(service => service.platform === platform);
+      <Accordion type="single" collapsible>
+        {campaigns.length === 0 ? (
+          <div className="flex items-center justify-center w-full h-full flex-col text-center">
+            <IconMoodEmpty className='mb-2 w-[256px] h-[256px]' />
+            <span className="text-3xl font-bold mb-2">Hmm... Something's Wrong Here.</span>
+            <span className="text-lg italic">No Pending Services were Found.</span>
+          </div>
+        ) : (
+          campaigns.map(campaign => (
+            <AccordionItem key={campaign.id} value={`item-${campaign.id}`}>
+              <AccordionTrigger>
+                <span className='font-bold xxxs:text-[13px] xs:text-[16px] flex gap-1 items-center group text-neutral-100 
+                  hover:text-neutral-100/75 transition-all duration-200'>
+                  {campaign.campaign_name}
+                  <IconArrowUpRight className='h-full w-auto rotate-0 group-hover:rotate-45 duration-200 transition-all' />
+                </span>
+              </AccordionTrigger>
+              <AccordionContent>
+                {Array.from(new Set(campaign.services.map(service => service.platform))).map(platform => {
+                  // Filter services by platform and group by influencers for that platform
+                  const platformServices = campaign.services.filter(service => service.platform === platform);
 
-            return (
-              <div key={platform}>
-                <div className="mt-3 flex flex-row w-full gap-3 items-center">
-                  <div className="w-[60px] h-[60px] flex justify-center items-center bg-white dark:bg-neutral-950 rounded-full flex-shrink-0">
-                    <div className={cn("w-max h-max rounded-full", platformIcons[platform]?.containerClassName || "")}>
-                      <Image
-                        src={platformIcons[platform]?.src || "/images/logo/default.svg"}
-                        width={platformIcons[platform]?.width || 35}
-                        height={platformIcons[platform]?.height || 35}
-                        alt={platformIcons[platform]?.alt || "default"}
-                        className={platformIcons[platform]?.className || ""}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-start flex-row w-full flex-wrap gap-2">
-                    {platformServices.map(service => (
-                      <div key={`${service.assigned_influencer}-${service.platform}`} className="rounded-xl bg-neutral-200 dark:bg-neutral-600 h-[35px] px-4 flex justify-center items-center tracking-[.7px] gap-1">
-                        {service.assigned_influencer}
-                        {statusIcons[service.status]} {/* Render icon based on status */}
+                  return (
+                    <div key={platform}>
+                      <div className="mt-3 flex flex-row w-full gap-3 items-center">
+                        <div className="w-[60px] h-[60px] flex justify-center items-center bg-white dark:bg-neutral-950 
+                          rounded-full flex-shrink-0">
+                          <div className={cn("w-max h-max rounded-full", platformIcons[platform]?.containerClassName || "")}>
+                            <Image
+                              src={platformIcons[platform]?.src || "/images/logo/default.svg"}
+                              width={platformIcons[platform]?.width || 35}
+                              height={platformIcons[platform]?.height || 35}
+                              alt={platformIcons[platform]?.alt || "default"}
+                              className={platformIcons[platform]?.className || ""}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex justify-start flex-row w-full flex-wrap gap-2 xxxs:text-[12px]">
+                          {platformServices.map(service => (
+                            <div key={`${service.assigned_influencer}-${service.platform}`} className="rounded-xl bg-neutral-200 dark:bg-neutral-600 h-[35px] px-4 flex justify-center items-center tracking-[.7px] gap-1">
+                              {service.assigned_influencer}
+                              {statusIcons[service.status]} {/* Render icon based on status */}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-                <Separator className="mt-3 mb-3 px-3 mx-auto border-neutral-400 dark:border-neutral-600" />
-              </div>
-            );
-          })}
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
-  </div>
+                      <Separator className="mt-3 mb-3 px-3 mx-auto border-neutral-400 dark:border-neutral-600" />
+                    </div>
+                  );
+                })}
+              </AccordionContent>
+            </AccordionItem>
+          ))
+        )}
+      </Accordion>
+    </div>
   )
 }
 

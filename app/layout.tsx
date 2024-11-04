@@ -27,7 +27,7 @@ export default function RootLayout({
           <TooltipProvider>
             <div className="flex h-full w-full">
               <Nav />
-              <div className="bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto overflow-y-hidden min-h-full">
+              <div className="bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto overflow-y-hidden min-h-[100vh]">
                 <main className="bg-bg-light dark:bg-neutral-900 h-full w-full">
                   <div className="flex flex-col w-full">
                     <NavHeader />

@@ -56,8 +56,8 @@ export function Nav() {
         <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden fixed">
           <Link className="flex flex-row items-center justify-center cursor-pointer" href="/#">
             {open ? <Logo /> : <LogoIcon />}
-            <span className="ml-2 font-bold text-black dark:text-white xxxs:text-xl md:text-3xl lg:text-2xl">
-              ConX Agency
+            <span className="ml-1 font-bold text-black dark:text-white xxxs:text-xl md:text-3xl lg:text-2xl">
+              onX Agency
             </span>
           </Link>
           <div className="mt-5 flex flex-col gap-1 mb-3">

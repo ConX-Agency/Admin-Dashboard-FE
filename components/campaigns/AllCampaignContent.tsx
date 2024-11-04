@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuRadioItem, DropdownMenuContent, DropdownMenuT
 import { Calendar } from "@/components/ui/calendar"
 import { DateRange } from "react-day-picker";
 import { useRouter } from 'next/navigation';
+import { IconMoodEmpty } from "@tabler/icons-react";
 
 const AllCampaignContent = () => {
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
@@ -123,7 +124,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   }, [multiFilter]);
 
   return (
-    <div className="flex flex-row flex-wrap justify-start w-full gap-1">
+    <div className="flex flex-row flex-wrap justify-start w-full gap-1 mb-1">
       <AnimatePresence>
         <Button
           variant={isFiltered ? "outline" : "ghost"}
@@ -289,84 +290,92 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
 
   return (
     <div className="grid xxxs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xxl:grid-cols-4 gap-3 h-full">
-      {campaigns.map((data, idx) => (
-        <div
-          className="shadow-md rounded-md cursor-pointer group bg-neutral-50 hover:bg-neutral-200/25 dark:bg-neutral-800 
-          dark:hover:bg-neutral-700 transition-all duration-300 relative max-h-[300px]"
-          key={data.id}
-        >
-          <div className="pt-3 px-3 w-full text-ellipsis text-nowrap overflow-hidden">
-            <span
-              className="font-semibold text-[17px] text-black hover:text-black/50
-              transition-all duration-300 dark:text-white dark:hover:text-white/75"
-              title={data.campaign_name}
-              onClick={() => directToCampaign(data.campaign_name)}
-            >
-              {data.campaign_name}
-            </span>
-            <div className="w-full">
-              <span className="text-[12px]">{data.organizer}</span>
-            </div>
-          </div>
-          {/* Tags */}
-          <div
-            className="mt-6 flex flex-row flex-nowrap w-full px-3 gap-2 overflow-x-scroll scroll-smooth scrollbar-hide cursor-default"
-            ref={(el) => {
-              scrollRefs.current[idx] = el;
-            }}
-            onWheel={(e) => handleWheel(e, idx)}
-          >
-            <div
-              className={cn(
-                "rounded-3xl px-2 py-[2px] text-black dark:text-white text-[13px] text-nowrap font-bold tracking-[0.5px]",
-                data.status === "Active" && "bg-yellow-400 dark:bg-yellow-600",
-                data.status === "Cancelled" && "bg-red-400 dark:bg-red-500",
-                data.status === "Completed" && "bg-green-400 dark:bg-green-500"
-              )}
-            >
-              {data.status}
-            </div>
-            {data.tags.map((tag, tagIdx) => (
-              <div
-                className="rounded-3xl px-2 py-[2px] bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white
-                text-[13px] text-nowrap"
-                key={tagIdx}
-              >
-                {tag}
-              </div>
-            ))}
-          </div>
-          {/* Bottom Half */}
-          <div className="mt-4 bg-black p-2 px-3 rounded-b-md w-full flex flex-row items-center justify-between gap-2 flex-wrap-reverse">
-            <div className="flex flex-col justify-center">
-              <span className="text-[11px] text-neutral-200 font-semibold tracking-[.3px]">
-                Due Date
-              </span>
-              <span className="text-[14px] text-neutral-50">
-                {data.dateRange.to}
-              </span>
-            </div>
-            <div className="flex flex-row flex-nowrap gap-2 justify-end items-center">
-              <IconWithTooltip
-                IconComponent={MapPinned}
-                popoverText={data.location}
-              />
-              <IconWithTooltip
-                IconComponent={LucideCalendar}
-                popoverText={`${data.dateRange.from} - ${data.dateRange.to}`}
-              />
-              <IconWithTooltip
-                IconComponent={Globe}
-                popoverText={`${data.influencers.length} Active Influencer(s)`}
-              />
-              <IconWithTooltip
-                IconComponent={Clock}
-                popoverText={`${data.services.length} Activities Left`}
-              />
-            </div>
-          </div>
+      {campaigns.length === 0 ? ( // Check if campaigns array is empty
+        <div className="col-span-full flex items-center justify-center w-full h-full flex-col text-center">
+          <IconMoodEmpty className='mb-2 w-[256px] h-[256px]'/>
+          <span className="text-3xl font-bold mb-2">Hmm... Something's Wrong Here.</span>
+          <span className="text-lg italic">No Campaigns were Found.</span>
         </div>
-      ))}
+      ) : (
+        campaigns.map((data, idx) => (
+          <div
+            className="shadow-md rounded-md cursor-pointer group bg-neutral-50 hover:bg-neutral-200/25 dark:bg-neutral-800 
+            dark:hover:bg-neutral-700 transition-all duration-300 relative max-h-[300px]"
+            key={data.id}
+          >
+            <div className="pt-3 px-3 w-full text-ellipsis text-nowrap overflow-hidden">
+              <span
+                className="font-semibold text-[17px] text-black hover:text-black/50
+                transition-all duration-300 dark:text-white dark:hover:text-white/75"
+                title={data.campaign_name}
+                onClick={() => directToCampaign(data.campaign_name)}
+              >
+                {data.campaign_name}
+              </span>
+              <div className="w-full">
+                <span className="text-[12px]">{data.organizer}</span>
+              </div>
+            </div>
+            {/* Tags */}
+            <div
+              className="mt-6 flex flex-row flex-nowrap w-full px-3 gap-2 overflow-x-scroll scroll-smooth scrollbar-hide cursor-default"
+              ref={(el) => {
+                scrollRefs.current[idx] = el;
+              }}
+              onWheel={(e) => handleWheel(e, idx)}
+            >
+              <div
+                className={cn(
+                  "rounded-3xl px-2 py-[2px] text-black dark:text-white text-[13px] text-nowrap font-bold tracking-[0.5px]",
+                  data.status === "Active" && "bg-yellow-400 dark:bg-yellow-600",
+                  data.status === "Cancelled" && "bg-red-400 dark:bg-red-500",
+                  data.status === "Completed" && "bg-green-400 dark:bg-green-500"
+                )}
+              >
+                {data.status}
+              </div>
+              {data.tags.map((tag, tagIdx) => (
+                <div
+                  className="rounded-3xl px-2 py-[2px] bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white
+                  text-[13px] text-nowrap"
+                  key={tagIdx}
+                >
+                  {tag}
+                </div>
+              ))}
+            </div>
+            {/* Bottom Half */}
+            <div className="mt-4 bg-black p-2 px-3 rounded-b-md w-full flex flex-row items-center justify-between gap-2 flex-wrap-reverse">
+              <div className="flex flex-col justify-center">
+                <span className="text-[11px] text-neutral-200 font-semibold tracking-[.3px]">
+                  Due Date
+                </span>
+                <span className="text-[14px] text-neutral-50">
+                  {data.dateRange.to}
+                </span>
+              </div>
+              <div className="flex flex-row flex-nowrap gap-2 justify-end items-center">
+                <IconWithTooltip
+                  IconComponent={MapPinned}
+                  popoverText={data.location}
+                />
+                <IconWithTooltip
+                  IconComponent={LucideCalendar}
+                  popoverText={`${data.dateRange.from} - ${data.dateRange.to}`}
+                />
+                <IconWithTooltip
+                  IconComponent={Globe}
+                  popoverText={`${data.influencers.length} Active Influencer(s)`}
+                />
+                <IconWithTooltip
+                  IconComponent={Clock}
+                  popoverText={`${data.services.length} Activities Left`}
+                />
+              </div>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };
