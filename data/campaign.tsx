@@ -1,6 +1,7 @@
 import { Influencer } from "./influencer";
 
 export interface Services {
+  id: string;
   platform: "Instagram" | "RED" | "TikTok" | "Google Review";
   assigned_influencer: string;
   assigned_date: string;
@@ -89,6 +90,7 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
+        id: 'm5gr84l9',
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "15/10/2024",
@@ -96,6 +98,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr84k8',
         platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "16/10/2024",
@@ -103,6 +106,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       },
       {
+        id: 'm5gr84i7',
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "17/10/2024",
@@ -110,6 +114,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Cancelled"
       },
       {
+        id: 'm5gr84i6',
         platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "18/10/2024",
@@ -117,6 +122,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr84i5',
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "19/10/2024",
@@ -151,6 +157,7 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
+        id: 'm5gr84i4',
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "15/10/2024",
@@ -158,6 +165,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr84i3',
         platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "16/10/2024",
@@ -165,6 +173,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       },
       {
+        id: 'm5gr84i2',
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "17/10/2024",
@@ -172,6 +181,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Cancelled"
       },
       {
+        id: 'm5gr84i1',
         platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "18/10/2024",
@@ -179,6 +189,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr84i0',
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "19/10/2024",
@@ -213,6 +224,7 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
+        id: 'm5gr8499',
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "15/10/2024",
@@ -220,6 +232,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr8489',
         platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "16/10/2024",
@@ -227,6 +240,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       },
       {
+        id: 'm5gr8479',
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "17/10/2024",
@@ -234,6 +248,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Cancelled"
       },
       {
+        id: 'm5gr8469',
         platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "18/10/2024",
@@ -241,6 +256,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr8459',
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "19/10/2024",
@@ -275,6 +291,7 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
+        id: 'm5gr8449',
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "15/10/2024",
@@ -282,6 +299,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr8439',
         platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "16/10/2024",
@@ -289,6 +307,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       },
       {
+        id: 'm5gr8429',
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "17/10/2024",
@@ -296,6 +315,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Cancelled"
       },
       {
+        id: 'm5gr8419',
         platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "18/10/2024",
@@ -303,6 +323,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr8409',
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "19/10/2024",
@@ -337,6 +358,7 @@ export const dummyCampaignsData: Campaign[] = [
     ],
     services: [
       {
+        id: 'm5gr8399',
         platform: "Instagram",
         assigned_influencer: "Alice Brown",
         assigned_date: "15/10/2024",
@@ -344,6 +366,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr8299',
         platform: "TikTok",
         assigned_influencer: "John Doe",
         assigned_date: "16/10/2024",
@@ -351,6 +374,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       },
       {
+        id: 'm5gr8199',
         platform: "Google Review",
         assigned_influencer: "Emma Wang",
         assigned_date: "17/10/2024",
@@ -358,6 +382,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Cancelled"
       },
       {
+        id: 'm5gr8099',
         platform: "RED",
         assigned_influencer: "Liam Smith",
         assigned_date: "18/10/2024",
@@ -365,6 +390,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
       {
+        id: 'm5gr7999',
         platform: "Instagram",
         assigned_influencer: "Sophia Lee",
         assigned_date: "19/10/2024",

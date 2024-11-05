@@ -1,32 +1,63 @@
-import React, { useEffect, useState } from 'react'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion'
-import Image from 'next/image'
-import { Separator } from '../ui/separator'
-import { Campaign, CampaignCardsProps, dummyCampaignsData, FiltersProps, monthRanges, months } from '@/data/campaign'
-import { cn, parseDate } from '@/lib/utils'
-import { IconCircleCheckFilled, IconClockHour2Filled, IconCircleXFilled, IconSearch, IconArrowUpRight, IconMoodEmpty } from '@tabler/icons-react'
-import { FilterDropdown } from './AllCampaignContent'
-import { AnimatePresence, motion } from 'framer-motion'
-import { Filter, FilterX } from 'lucide-react'
-import { Button } from '../ui/button'
+import React, { useEffect, useState } from 'react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import Image from 'next/image';
+import { Separator } from '../ui/separator';
+import { Campaign, CampaignCardsProps, dummyCampaignsData, FiltersProps, monthRanges, months, Services } from '@/data/campaign';
+import { cn, parseDate } from '@/lib/utils';
+import { IconCircleCheckFilled, IconClockHour2Filled, IconCircleXFilled, IconSearch, IconArrowUpRight, IconMoodEmpty } from '@tabler/icons-react';
+import { FilterDropdown } from './AllCampaignContent';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Filter, FilterX, PencilIcon, PencilOffIcon, SaveIcon } from 'lucide-react';
+import { Button } from '../ui/button';
 
 const PendingServicesContent = () => {
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
+  const [isEditable, setIsEditable] = useState(false);
 
   // Function to update filtered campaigns
   const handleFilterChange = (filteredData: Campaign[]) => {
     setFilteredCampaignData(filteredData);
   };
 
+  // Toggle edit mode
+  const toggleEdit = () => setIsEditable(prev => !prev);
+
+  const toggleStatus = (campaignId: string, serviceId: string) => {
+    setFilteredCampaignData((prevData) =>
+      prevData.map((campaign) => {
+        console.log("Checking campaign:", campaign.id);
+        if (campaign.id === campaignId) {
+          const updatedServices = campaign.services.map((service: any) => {
+            console.log("Checking service:", service.id);
+            if (service.id === serviceId) {
+              const newStatus =
+                service.status === "Completed"
+                  ? "Active"
+                  : service.status === "Active"
+                  ? "Cancelled"
+                  : "Completed";
+              console.log("Updating status for service:", service.id, "to", newStatus);
+              return { ...service, status: newStatus };
+            }
+            return service;
+          });
+          return { ...campaign, services: updatedServices };
+        }
+        return campaign;
+      })
+    );
+  };
+  
+
   return (
     <div className='flex flex-col gap-3'>
-      <PendingServicesFilter onFilterChange={handleFilterChange} />
-      <PendingServicesAccordion campaigns={filteredCampaignData} />
+      <PendingServicesFilter onFilterChange={handleFilterChange} isEditable={isEditable} toggleEdit={toggleEdit} />
+      <PendingServicesAccordion campaigns={filteredCampaignData} isEditable={isEditable} onStatusToggle={toggleStatus} />
     </div>
-  )
+  );
 }
 
-const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
+const PendingServicesFilter: React.FC<FiltersProps & { isEditable: boolean; toggleEdit: () => void }> = ({ onFilterChange, isEditable, toggleEdit }) => {
   const defaultFilter = {
     month: "All",
     name: ""
@@ -37,26 +68,19 @@ const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
 
   const filterCampaigns = () => {
     const { name, month } = multiFilter;
-
     const filteredData = dummyCampaignsData.filter((campaign) => {
       let matchesMonth = month === "All";
       let matchesName = name === null || campaign.campaign_name.toLowerCase().includes(name.toLowerCase());
 
-      // Add month logic
       if (month !== "All") {
         const { from, to } = monthRanges[month];
-
         const campaignStartDate = parseDate(campaign.dateRange.from);
         const campaignEndDate = parseDate(campaign.dateRange.to);
 
-        // Log campaign details for debugging
-        // console.log(`Campaign: ${campaign.campaign_name}, Status: ${matchesStatus}, Start Date: ${campaignStartDate}, End Date: ${campaignEndDate}, Month: ${month}, From: ${from}, To: ${to}`);
-
-        // Check if the campaign's date falls within the month range
         matchesMonth =
-          (campaignStartDate >= from && campaignStartDate <= to) || // Campaign starts in the month of?
-          (campaignEndDate >= from && campaignEndDate <= to) ||     // Campaign ends in the month of?
-          (campaignStartDate < from && campaignEndDate > to);      // Campaign spans the month
+          (campaignStartDate >= from && campaignStartDate <= to) ||
+          (campaignEndDate >= from && campaignEndDate <= to) ||
+          (campaignStartDate < from && campaignEndDate > to);
       }
 
       return matchesMonth && matchesName;
@@ -78,22 +102,18 @@ const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
     }));
   };
 
-  // Check if the current filter is the default filter
-  const isDefaultFilter = () => {
-    return (
-      multiFilter.name === defaultFilter.name &&
-      multiFilter.month === defaultFilter.month
-    );
-  };
+  const isDefaultFilter = () => (
+    multiFilter.name === defaultFilter.name &&
+    multiFilter.month === defaultFilter.month
+  );
 
-  // Apply filter when multiFilter changes
   useEffect(() => {
     if (isDefaultFilter()) {
-      onFilterChange(dummyCampaignsData); //Reset to default data
-      setIsFiltered(false); // Reset isFiltered if multiFilter is default
+      onFilterChange(dummyCampaignsData);
+      setIsFiltered(false);
     } else {
       filterCampaigns();
-      setIsFiltered(true);  // Set isFiltered to true if filters are applied
+      setIsFiltered(true);
     }
   }, [multiFilter]);
 
@@ -118,7 +138,7 @@ const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
             >
               <Filter className="h-[20px] w-[20px]" />
             </motion.div>
-          )}
+          )}  
           {isFiltered && (
             <motion.div
               initial={{ translateX: -20, opacity: 0 }}
@@ -131,19 +151,18 @@ const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
         </Button>
       </AnimatePresence>
 
-      <div className="flex items-center border border-muted rounded-sm w-[230px] bg-neutral-950">
+      <div className="flex items-center border border-neutral-200 dark:border-muted rounded-md w-[230px] shadow-sm bg-white dark:bg-neutral-950">
         <span className="pl-2">
-          {/* Replace with your custom icon */}
           <IconSearch className="h-4 w-4 text-neutral-400" />
         </span>
         <input
-          className="flex-1 border-0 focus-visible:outline-none px-2 py-2 text-[14px] 
-            placeholder-neutral-400 text-neutral-100 bg-neutral-950"
+          className="flex-1 border-0 focus-visible:outline-none px-2 py-2 text-[14px] rounded-md placeholder-neutral-400 text-neutral-950 dark:text-neutral-100 bg-white dark:bg-neutral-950"
           value={multiFilter.name}
           placeholder='Campaign Name Filter'
-          onChange={(event) => handleFilterChange("name", event?.target.value)}
+          onChange={(event) => handleFilterChange("name", event.target.value)}
         />
       </div>
+
       <FilterDropdown
         label='Month'
         items={months}
@@ -151,13 +170,26 @@ const PendingServicesFilter: React.FC<FiltersProps> = ({ onFilterChange }) => {
         onValueChange={(value) => handleFilterChange("month", value)}
         minWidth="min-w-[115px]"
       />
+
+      {/* Add Animation? */}
+      <Button variant='outline' className="h-full p-2 flex justify-center items-center cursor-pointer px-3" onClick={toggleEdit}>
+        {isEditable ? <PencilOffIcon className="h-5 w-5" /> : <PencilIcon className="h-5 w-5" />}
+      </Button>
+
+      {isEditable && (
+        <Button className='px-3 h-full flex justify-center items-center bg-neutral-950 dark:bg-neutral-50 text-neutral-50 
+          dark:text-neutral-950 hover:bg-neutral-950/90 hover:text-neutral-50/90 dark:hover:bg-neutral-50/90
+          dark:hover:text-neutral-950/90' 
+          variant="outline" onClick={toggleEdit}>
+          <SaveIcon className='h-5 w-5' />
+        </Button>
+      )}
     </div>
-  )
+  );
 }
 
-const PendingServicesAccordion: React.FC<CampaignCardsProps> = ({ campaigns }) => {
+const PendingServicesAccordion: React.FC<CampaignCardsProps & { isEditable: boolean; onStatusToggle: (campaignId: string, serviceId: string) => void }> = ({ campaigns, isEditable, onStatusToggle }) => {
   const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
-
   const platformIcons = {
     Instagram: {
       src: `${basePath}/images/logo/instagram.svg`,
@@ -212,14 +244,13 @@ const PendingServicesAccordion: React.FC<CampaignCardsProps> = ({ campaigns }) =
           campaigns.map(campaign => (
             <AccordionItem key={campaign.id} value={`item-${campaign.id}`}>
               <AccordionTrigger>
-                <span className='font-bold xxxs:text-[13px] xs:text-[16px] flex gap-1 items-center group text-neutral-100 
-                  hover:text-neutral-100/75 transition-all duration-200'>
+                <span className='font-bold xxxs:text-[13px] xs:text-[16px] flex gap-1 items-center group text-neutral-100 hover:text-neutral-100/75 transition-all duration-200'>
                   {campaign.campaign_name}
                   <IconArrowUpRight className='h-full w-auto rotate-0 group-hover:rotate-45 duration-200 transition-all' />
                 </span>
               </AccordionTrigger>
               <AccordionContent>
-                {Array.from(new Set(campaign.services.map(service => service.platform))).map(platform => {
+              {Array.from(new Set(campaign.services.map(service => service.platform))).map(platform => {
                   // Filter services by platform and group by influencers for that platform
                   const platformServices = campaign.services.filter(service => service.platform === platform);
 
@@ -239,15 +270,21 @@ const PendingServicesAccordion: React.FC<CampaignCardsProps> = ({ campaigns }) =
                           </div>
                         </div>
                         <div className="flex justify-start flex-row w-full flex-wrap gap-2 xxxs:text-[12px]">
-                          {platformServices.map(service => (
-                            <div key={`${service.assigned_influencer}-${service.platform}`} className="rounded-xl bg-neutral-200 dark:bg-neutral-600 h-[35px] px-4 flex justify-center items-center tracking-[.7px] gap-1">
+                          {platformServices.map((service, index) => (
+                            <div key={`${service.assigned_influencer}-${service.platform}`} 
+                              className={cn(`rounded-xl bg-neutral-200 dark:bg-neutral-600 h-[35px] px-4 flex 
+                                justify-center items-center tracking-[.7px] gap-1 shadow-md hover:opacity-90 
+                                transition-all duration-300`,
+                                isEditable ? 'hover:-translate-y-1 cursor-pointer' : 'cursor-default'
+                              )}
+                              onClick={() => isEditable && onStatusToggle(campaign.id, service.id)}>
                               {service.assigned_influencer}
-                              {statusIcons[service.status]} {/* Render icon based on status */}
+                              {statusIcons[service.status]}
                             </div>
                           ))}
                         </div>
                       </div>
-                      <Separator className="mt-3 mb-3 px-3 mx-auto border-neutral-400 dark:border-neutral-600" />
+                      <Separator className="mt-3 mb-3 px-3 mx-auto border-[1px] border-neutral-200 dark:border-neutral-600" />
                     </div>
                   );
                 })}
@@ -257,7 +294,7 @@ const PendingServicesAccordion: React.FC<CampaignCardsProps> = ({ campaigns }) =
         )}
       </Accordion>
     </div>
-  )
+  );
 }
 
-export default PendingServicesContent
+export default PendingServicesContent;
