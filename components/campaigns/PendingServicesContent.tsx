@@ -6,12 +6,12 @@ import { Campaign, CampaignCardsProps, dummyCampaignsData, FiltersProps, monthRa
 import { cn, parseDate } from '@/lib/utils';
 import { IconCircleCheckFilled, IconClockHour2Filled, IconCircleXFilled, IconSearch, IconArrowUpRight, IconMoodEmpty } from '@tabler/icons-react';
 import { FilterDropdown } from './AllCampaignContent';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Filter, FilterX, PencilIcon, PencilOffIcon, SaveIcon } from 'lucide-react';
-import { Button } from '../ui/button';
+import { AnimatedIconButton, Button } from '../ui/button';
 
 const PendingServicesContent = () => {
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
+  const [originalCampaignData, setOriginalCampaignData] = useState<Campaign[]>(dummyCampaignsData);
   const [isEditable, setIsEditable] = useState(false);
 
   // Function to update filtered campaigns
@@ -22,13 +22,21 @@ const PendingServicesContent = () => {
   // Toggle edit mode
   const toggleEdit = () => setIsEditable(prev => !prev);
 
+  const resetChanges = () => {
+    setFilteredCampaignData(originalCampaignData);
+    setIsEditable(false);
+  };
+
+  const saveChanges = () => {
+    setOriginalCampaignData(filteredCampaignData);
+    setIsEditable(false);
+  };
+
   const toggleStatus = (campaignId: string, serviceId: string) => {
     setFilteredCampaignData((prevData) =>
       prevData.map((campaign) => {
-        console.log("Checking campaign:", campaign.id);
         if (campaign.id === campaignId) {
           const updatedServices = campaign.services.map((service: any) => {
-            console.log("Checking service:", service.id);
             if (service.id === serviceId) {
               const newStatus =
                 service.status === "Completed"
@@ -36,7 +44,6 @@ const PendingServicesContent = () => {
                   : service.status === "Active"
                   ? "Cancelled"
                   : "Completed";
-              console.log("Updating status for service:", service.id, "to", newStatus);
               return { ...service, status: newStatus };
             }
             return service;
@@ -47,17 +54,31 @@ const PendingServicesContent = () => {
       })
     );
   };
-  
 
   return (
     <div className='flex flex-col gap-3'>
-      <PendingServicesFilter onFilterChange={handleFilterChange} isEditable={isEditable} toggleEdit={toggleEdit} />
-      <PendingServicesAccordion campaigns={filteredCampaignData} isEditable={isEditable} onStatusToggle={toggleStatus} />
+      <PendingServicesFilter 
+        onFilterChange={handleFilterChange} 
+        isEditable={isEditable} 
+        toggleEdit={toggleEdit} 
+        resetChanges={resetChanges} 
+        saveChanges={saveChanges}   
+      />
+      <PendingServicesAccordion 
+        campaigns={filteredCampaignData} 
+        isEditable={isEditable} 
+        onStatusToggle={toggleStatus} 
+      />
     </div>
   );
 }
 
-const PendingServicesFilter: React.FC<FiltersProps & { isEditable: boolean; toggleEdit: () => void }> = ({ onFilterChange, isEditable, toggleEdit }) => {
+const PendingServicesFilter: React.FC<FiltersProps & {
+  isEditable: boolean;
+  toggleEdit: () => void;
+  resetChanges: () => void;
+  saveChanges: () => void;
+}> = ({ onFilterChange, isEditable, toggleEdit, resetChanges, saveChanges }) => {
   const defaultFilter = {
     month: "All",
     name: ""
@@ -119,37 +140,14 @@ const PendingServicesFilter: React.FC<FiltersProps & { isEditable: boolean; togg
 
   return (
     <div className='flex flex-row gap-1 flex-wrap'>
-      <AnimatePresence>
-        <Button
-          variant={isFiltered ? "outline" : "ghost"}
-          className={cn(
-            `h-[40px] w-[40px] p-2 flex justify-center items-center`,
-            isFiltered
-              ? "cursor-pointer"
-              : "cursor-default hover:bg-transparent"
-          )}
-          onClick={isFiltered ? unfilterCampaigns : undefined}
-        >
-          {!isFiltered && (
-            <motion.div
-              initial={{ translateX: -20, opacity: 0 }}
-              animate={{ translateX: 0, opacity: 1 }}
-              exit={{ translateX: 20, opacity: 0 }}
-            >
-              <Filter className="h-[20px] w-[20px]" />
-            </motion.div>
-          )}  
-          {isFiltered && (
-            <motion.div
-              initial={{ translateX: -20, opacity: 0 }}
-              animate={{ translateX: 0, opacity: 1 }}
-              exit={{ translateX: 20, opacity: 0 }}
-            >
-              <FilterX className="h-[20px] w-[20px]" />
-            </motion.div>
-          )}
-        </Button>
-      </AnimatePresence>
+      <AnimatedIconButton
+        isActive={isFiltered}
+        onClick={isFiltered ? unfilterCampaigns : undefined}
+        IconActive={FilterX} 
+        IconInactive={Filter}
+        variant={isFiltered ? "outline" : "ghost"}
+        className="h-[40px] w-[40px] p-2 flex justify-center items-center"
+      />
 
       <div className="flex items-center border border-neutral-200 dark:border-muted rounded-md w-[230px] shadow-sm bg-white dark:bg-neutral-950">
         <span className="pl-2">
@@ -171,16 +169,21 @@ const PendingServicesFilter: React.FC<FiltersProps & { isEditable: boolean; togg
         minWidth="min-w-[115px]"
       />
 
-      {/* Add Animation? */}
-      <Button variant='outline' className="h-full p-2 flex justify-center items-center cursor-pointer px-3" onClick={toggleEdit}>
-        {isEditable ? <PencilOffIcon className="h-5 w-5" /> : <PencilIcon className="h-5 w-5" />}
-      </Button>
+      <AnimatedIconButton
+        isActive={isEditable}
+        onClick={isEditable ? resetChanges : toggleEdit}
+        IconActive={PencilOffIcon} 
+        IconInactive={PencilIcon} 
+        variant="outline"
+        className="h-full p-2 flex justify-center items-center cursor-pointer px-3"
+      />
 
       {isEditable && (
         <Button className='px-3 h-full flex justify-center items-center bg-neutral-950 dark:bg-neutral-50 text-neutral-50 
           dark:text-neutral-950 hover:bg-neutral-950/90 hover:text-neutral-50/90 dark:hover:bg-neutral-50/90
           dark:hover:text-neutral-950/90' 
-          variant="outline" onClick={toggleEdit}>
+          variant="outline" 
+          onClick={saveChanges}>
           <SaveIcon className='h-5 w-5' />
         </Button>
       )}
@@ -188,49 +191,15 @@ const PendingServicesFilter: React.FC<FiltersProps & { isEditable: boolean; togg
   );
 }
 
-const PendingServicesAccordion: React.FC<CampaignCardsProps & { isEditable: boolean; onStatusToggle: (campaignId: string, serviceId: string) => void }> = ({ campaigns, isEditable, onStatusToggle }) => {
-  const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
-  const platformIcons = {
-    Instagram: {
-      src: `${basePath}/images/logo/instagram.svg`,
-      width: 35,
-      height: 35,
-      alt: 'instagram.svg',
-      className: 'invert-0',
-      containerClassName: 'bg-white dark:bg-black'
-    },
-    TikTok: {
-      src: `${basePath}/images/logo/tiktok.svg`,
-      width: 25,
-      height: 25,
-      alt: 'tiktok.svg',
-      className: 'invert-0 dark:invert',
-      containerClassName: 'bg-white dark:bg-black'
-    },
-    "Google Review": {
-      src: `${basePath}/images/logo/google.svg`,
-      width: 35,
-      height: 35,
-      alt: 'google.svg',
-      className: '',
-      containerClassName: 'bg-white dark:bg-black'
-    },
-    RED: {
-      src: `${basePath}/images/logo/red.svg`,
-      width: 35,
-      height: 35,
-      alt: 'red.svg',
-      className: 'invert-0',
-      containerClassName: 'bg-white rounded-[9px]'
-    },
-  };
-
-  const statusIcons = {
-    Active: <IconClockHour2Filled className="w-[20px] h-[20px] text-yellow-500" />,
-    Completed: <IconCircleCheckFilled className="w-[20px] h-[20px] text-green-500 dark:text-green-500" />,
-    Cancelled: <IconCircleXFilled className="w-[20px] h-[20px] text-red-500 dark:text-red-500" />
-  };
-
+const PendingServicesAccordion: React.FC<
+  CampaignCardsProps & { 
+  isEditable: boolean; 
+  onStatusToggle: (campaignId: string, serviceId: string) => void 
+}> = ({ 
+  campaigns, 
+  isEditable, 
+  onStatusToggle 
+}) => {
   return (
     <div>
       <Accordion type="single" collapsible>
@@ -296,5 +265,47 @@ const PendingServicesAccordion: React.FC<CampaignCardsProps & { isEditable: bool
     </div>
   );
 }
+
+const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
+const platformIcons = {
+  Instagram: {
+    src: `${basePath}/images/logo/instagram.svg`,
+    width: 35,
+    height: 35,
+    alt: 'instagram.svg',
+    className: 'invert-0',
+    containerClassName: 'bg-white dark:bg-black'
+  },
+  TikTok: {
+    src: `${basePath}/images/logo/tiktok.svg`,
+    width: 25,
+    height: 25,
+    alt: 'tiktok.svg',
+    className: 'invert-0 dark:invert',
+    containerClassName: 'bg-white dark:bg-black'
+  },
+  "Google Review": {
+    src: `${basePath}/images/logo/google.svg`,
+    width: 35,
+    height: 35,
+    alt: 'google.svg',
+    className: '',
+    containerClassName: 'bg-white dark:bg-black'
+  },
+  RED: {
+    src: `${basePath}/images/logo/red.svg`,
+    width: 35,
+    height: 35,
+    alt: 'red.svg',
+    className: 'invert-0',
+    containerClassName: 'bg-white rounded-[9px]'
+  },
+};
+
+const statusIcons = {
+  Active: <IconClockHour2Filled className="w-[20px] h-[20px] text-yellow-500" />,
+  Completed: <IconCircleCheckFilled className="w-[20px] h-[20px] text-green-500 dark:text-green-500" />,
+  Cancelled: <IconCircleXFilled className="w-[20px] h-[20px] text-red-500 dark:text-red-500" />
+};
 
 export default PendingServicesContent;
