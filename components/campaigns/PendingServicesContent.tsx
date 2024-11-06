@@ -146,7 +146,7 @@ const PendingServicesFilter: React.FC<FiltersProps & {
         IconActive={FilterX} 
         IconInactive={Filter}
         variant={isFiltered ? "outline" : "ghost"}
-        className="h-[40px] w-[40px] p-2 flex justify-center items-center"
+        className="max-h-[40px] h-full w-[40px] p-2 flex justify-center items-center"
       />
 
       <div className="flex items-center border border-neutral-200 dark:border-muted rounded-md w-[230px] shadow-sm bg-white dark:bg-neutral-950">
@@ -175,7 +175,7 @@ const PendingServicesFilter: React.FC<FiltersProps & {
         IconActive={PencilOffIcon} 
         IconInactive={PencilIcon} 
         variant="outline"
-        className="h-full p-2 flex justify-center items-center cursor-pointer px-3"
+        className="max-h-[40px] h-full p-2 flex justify-center items-center cursor-pointer px-3"
       />
 
       {isEditable && (

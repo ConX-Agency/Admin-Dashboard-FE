@@ -70,7 +70,7 @@ const AnimatedIconButton: React.FC<AnimatedIconButtonProps> = ({
   IconActive, // Icon to show when `isActive` is true
   IconInactive, // Icon to show when `isActive` is false
   variant = 'outline',
-  className = 'h-full p-2 flex justify-center items-center cursor-pointer px-3',
+  className = 'h-full max-h-[40px] p-2 flex justify-center items-center cursor-pointer px-3',
 }) => (
   <AnimatePresence>
     <Button

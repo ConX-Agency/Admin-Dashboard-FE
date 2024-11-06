@@ -2,7 +2,7 @@ import { Campaign, CampaignCardsProps, dummyCampaignsData, dummyCountries, Filte
 import { Calendar as LucideCalendar, ChevronDown, Clock, Filter, FilterX, Globe, MapPinned } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
+import { AnimatedIconButton, Button } from "../ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn, parseDate, formatURL } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuRadioItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuRadioGroup } from "../ui/dropdown-menu";
@@ -125,37 +125,14 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
 
   return (
     <div className="flex flex-row flex-wrap justify-start w-full gap-1 mb-1">
-      <AnimatePresence>
-        <Button
-          variant={isFiltered ? "outline" : "ghost"}
-          className={cn(
-            `h-[40px] w-[40px] p-2 flex justify-center items-center`,
-            isFiltered
-              ? "cursor-pointer"
-              : "cursor-default hover:bg-transparent"
-          )}
-          onClick={isFiltered ? unfilterCampaigns : undefined}
-        >
-          {!isFiltered && (
-            <motion.div
-              initial={{ translateX: -20, opacity: 0 }}
-              animate={{ translateX: 0, opacity: 1 }}
-              exit={{ translateX: 20, opacity: 0 }}
-            >
-              <Filter className="h-[20px] w-[20px]" />
-            </motion.div>
-          )}  
-          {isFiltered && (
-            <motion.div
-              initial={{ translateX: -20, opacity: 0 }}
-              animate={{ translateX: 0, opacity: 1 }}
-              exit={{ translateX: 20, opacity: 0 }}
-            >
-              <FilterX className="h-[20px] w-[20px]" />
-            </motion.div>
-          )}
-        </Button>
-      </AnimatePresence>
+      <AnimatedIconButton
+        isActive={isFiltered}
+        onClick={isFiltered ? unfilterCampaigns : undefined}
+        IconActive={FilterX} 
+        IconInactive={Filter}
+        variant={isFiltered ? "outline" : "ghost"}
+        className="max-h-[40px] h-full w-[40px] p-2 flex justify-center items-center"
+      />
 
       {/* Filter Status */}
       <FilterDropdown
