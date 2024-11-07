@@ -298,7 +298,17 @@ body {
     width: calc(50% - 0.75rem) !important;
   }
 
-  .chartCard {
+.chartCard {
     width: calc(50% - 0.75rem) !important;
   }
+}
+
+.no-visible-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.no-visible-scrollbar::-webkit-scrollbar {
+  display: none;
 }
