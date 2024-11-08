@@ -16,7 +16,7 @@ const CampaignDetailsWrapper = () => {
           <div className="flex flex-row justify-between flex-wrap xxxs:gap-2">
             <h1 className="text-3xl font-semibold items-center">{name}</h1>
           </div>
-          <Separator className="mt-0 mb-0" />
+          <Separator className="mt-0 mb-2" />
           <CampaignDetailsContent />
         </>
       ) : (
