@@ -3,13 +3,13 @@ import { Calendar as LucideCalendar, ChevronDown, Clock, Filter, FilterX, Globe,
 import React, { useEffect, useRef, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { AnimatedIconButton, Button } from "../ui/button";
-import { AnimatePresence, motion } from "framer-motion";
-import { cn, parseDate, formatURL } from "@/lib/utils";
+import { cn, parseDate } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuRadioItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuRadioGroup } from "../ui/dropdown-menu";
 import { Calendar } from "@/components/ui/calendar"
 import { DateRange } from "react-day-picker";
 import { useRouter } from 'next/navigation';
 import { IconMoodEmpty } from "@tabler/icons-react";
+import Image from "next/image";
 
 const AllCampaignContent = () => {
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
@@ -266,7 +266,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
   }
 
   return (
-    <div className="grid xxxs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xxl:grid-cols-4 gap-3 h-full">
+    <div className="grid xxxs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xxl:grid-cols-3 gap-3 h-full">
       {campaigns.length === 0 ? ( // Check if campaigns array is empty
         <div className="col-span-full flex items-center justify-center w-full h-full flex-col text-center">
           <IconMoodEmpty className='mb-2 w-[256px] h-[256px]'/>
@@ -277,9 +277,13 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
         campaigns.map((data, idx) => (
           <div
             className="shadow-md rounded-md cursor-pointer group bg-neutral-50 hover:bg-neutral-200/25 dark:bg-neutral-800 
-            dark:hover:bg-neutral-700 transition-all duration-300 relative max-h-[300px]"
+            dark:hover:bg-neutral-700 transition-all duration-300 relative max-h-[300px] z-[1] after:content-[''] overflow-hidden
+            after:absolute after:top-0 after:left-0 after:bg-neutral-950/70 after:h-full after:w-full after:rounded-md after:z-[-1]"
             key={data.id}
           >
+            <Image src={data.campaign_image} width={200} height={100} alt="bg.jpg" 
+              className="absolute top-0 left-0 z-[-1] object-cover w-full h-full rounded-md group-hover:scale-125 duration-500
+                transition-all"/>
             <div className="pt-3 px-3 w-full text-ellipsis text-nowrap overflow-hidden">
               <span
                 className="font-semibold text-[17px] text-black hover:text-black/50

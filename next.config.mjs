@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["github.com", "static.wikia.nocookie.net", "static.vecteezy.com"], // Whitelist GitHub as an external image source
+    domains: ["github.com", "static.wikia.nocookie.net", "static.vecteezy.com", "letsenhance.io"], // Whitelist GitHub as an external image source
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if

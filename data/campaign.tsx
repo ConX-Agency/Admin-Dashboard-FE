@@ -21,6 +21,7 @@ export interface Campaign {
   campaign_name: string;
   campaign_description: string;
   campaign_key_messages: string;
+  campaign_image: string;
   organizer: string;
   location: string;
   tags: string[];
@@ -74,6 +75,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_name: "80th Korean Independence Day",
     campaign_description: "T1 to celebrate the 80th Korea's Independence Day occasion.",
     campaign_key_messages: "Celebrate Korea's 80th Independece Day with the T1's ZOFGK members and get a chance to meet Faker!",
+    campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     organizer: "SKT T1 Cafe & Arena",
     location: "Busan, Korea",
     tags: ["Cafe", "Independence Day", "Event", "Korean Culture"],
@@ -141,6 +143,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_name: "One Piece Summer Fiesta",
     campaign_description: "A collaboration with One Piece to celebrate the summers.",
     campaign_key_messages: "Time to chill out during the summers with One Piece!",
+    campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     organizer: "Honey Toast Cafe Akihabara",
     location: "Tokyo, Japan",
     tags: ["Cafe", "Summer", "Event", "Celebration"],
@@ -208,6 +211,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_name: "Children's Day",
     campaign_description: "To allow parents to celebrate children's day with their children.",
     campaign_key_messages: "Eat as much as you want for Children's Day!",
+    campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     organizer: "St. Elmo Steak House",
     location: "Indiana, United States",
     tags: ["Restaurant", "Children's Day", "Family", "Event"],
@@ -275,6 +279,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_name: "Go Green",
     campaign_description: "Have some real food for once and enjoy the green scenery!",
     campaign_key_messages: "Have some real food for once and enjoy the green scenery!",
+    campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     organizer: "Real Food",
     location: "Kuala Lumpur, Malaysia",
     tags: ["Restaurant", "Sustainability", "Health", "Eco-Friendly"],
@@ -342,6 +347,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_name: "PWD Awareness",
     campaign_description: "A campaign to promote awareness for Person with Disabilities (PWD) and their capabilities to contribute to society",
     campaign_key_messages: "Fill yourself up with our delicious pie while also contributing to social issues, a win-win!",
+    campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     organizer: "Stand Pie Me Cafe",
     location: "Petaling Jaya, Malaysia",
     tags: ["Cafe", "Awareness", "Disability", "Social Impact"],

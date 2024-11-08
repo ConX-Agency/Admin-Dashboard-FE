@@ -1,5 +1,3 @@
-"use client";
-
 import { dummyDashboardCardData, dummyLastCompletedData, dummyTopInfluencerData } from "@/data/dashboard";
 import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
 import Image from "next/image";
@@ -80,7 +78,7 @@ const RecentCompletedCampaigns = () => {
       </div>
       <div>
         {dummyLastCompletedData.map((data, idx) => (
-          <div className="flex flex-row gap-4 w-full mb-6 items-center">
+          <div className="flex flex-row gap-4 w-full mb-6 items-center" key={idx}>
             <div className="rounded-full bg-blue-200 w-[50px] h-[50px] flex justify-center items-center flex-shrink-0">
               {data.icon}
             </div>
@@ -133,7 +131,7 @@ const TopInfluencers = () => {
       </div>
       <div>
         {updatedTopInfluencerData.map((data, idx) => (
-          <div className="flex flex-row gap-4 w-full mb-6 items-center">
+          <div className="flex flex-row gap-4 w-full mb-6 items-center" key={idx}>
             <div className="rounded-full w-[50px] h-[50px] flex justify-center items-center flex-shrink-0">
               <Image src={data.pic} width={50} height={50} className="object-cover rounded-full" alt="pic.jpg" />
             </div>
