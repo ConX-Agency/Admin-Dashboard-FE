@@ -286,7 +286,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
                 transition-all"/>
             <div className="pt-3 px-3 w-full text-ellipsis text-nowrap overflow-hidden">
               <span
-                className="font-semibold text-[17px] text-black hover:text-black/50
+                className="font-semibold text-[17px] text-neutral-50 tracking-[0.5px] hover:text-neutral-50/75
                 transition-all duration-300 dark:text-white dark:hover:text-white/75"
                 title={data.campaign_name}
                 onClick={() => directToCampaign(data.campaign_name)}
@@ -294,7 +294,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
                 {data.campaign_name}
               </span>
               <div className="w-full">
-                <span className="text-[12px]">{data.organizer}</span>
+                <span className="text-[12px] text-neutral-300/75">{data.organizer}</span>
               </div>
             </div>
             {/* Tags */}
@@ -326,12 +326,12 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
               ))}
             </div>
             {/* Bottom Half */}
-            <div className="mt-4 bg-black p-2 px-3 rounded-b-md w-full flex flex-row items-center justify-between gap-2 flex-wrap-reverse">
+            <div className="mt-4 bg-white dark:bg-black p-2 px-3 rounded-b-md w-full flex flex-row items-center justify-between gap-2 flex-wrap-reverse">
               <div className="flex flex-col justify-center">
-                <span className="text-[11px] text-neutral-200 font-semibold tracking-[.3px]">
+                <span className="text-[11px] text-neutral-500 dark:text-neutral-200 font-semibold tracking-[.3px]">
                   Due Date
                 </span>
-                <span className="text-[14px] text-neutral-50">
+                <span className="text-[14px] text-neutral-950 dark:text-neutral-50">
                   {data.dateRange.to}
                 </span>
               </div>
@@ -368,10 +368,10 @@ const IconWithTooltip: React.FC<IconWithToolTipProps> = ({
   <Popover>
     <PopoverTrigger asChild>
       <div
-        className="flex items-center justify-center bg-neutral-50 rounded-full w-[30px] h-[30px] transition-all duration-300 
+        className="flex items-center justify-center bg-neutral-950 dark:bg-neutral-50 rounded-full w-[30px] h-[30px] transition-all duration-300 
       text-black hover:bg-neutral-200"
       >
-        <IconComponent className="w-[15px] h-[15px]" />
+        <IconComponent className="w-[15px] h-[15px] text-neutral-50 dark:text-neutral-950" />
       </div>
     </PopoverTrigger>
     <PopoverContent className="w-full px-2 py-1" side="top" align="center">

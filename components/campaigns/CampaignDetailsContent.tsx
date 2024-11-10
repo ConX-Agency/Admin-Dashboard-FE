@@ -1,5 +1,7 @@
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import React from "react";
+import { AceTabs } from "../ui/aceTabs";
 
 const CampaignDetailsContent = () => {
   const searchParams = useSearchParams();
@@ -14,22 +16,39 @@ const CampaignDetailsContent = () => {
 };
 
 const CampaignDetailsDesktop = () => {
+  const tabs = [
+    {
+      title: "Campaign Details",
+      value: "Campaign Details",
+      content: (
+        <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-black dark:text-white bg-gradient-to-br bg-neutral-200 dark:bg-neutral-950">
+          <p>Campaign Details</p>
+        </div>
+      ),
+    },
+    {
+      title: "Influencer Involved",
+      value: "Influencer Involved",
+      content: (
+        <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-black dark:text-white bg-gradient-to-br bg-neutral-200 dark:bg-neutral-950">
+          <p>Influencer Involved</p>
+        </div>
+      ),
+    },
+    {
+      title: "Pending Services",
+      value: "Pending Services",
+      content: (
+        <div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-black dark:text-white bg-gradient-to-br bg-neutral-200 dark:bg-neutral-950">
+          <p>Pending Services</p>
+        </div>
+      ),
+    }
+  ];
+
   return (
-    <div className="flex flex-row gap-4 xxxs:hidden lg:flex w-full">
-      <div className="flex flex-col w-[70%] gap-4">
-        {/* Campaign Details Card */}
-        <div className="flex-grow bg-neutral-800 p-3 rounded-md">
-          <h1 className="text-xl font-bold tracking-[0.5px]">Campaign Details</h1>
-        </div>
-        {/* Influencer Details List */}
-        <div className="flex-grow">
-          test
-        </div>
-      </div>
-      {/* Activities Log */}
-      <div className="flex w-[30%]">
-        test
-      </div>
+    <div className="h-[20rem] md:h-[40rem] [perspective:1000px] relative b flex flex-col mx-auto w-full  items-start justify-start">
+      <AceTabs tabs={tabs} />
     </div>
   );
 };

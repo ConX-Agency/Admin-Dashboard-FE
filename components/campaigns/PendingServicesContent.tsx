@@ -213,7 +213,8 @@ const PendingServicesAccordion: React.FC<
           campaigns.map(campaign => (
             <AccordionItem key={campaign.id} value={`item-${campaign.id}`}>
               <AccordionTrigger>
-                <span className='font-bold xxxs:text-[13px] xs:text-[16px] flex gap-1 items-center group text-neutral-100 hover:text-neutral-100/75 transition-all duration-200'>
+                <span className='font-bold xxxs:text-[13px] xs:text-[16px] flex gap-1 items-center group text-neutral-950 hover:text-neutral-950/50 
+                  dark:text-neutral-100 dark:hover:text-neutral-100/50 transition-all duration-200'>
                   {campaign.campaign_name}
                   <IconArrowUpRight className='h-full w-auto rotate-0 group-hover:rotate-45 duration-200 transition-all' />
                 </span>
