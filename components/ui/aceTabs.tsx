@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 type Tab = {
   title: string;
+  titleIcon: React.ReactNode;
   value: string;
   content?: string | React.ReactNode | any;
 };
@@ -40,7 +41,8 @@ export const AceTabs = ({
     <>
       <div
         className={cn(
-          "flex flex-row items-center justify-start [perspective:1000px] relative overflow-auto sm:overflow-visible no-visible-scrollbar max-w-full w-full",
+          `flex flex-row items-center justify-start [perspective:1000px] relative overflow-auto sm:overflow-visible 
+            no-visible-scrollbar max-w-full w-full flex-nowrap`,
           containerClassName
         )}
       >
@@ -62,13 +64,15 @@ export const AceTabs = ({
                 layoutId="clickedbutton"
                 transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
                 className={cn(
-                  "absolute inset-0 bg-gray-200 dark:bg-zinc-800 rounded-full ",
+                  "absolute inset-0 bg-gray-200 dark:bg-zinc-800 rounded-full",
                   activeTabClassName
                 )}
               />
             )}
 
-            <span className="relative block text-black dark:text-white">
+            <span className={cn(`relative text-black dark:text-white text-sm flex flex-row flex-nowrap w-max
+                gap-2 items-center`, { "font-bold": active.value === tab.value })}>
+              {tab.titleIcon}
               {tab.title}
             </span>
           </button>
@@ -96,6 +100,17 @@ export const FadeInDiv = ({
   active: Tab;
   hovering?: boolean;
 }) => {
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(window.innerWidth >= 992);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 992);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const isActive = (tab: Tab) => {
     return tab.value === tabs[0].value;
   };
@@ -107,7 +122,7 @@ export const FadeInDiv = ({
           layoutId={tab.value}
           style={{
             scale: 1 - idx * 0.1,
-            top: hovering ? idx * -50 : 0,
+            top: hovering && isLargeScreen ? idx * -25 : 0,
             zIndex: -idx,
             opacity: idx < 3 ? 1 - idx * 0.1 : 0,
           }}
