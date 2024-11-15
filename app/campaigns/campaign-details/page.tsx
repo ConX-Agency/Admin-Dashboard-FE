@@ -3,6 +3,7 @@
 import { CampaignDetailsContent } from "@/components/campaigns/CampaignDetailsContent";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { IconCalendarCog, IconWorldPlus } from "@tabler/icons-react";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense } from "react";
 
@@ -17,16 +18,16 @@ const CampaignDetailsWrapper = () => {
           <div className="flex flex-row justify-between flex-wrap xxxs:gap-2">
             <h1 className="text-3xl font-semibold items-center">{name}</h1>
             <div className="flex flex-row gap-2">
-              <Button>
-                test
+              <Button variant={'outline'} className="w-[35px] p-0">
+                <IconCalendarCog className="text-black dark:text-white flex-shrink-0" />
               </Button>
-              <Button>
-                test
+              <Button variant={'outline'} className="w-[35px] p-0">
+                <IconWorldPlus className="text-black dark:text-white flex-shrink-0" />
               </Button>
             </div>
           </div>
           <Separator className="mt-0 mb-2" />
-          <CampaignDetailsContent />
+          <CampaignDetailsContent name={name} />
         </>
       ) : (
         <div className="text-gray-500">No campaign details available.</div>
