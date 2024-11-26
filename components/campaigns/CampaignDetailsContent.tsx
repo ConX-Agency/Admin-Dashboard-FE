@@ -92,18 +92,18 @@ const CampaignDetails = ({ name }: { name: string }) => {
 
   return (
     <div className="w-full relative rounded-2xl xxxs:p-3 md:p-4 font-bold flex flex-col gap-3 flex-grow min-h-full
-      text-black dark:text-white bg-gradient-to-br bg-neutral-50 dark:bg-neutral-950 shadow-md">
+      text-black dark:text-white bg-gradient-to-br bg-neutral-50 dark:bg-neutral-800 shadow-md">
       <div className="w-full h-max bg-black rounded-md overflow-hidden relative z-[1] after:z-[2] after:hidden
         after:content-[''] after:absolute after:w-full after:h-full after:top-0 after:left-0 after:bg-black/25 group
         transition-all duration-300 hover:after:block">
         <div className="absolute bottom-3 -left-48 z-[3] transition-all duration-300 flex
-          group-hover:left-3 px-2 py-1 rounded-full bg-white text-sm font-light">
+          group-hover:left-3 px-2 py-1 rounded-full bg-white dark:bg-black text-sm font-light">
           Resolution: 1200 x 400
         </div>
         <div className="absolute bottom-3 -right-28 z-[3] transition-all duration-300 flex justify-center items-center
-          group-hover:right-3 rounded-full px-2 py-2 bg-white/50 w-[35px] h-[35px] cursor-pointer 
-          hover:bg-white font-light">
-          <IconMaximize className="h-5 w-5 flex-shrink-0" />
+          group-hover:right-3 rounded-full px-2 py-2 bg-white/50 dark:bg-black/50 w-[35px] h-[35px] cursor-pointer 
+          hover:bg-white dark:hover:bg-black font-light">
+          <IconMaximize className="h-5 w-5 flex-shrink-0 text-black dark:text-white" />
         </div>
         <Image src={`${basePath}/images/banner-test.jpg`}
           width={1200}
