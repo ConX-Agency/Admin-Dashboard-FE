@@ -100,15 +100,17 @@ export const FadeInDiv = ({
   active: Tab;
   hovering?: boolean;
 }) => {
-  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(window.innerWidth >= 992);
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsLargeScreen(window.innerWidth >= 992);
-    };
+    if (typeof window !== "undefined") {
+      const handleResize = () => {
+        setIsLargeScreen(window.innerWidth >= 992);
+      };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
   }, []);
 
   const isActive = (tab: Tab) => {

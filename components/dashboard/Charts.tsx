@@ -1,12 +1,4 @@
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
@@ -19,13 +11,10 @@ import {
   SalesAnalyticsChartData,
   CampaignsChartData,
 } from "@/data/chart";
-import { TrendingUp } from "lucide-react";
 import React from "react";
 import {
   CartesianGrid,
-  AreaChart,
   XAxis,
-  Area,
   BarChart,
   Bar,
   Pie,

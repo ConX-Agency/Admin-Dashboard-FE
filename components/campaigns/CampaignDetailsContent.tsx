@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { AceTabs } from "../ui/aceTabs";
-import { IconBubbleFilled, IconBuildingStore, IconCalendarMonth, IconClock, IconCopyMinusFilled, IconMapPinFilled, IconMaximize, IconPlus, IconSpeakerphone, IconTicket, IconWorldStar } from "@tabler/icons-react";
+import { IconBubbleFilled, IconBuildingStore, IconCalendarMonth, IconClock, IconCopyMinusFilled, IconMapPinFilled, IconMaximize, IconPlus, IconSpeakerphone, IconTicket, IconWorldBolt, IconWorldStar } from "@tabler/icons-react";
 import Image from "next/image";
 import { dummyCampaignsData } from "@/data/campaign";
 import { AnimatedIconButton } from "../ui/button";
+import { Tilt } from 'react-tilt'
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
-const CampaignDetailsContent = ({ name, campaignModalVisible, influencerModalVisible }: 
-  { 
+const CampaignDetailsContent = ({ name, campaignModalVisible, influencerModalVisible }:
+  {
     name: string;
     campaignModalVisible?: boolean;
     influencerModalVisible?: boolean;
@@ -64,12 +66,12 @@ const CampaignDetails = ({ name }: { name: string }) => {
       icon: <IconBuildingStore className="h-5 w-5 flex-shrink-0" />
     },
     DateRange: <IconCalendarMonth className="h-5 w-5 flex-shrink-0" />,
-    KeyMessage: <IconBubbleFilled className="h-5 w-5 flex-shrink-0" />
+    InfluencerLimit: <IconWorldBolt className="h-5 w-5 flex-shrink-0" />
   }
 
   const FilteredCampaign = dummyCampaignsData.filter((campaign) => campaign.campaign_name === name);
   const [isExpanded, setIsExpanded] = useState(true);
-  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(window.innerWidth >= 992);
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
 
   const toggleExpand = () => {
     if (!isLargeScreen) {
@@ -78,16 +80,19 @@ const CampaignDetails = ({ name }: { name: string }) => {
   };
 
   useEffect(() => {
-    const checkScreenSize = () => {
-      const isNowLargeScreen = window.innerWidth >= 992;
-      setIsLargeScreen(isNowLargeScreen);
-      setIsExpanded(isNowLargeScreen); // Set isExpanded based on initial screen size
-    };
+    // Ensure code only runs in the browser
+    if (typeof window !== "undefined") {
+      const checkScreenSize = () => {
+        const isNowLargeScreen = window.innerWidth >= 992;
+        setIsLargeScreen(isNowLargeScreen);
+        setIsExpanded(isNowLargeScreen); // Set isExpanded based on initial screen size
+      };
 
-    checkScreenSize(); // Check screen size on initial load
+      checkScreenSize(); // Check screen size on initial load
 
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
+      window.addEventListener("resize", checkScreenSize);
+      return () => window.removeEventListener("resize", checkScreenSize);
+    }
   }, []);
 
   return (
@@ -115,34 +120,34 @@ const CampaignDetails = ({ name }: { name: string }) => {
       <div className="flex xxxs:flex-col lg:flex-row w-full h-full gap-3">
         <div className="grid grid-cols-1 gap-2 xxxs:w-full lg:w-[40%] flex-grow">
           <DetailsItem
-            icon={detailsIcons.Location.icon}
-            label="Location"
-            value={FilteredCampaign[0].location}
-          />
-          <DetailsItem
             icon={detailsIcons.Organizer.icon}
             label="Organizer"
-            value={FilteredCampaign[0].organizer}
+            value={`${FilteredCampaign[0].organizer} (${FilteredCampaign[0].location})`}
+          />
+          <DetailsItem
+            icon={detailsIcons.Location.icon}
+            label="Location"
+            value={FilteredCampaign[0].type}
           />
           <DetailsItem
             icon={detailsIcons.DateRange}
-            label="Start Date"
+            label="Campaign Date"
             value={`${FilteredCampaign[0].dateRange.from} - ${FilteredCampaign[0].dateRange.to}`}
           />
           <DetailsItem
-            icon={detailsIcons.KeyMessage}
-            label="End Date"
-            value={FilteredCampaign[0].campaign_key_messages}
+            icon={detailsIcons.InfluencerLimit}
+            label="Influencer Limit"
+            value={`${FilteredCampaign[0].campaign_min_influencer} - ${FilteredCampaign[0].campaign_max_influencer} influencers`}
           />
         </div>
         <div className="flex flex-col xxxs:w-full lg:w-[60%] gap-2 flex-grow">
           <div className="flex flex-row justify-between items-center">
             <h1 className="text-lg flex flex-row">
-              Description
+              Campaign Description
               <IconSpeakerphone className="ml-2" />
             </h1>
             <div className="xxxs:flex lg:hidden">
-              <AnimatedIconButton 
+              <AnimatedIconButton
                 isActive={isExpanded}
                 onClick={toggleExpand}
                 IconActive={IconCopyMinusFilled}
@@ -152,10 +157,10 @@ const CampaignDetails = ({ name }: { name: string }) => {
             </div>
           </div>
           <div
-        className={`w-full h-full rounded-md p-3 py-2 text-sm bg-neutral-300 text-black dark:bg-black 
+            className={`w-full h-full rounded-md p-3 py-2 text-sm bg-neutral-300 text-black dark:bg-black 
           dark:text-white font-light overflow-hidden leading-[1.3] transition-all duration-300 ease-in-out
           ${isExpanded ? "max-h-full" : "xxxs:max-h-[120px] xxxs:line-clamp-6 text-ellipsis"}`}
-      >
+          >
             {FilteredCampaign[0].campaign_description}
           </div>
         </div>
@@ -171,10 +176,18 @@ const DetailsItem = ({ icon, label, value }:
     value: string,
   }
 ) => (
+
   <div className="flex flex-row w-full gap-2 bg-neutral-300 dark:bg-black rounded-full h-[50px] px-2 py-2 items-center justify-start">
-    <div className="bg-black dark:bg-white rounded-full h-[35px] w-[35px] flex justify-center items-center text-white dark:text-black flex-shrink-0">
-      {icon}
-    </div>
+    <Popover>
+      <PopoverTrigger asChild>
+        <div className="bg-black dark:bg-white rounded-full h-[35px] w-[35px] flex justify-center items-center text-white dark:text-black flex-shrink-0">
+          {icon}
+        </div>
+      </PopoverTrigger>
+      <PopoverContent className="w-full px-2 py-1" side="top" align="center">
+        <span className="text-[12px]">{label}</span>
+      </PopoverContent>
+    </Popover>
     <div className="text-black dark:text-white text-sm font-light overflow-hidden max-h-[50px] line-clamp-2">
       {value}
     </div>
@@ -182,16 +195,55 @@ const DetailsItem = ({ icon, label, value }:
 );
 
 const OfferingInformation = ({ name }: { name: string }) => {
+  const [isTiltDisabled, setIsTiltDisabled] = useState<boolean>(false);
+  const defaultOptions = {
+    reverse: false, // reverse the tilt direction
+    max: isTiltDisabled ? 0 : 25, // Disable tilt if below 992px
+    perspective: isTiltDisabled ? 0 : 3000, // Set perspective to 0 to stop tilt
+    scale: 1,
+    speed: 1000,
+    transition: true,
+    axis: null,
+    reset: true,
+    easing: "cubic-bezier(.03,.98,.52,.99)",
+  };
+
+  useEffect(() => {
+    // Ensure code only runs in the browser
+    if (typeof window !== "undefined") {
+      const handleResize = () => {
+        setIsTiltDisabled(window.innerWidth < 992); // Disable tilt for screens smaller than 992px
+      };
+
+      // Initial check on component mount
+      handleResize();
+
+      // Add resize event listener
+      window.addEventListener("resize", handleResize);
+
+      // Cleanup on unmount
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+
   return (
-    <div className="w-full overflow-hidden relative rounded-2xl xxxs:p-3 md:p-4 font-bold  h-max
-      text-black dark:text-white bg-gradient-to-br bg-neutral-50 dark:bg-neutral-950 shadow-md">
-    </div>
+    <Tilt options={defaultOptions}>
+      <div className="w-full relative rounded-2xl xxxs:p-3 md:p-4 font-bold min-h-[450px] text-black dark:text-white bg-gradient-to-br
+        bg-white dark:bg-neutral-950 shadow-[0px_4px_0px] shadow-[rgba(0,0,0,0.15)]">
+        <div className="content-[''] absolute rounded-t-full bg-neutral-100 dark:bg-neutral-900 w-[80px] h-[40px] z-10 
+          xxxs:left-[50%] xxxs:-top-1 sm:left-5 sm:top-1/2 
+          translate-x-[-50%] xxxs:translate-y-[0] translate-y-[-50%] xxxs:rotate-180 sm:rotate-90"></div>
+        <div className="content-[''] absolute rounded-t-full bg-neutral-100 dark:bg-neutral-900 w-[80px] h-[40px] z-10 
+          xxxs:right-[50%] xxxs:-bottom-1 sm:right-5 sm:top-1/2 
+          translate-x-[50%] xxxs:translate-y-[0] sm:translate-y-[-50%] xxxs:rotate-0 sm:-rotate-90"></div>
+      </div>
+    </Tilt>
   )
 }
 
 const InfluencerInformation = ({ name }: { name: string }) => {
   return (
-    <div className="w-full overflow-hidden relative rounded-2xl xxxs:p-3 md:p-4 font-bold h-max
+    <div className="w-full overflow-hidden relative rounded-2xl xxxs:p-3 md:p-4 font-bold min-h-full
       text-black dark:text-white bg-gradient-to-br bg-neutral-50 dark:bg-neutral-950 shadow-md">
     </div>
   )
@@ -199,7 +251,7 @@ const InfluencerInformation = ({ name }: { name: string }) => {
 
 const PendingServices = ({ name }: { name: string }) => {
   return (
-    <div className="w-full overflow-hidden relative rounded-2xl xxxs:p-3 md:p-4 font-bold h-max
+    <div className="w-full overflow-hidden relative rounded-2xl xxxs:p-3 md:p-4 font-bold min-h-full
       text-black dark:text-white bg-gradient-to-br bg-neutral-50 dark:bg-neutral-950 shadow-md">
     </div>
   )

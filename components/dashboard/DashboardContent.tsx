@@ -18,8 +18,8 @@ const StatsCard = () => {
 
   return updatedDashboardCardData.slice(0, 4).map((cardData, cardDataId) => (
     <div
-      className="rounded-md bg-neutral-50 drop-shadow-md dark:bg-neutral-800 justify-between
-                                xxxs:w-[100%] h-[150px] p-4 flex flex-col statCard flex-grow"
+      className="rounded-md bg-neutral-50 drop-shadow-md dark:bg-neutral-800 justify-between xxxs:w-[100%] h-[150px] 
+        p-4 flex flex-col statCard flex-grow"
       key={cardDataId}
     >
       <div className="flex flex-row justify-between w-full items-center">

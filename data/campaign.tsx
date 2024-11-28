@@ -26,6 +26,7 @@ export interface Campaign {
   campaign_min_influencer: number;
   organizer: string;
   location: string;
+  type: string;
   tags: string[];
   offering: Offering;
   influencers: Influencer[];
@@ -74,21 +75,22 @@ export const monthRanges: { [key: string]: { from: Date; to: Date } } = {
 export const dummyCampaignsData: Campaign[] = [
   {
     id: "m5gr84i9",
-    campaign_name: "80th Korean Independence Day",
-    campaign_description: ` In celebration of Korea's 80th Independence Day, SKT T1 Cafe & Arena invites fans and influencers to join a 
-      vibrant cultural event in Busan, honoring the history and heritage of Korea. This special occasion brings 
+    campaign_name: "80th South Korean Independence Day",
+    campaign_description: ` In celebration of South Korea's 80th Independence Day, SKT T1 Cafe & Arena invites fans and influencers to join a 
+      vibrant cultural event in Busan, honoring the history and heritage of South Korea. This special occasion brings 
       together the thrill of esports with a tribute to national pride, featuring appearances by the two-time World Champion, 
       ZOFGK. Attendees will be treated to exclusive themed food and beverages, including the Limited Edition ZOFGK Coffee Art and 
       Merch, while influencers are offered a 10,000₩ food credit to share their experiences. With a festive atmosphere set 
       against the scenic backdrop of Busan, the event promises memorable moments for fans and influencers alike, fostering a deeper 
-      ppreciation of Korean culture and unity.`,
-    campaign_key_messages: "Celebrate Korea's 80th Independece Day with the 2x Worlds Champion, ZOFGK!",
+      ppreciation of South Korean culture and unity.`,
+    campaign_key_messages: "Celebrate South Korea's 80th Independece Day with the 2x Worlds Champion, ZOFGK!",
     campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     campaign_min_influencer: 5,
     campaign_max_influencer: 10,
     organizer: "SKT T1 Cafe & Arena",
-    location: "Busan, Korea",
-    tags: ["Cafe", "Independence Day", "Event", "Korean Culture"],
+    location: "Busan, South Korea",
+    type: "Food & Beverage",
+    tags: ["Cafe", "Independence Day", "Event", "South Korean Culture"],
     offering: {
       offering_type: "Food Credit",
       offering_description: "10000₩ Food Credit",
@@ -158,6 +160,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_max_influencer: 10,
     organizer: "Honey Toast Cafe Akihabara",
     location: "Tokyo, Japan",
+    type: "Food & Beverage",
     tags: ["Cafe", "Summer", "Event", "Celebration"],
     offering: {
       offering_type: "Food Credit",
@@ -228,6 +231,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_max_influencer: 10,
     organizer: "St. Elmo Steak House",
     location: "Indiana, United States",
+    type: "Food & Beverage",
     tags: ["Restaurant", "Children's Day", "Family", "Event"],
     offering: {
       offering_type: "Food Credit",
@@ -298,6 +302,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_max_influencer: 10,
     organizer: "Real Food",
     location: "Kuala Lumpur, Malaysia",
+    type: "Food & Beverage",
     tags: ["Restaurant", "Sustainability", "Health", "Eco-Friendly"],
     offering: {
       offering_type: "Food Credit",
@@ -368,6 +373,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_max_influencer: 10,
     organizer: "Stand Pie Me Cafe",
     location: "Petaling Jaya, Malaysia",
+    type: "Food & Beverage",
     tags: ["Cafe", "Awareness", "Disability", "Social Impact"],
     offering: {
       offering_type: "Food Credit",
@@ -433,7 +439,7 @@ export const dummyCampaignsData: Campaign[] = [
 export const dummyCountries = [
   "All",
   "Japan",
-  "Korea",
+  "South Korea",
   "United States",
   "Malaysia",
 ];
