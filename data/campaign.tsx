@@ -26,7 +26,7 @@ export interface Campaign {
   campaign_min_influencer: number;
   organizer: string;
   location: string;
-  type: string;
+  industry_type: string;
   tags: string[];
   offering: Offering;
   influencers: Influencer[];
@@ -89,7 +89,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_max_influencer: 10,
     organizer: "SKT T1 Cafe & Arena",
     location: "Busan, South Korea",
-    type: "Food & Beverage",
+    industry_type: "Food & Beverage",
     tags: ["Cafe", "Independence Day", "Event", "South Korean Culture"],
     offering: {
       offering_type: "Food Credit",
@@ -160,7 +160,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_max_influencer: 10,
     organizer: "Honey Toast Cafe Akihabara",
     location: "Tokyo, Japan",
-    type: "Food & Beverage",
+    industry_type: "Food & Beverage",
     tags: ["Cafe", "Summer", "Event", "Celebration"],
     offering: {
       offering_type: "Food Credit",
@@ -231,7 +231,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_max_influencer: 10,
     organizer: "St. Elmo Steak House",
     location: "Indiana, United States",
-    type: "Food & Beverage",
+    industry_type: "Food & Beverage",
     tags: ["Restaurant", "Children's Day", "Family", "Event"],
     offering: {
       offering_type: "Food Credit",
@@ -302,7 +302,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_max_influencer: 10,
     organizer: "Real Food",
     location: "Kuala Lumpur, Malaysia",
-    type: "Food & Beverage",
+    industry_type: "Food & Beverage",
     tags: ["Restaurant", "Sustainability", "Health", "Eco-Friendly"],
     offering: {
       offering_type: "Food Credit",
@@ -373,7 +373,7 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_max_influencer: 10,
     organizer: "Stand Pie Me Cafe",
     location: "Petaling Jaya, Malaysia",
-    type: "Food & Beverage",
+    industry_type: "Food & Beverage",
     tags: ["Cafe", "Awareness", "Disability", "Social Impact"],
     offering: {
       offering_type: "Food Credit",

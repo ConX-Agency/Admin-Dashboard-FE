@@ -5,9 +5,9 @@ import { Separator } from '../ui/separator';
 import { Campaign, CampaignCardsProps, dummyCampaignsData, FiltersProps, monthRanges, months, Services } from '@/data/campaign';
 import { cn, parseDate } from '@/lib/utils';
 import { IconCircleCheckFilled, IconClockHour2Filled, IconCircleXFilled, IconSearch, IconArrowUpRight, IconMoodEmpty } from '@tabler/icons-react';
-import { FilterDropdown } from './AllCampaignContent';
 import { Filter, FilterX, PencilIcon, PencilOffIcon, SaveIcon } from 'lucide-react';
 import { AnimatedIconButton, Button } from '../ui/button';
+import { FilterDropdown } from '../ui/filterDropdown';
 
 const PendingServicesContent = () => {
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
@@ -165,7 +165,7 @@ const PendingServicesFilter: React.FC<FiltersProps & {
         label='Month'
         items={months}
         value={multiFilter.month}
-        onValueChange={(value) => handleFilterChange("month", value)}
+        onValueChange={(value: any) => handleFilterChange("month", value)}
         minWidth="min-w-[115px]"
       />
 

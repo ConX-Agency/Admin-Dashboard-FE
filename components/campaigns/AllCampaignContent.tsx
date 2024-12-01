@@ -4,12 +4,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { AnimatedIconButton, Button } from "../ui/button";
 import { cn, parseDate } from "@/lib/utils";
-import { DropdownMenu, DropdownMenuRadioItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuRadioGroup } from "../ui/dropdown-menu";
 import { Calendar } from "@/components/ui/calendar"
 import { DateRange } from "react-day-picker";
 import { useRouter } from 'next/navigation';
 import { IconMoodEmpty } from "@tabler/icons-react";
 import Image from "next/image";
+import { FilterDropdown } from "../ui/filterDropdown";
 
 const AllCampaignContent = () => {
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
@@ -197,41 +197,6 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   );
 };
 
-const FilterDropdown = ({
-  label,
-  items,
-  value,
-  onValueChange,
-  minWidth,
-}: {
-  label: string;
-  items: string[];
-  value: string;
-  onValueChange: (value: string) => void;
-  minWidth: string;
-}) => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button
-        variant="outline"
-        className={`h-[40px] ${minWidth} p-2 flex justify-between items-center`}
-      >
-        <span>{value}</span>
-        <ChevronDown className="h-[20px] w-[20px] ml-1" />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent className="w-max">
-      <DropdownMenuRadioGroup value={value} onValueChange={onValueChange}>
-        {items.map((item, idx) => (
-          <DropdownMenuRadioItem value={item} key={idx}>
-            {item}
-          </DropdownMenuRadioItem>
-        ))}
-      </DropdownMenuRadioGroup>
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
-
 const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
   const scrollRefs = useRef<(HTMLDivElement | null)[]>([]); // Store refs in an array
   const router = useRouter();
@@ -380,4 +345,4 @@ const IconWithTooltip: React.FC<IconWithToolTipProps> = ({
   </Popover>
 );
 
-export { FilterDropdown, AllCampaignContent };
+export { AllCampaignContent };

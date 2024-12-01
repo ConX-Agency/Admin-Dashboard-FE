@@ -127,7 +127,7 @@ const CampaignDetails = ({ name }: { name: string }) => {
           <DetailsItem
             icon={detailsIcons.Location.icon}
             label="Location"
-            value={FilteredCampaign[0].type}
+            value={FilteredCampaign[0].industry_type}
           />
           <DetailsItem
             icon={detailsIcons.DateRange}

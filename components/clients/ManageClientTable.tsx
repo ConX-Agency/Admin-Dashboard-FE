@@ -19,6 +19,7 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -29,34 +30,110 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Activity, dummyPendingActivitiesData } from "@/data/dashboard"
+import { Checkbox } from "../ui/checkbox"
+import { dummyClientData, Client } from "@/data/clients"
+import { useState } from "react"
+import { Input } from "../ui/input"
+import { FilterDropdown } from "../ui/filterDropdown"
 
-export const columns: ColumnDef<Activity>[] = [
+export const columns: ColumnDef<Client>[] = [
     {
-        accessorKey: "campaign",
-        meta: "Campaign",
-        header: "Campaign",
+        id: "select",
+        header: ({ table }) => (
+            <Checkbox
+                checked={
+                    table.getIsAllPageRowsSelected() ||
+                    (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                aria-label="Select all"
+            />
+        ),
         cell: ({ row }) => (
-            <div className="capitalize cursor-pointer transition-all duration-300 
-                hover:text-black/75 dark:hover:text-white/75">
-                {row.getValue("campaign")}
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+    },
+    {
+        accessorKey: "company_name",
+        meta: "Company Name",
+        header: "Company Name",
+        cell: ({ row }) => (
+            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                {row.getValue("company_name")}
             </div>
         ),
     },
     {
-        accessorKey: "influencer",
-        meta: "Influencer",
-        header: "Influencer",
+        accessorKey: "company_email",
+        meta: "Company Email",
+        header: "Company Email",
         cell: ({ row }) => (
-            <div className="cursor-pointer transition-all duration-300 
-                hover:text-black/75 dark:hover:text-white/75">
-                {row.getValue("influencer")}
+            <div className="transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                {row.getValue("company_email")}
             </div>
         ),
     },
     {
-        accessorKey: "type",
-        meta: "Type",
+        accessorKey: "food_category",
+        meta: "Food Category",
+        header: "Food Category",
+        cell: ({ row }) => (
+            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                {row.getValue("food_category")}
+            </div>
+        ),
+    },
+    {
+        accessorFn: (row) => row.company_addresses?.[0]?.city || "N/A",
+        id: "city",
+        meta: "City",
+        header: "City",
+        cell: ({ row }) => (
+            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                {row.getValue("city")}
+            </div>
+        ),
+    },
+    {
+        accessorFn: (row) => row.company_addresses?.[0]?.country || "N/A",
+        id: "country",
+        meta: "Country",
+        header: "Country",
+        cell: ({ row }) => (
+            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                {row.getValue("country")}
+            </div>
+        ),
+    },
+    {
+        accessorKey: "pic_name",
+        meta: "PIC Name",
+        header: "PIC Name",
+        cell: ({ row }) => (
+            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                {row.getValue("pic_name")}
+            </div>
+        ),
+    },
+    {
+        accessorKey: "pic_email",
+        meta: "PIC Email",
+        header: "PIC Email",
+        cell: ({ row }) => (
+            <div className="transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                {row.getValue("pic_email")}
+            </div>
+        ),
+    },
+    {
+        accessorKey: "subscription",
+        meta: "Subcription Tier",
         header: ({ column }) => {
             return (
                 <Button
@@ -64,53 +141,26 @@ export const columns: ColumnDef<Activity>[] = [
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     className="pl-0 font-semibold"
                 >
-                    Type
+                    Subscription Tier
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("type")}</div>
+            <div className="capitalize">{row.getValue("subscription")}</div>
         ),
     },
-    {
-        accessorKey: "quantity",
-        meta: "Quantity",
-        header: "Quantity",
-        cell: ({ row }) => <div className="lowercase">{row.getValue("quantity")}</div>,
-    },
-    {
-        accessorKey: "end_date",
-        meta: "End Date",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="pl-0 font-semibold"
-                >
-                    End Date
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("end_date")}</div>
-        ),
-    },
-] 
+];
 
-export function DashboardTable() {
-    const [sorting, setSorting] = React.useState<SortingState>([])
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    )
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({})
-    const [rowSelection, setRowSelection] = React.useState({})
+export function ManageClientTable() {
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = React.useState({});
+    const [subscriptionFilter, setSubscriptionFilter] = useState<string>("");
 
     const table = useReactTable({
-        data: dummyPendingActivitiesData,
+        data: dummyClientData,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -128,12 +178,46 @@ export function DashboardTable() {
         },
     })
 
+    const handleSearch = (value: string) => {
+        table.setColumnFilters((prev) => [
+            ...prev.filter((filter) => filter.id !== "company_name"),
+            { id: "company_name", value },
+        ]);
+    };
+
+    const handleSubscriptionFilter = (value: string) => {
+        setSubscriptionFilter(value); // Update the filter value
+    };
+
+    React.useEffect(() => {
+        const subscriptionFilterCondition = subscriptionFilter && subscriptionFilter !== "All"
+            ? [{ id: "subscription", value: subscriptionFilter }]
+            : [];
+    
+        // Apply subscription filter without affecting other column filters
+        setColumnFilters((prev) => [
+            ...prev.filter((filter) => filter.id !== "subscription"),
+            ...subscriptionFilterCondition
+        ]);
+    }, [subscriptionFilter]);
+
     return (
         <div className="w-full px-4">
             <div className="flex items-center py-4">
-                <span className="poppins-bold text-[20px] text-black dark:text-white">
-                    Pending Activities
-                </span>
+                <div className="flex items-start">
+                    <Input
+                        placeholder="Search by company name..."
+                        onChange={(e) => handleSearch(e.target.value)}
+                        className="max-w-xs mr-2 h-[40px] bg-neutral-150"
+                    />
+                    <FilterDropdown
+                        label="Subscription Tier"
+                        items={["All", "Free Tier", "Bronze Tier", "Silver Tier", "Gold Tier", "Premium Tier"]}
+                        value={subscriptionFilter || "All"}
+                        onValueChange={handleSubscriptionFilter}
+                        minWidth="w-40"
+                    />
+                </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">
@@ -154,7 +238,7 @@ export function DashboardTable() {
                                         column,
                                         table,
                                         header: {}, // Provide dummy header if needed
-                                    } as HeaderContext<Activity, unknown>);
+                                    } as HeaderContext<Client, unknown>);
                                 } else {
                                     headerContent = column.columnDef.header || column.id;
                                 }
@@ -229,10 +313,9 @@ export function DashboardTable() {
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="flex-1 text-sm text-muted-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
+            <div className="flex items-center justify-between space-x-2 py-4">
+                <div className="items-start">
+                    <RowsPerPageDropdown table={table} />
                 </div>
                 <div className="space-x-2">
                     <Button
@@ -255,4 +338,35 @@ export function DashboardTable() {
             </div>
         </div>
     )
+}
+
+function RowsPerPageDropdown({ table }: { table: any }) {
+    const options = [5, 10, 20, 50]; // Define row limit options
+    const [rowsPerPage, setRowsPerPage] = useState(table.getState().pagination.pageSize);
+
+    const handleRowsPerPageChange = (size: number) => {
+        setRowsPerPage(size);
+        table.setPageSize(size);
+    };
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="text-sm">
+                    Rows per page: {rowsPerPage}
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                {options.map((option) => (
+                    <DropdownMenuItem
+                        key={option}
+                        onClick={() => handleRowsPerPageChange(option)}
+                        className={rowsPerPage === option ? "font-bold" : ""}
+                    >
+                        {option}
+                    </DropdownMenuItem>
+                ))}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
 }
