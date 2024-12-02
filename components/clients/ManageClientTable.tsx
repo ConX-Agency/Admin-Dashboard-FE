@@ -14,7 +14,7 @@ import {
 } from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { ActionButton, Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -35,122 +35,9 @@ import { dummyClientData, Client } from "@/data/clients"
 import { useState } from "react"
 import { Input } from "../ui/input"
 import { FilterDropdown } from "../ui/filterDropdown"
-
-export const columns: ColumnDef<Client>[] = [
-    {
-        id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        accessorKey: "company_name",
-        meta: "Company Name",
-        header: "Company Name",
-        cell: ({ row }) => (
-            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                {row.getValue("company_name")}
-            </div>
-        ),
-    },
-    {
-        accessorKey: "company_email",
-        meta: "Company Email",
-        header: "Company Email",
-        cell: ({ row }) => (
-            <div className="transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                {row.getValue("company_email")}
-            </div>
-        ),
-    },
-    {
-        accessorKey: "food_category",
-        meta: "Food Category",
-        header: "Food Category",
-        cell: ({ row }) => (
-            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                {row.getValue("food_category")}
-            </div>
-        ),
-    },
-    {
-        accessorFn: (row) => row.company_addresses?.[0]?.city || "N/A",
-        id: "city",
-        meta: "City",
-        header: "City",
-        cell: ({ row }) => (
-            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                {row.getValue("city")}
-            </div>
-        ),
-    },
-    {
-        accessorFn: (row) => row.company_addresses?.[0]?.country || "N/A",
-        id: "country",
-        meta: "Country",
-        header: "Country",
-        cell: ({ row }) => (
-            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                {row.getValue("country")}
-            </div>
-        ),
-    },
-    {
-        accessorKey: "pic_name",
-        meta: "PIC Name",
-        header: "PIC Name",
-        cell: ({ row }) => (
-            <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                {row.getValue("pic_name")}
-            </div>
-        ),
-    },
-    {
-        accessorKey: "pic_email",
-        meta: "PIC Email",
-        header: "PIC Email",
-        cell: ({ row }) => (
-            <div className="transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                {row.getValue("pic_email")}
-            </div>
-        ),
-    },
-    {
-        accessorKey: "subscription",
-        meta: "Subcription Tier",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="pl-0 font-semibold"
-                >
-                    Subscription Tier
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("subscription")}</div>
-        ),
-    },
-];
+import { IconPencil, IconTrash } from "@tabler/icons-react"
+import { UpdateModal } from "./UpdateClientModal"
+import { RegisterModal } from "./RegisterClientModal"
 
 export function ManageClientTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -158,7 +45,164 @@ export function ManageClientTable() {
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
     const [subscriptionFilter, setSubscriptionFilter] = useState<string>("");
+    const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+    const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
+    const [clientId, setClientId] = useState<string | null>(null);
+    const [test, setTest] = useState<string | null>(null);
 
+    //Table Columns Definitions
+    const columns: ColumnDef<Client>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    aria-label="Select row"
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
+        {
+            accessorKey: "company_name",
+            meta: "Company Name",
+            header: "Company Name",
+            cell: ({ row }) => (
+                <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                    {row.getValue("company_name")}
+                </div>
+            ),
+        },
+        {
+            accessorKey: "company_email",
+            meta: "Company Email",
+            header: "Company Email",
+            cell: ({ row }) => (
+                <div className="transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                    {row.getValue("company_email")}
+                </div>
+            ),
+        },
+        {
+            accessorKey: "food_category",
+            meta: "Food Category",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                        className="pl-0 font-semibold"
+                    >
+                        Food Category
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("food_category")}</div>
+            ),
+        },
+        {
+            accessorFn: (row) => row.company_addresses?.[0]?.city || "N/A",
+            id: "city",
+            meta: "City",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                        className="pl-0 font-semibold"
+                    >
+                        City
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("city")}</div>
+            ),
+        },
+        {
+            accessorFn: (row) => row.company_addresses?.[0]?.country || "N/A",
+            id: "country",
+            meta: "Country",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                        className="pl-0 font-semibold"
+                    >
+                        Country
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("country")}</div>
+            ),
+        },
+        {
+            accessorKey: "pic_name",
+            meta: "PIC Name",
+            header: "PIC Name",
+            cell: ({ row }) => (
+                <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                    {row.getValue("pic_name")}
+                </div>
+            ),
+        },
+        {
+            accessorKey: "pic_email",
+            meta: "PIC Email",
+            header: "PIC Email",
+            cell: ({ row }) => (
+                <div className="transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
+                    {row.getValue("pic_email")}
+                </div>
+            ),
+        },
+        {
+            accessorKey: "subscription",
+            meta: "Subcription Tier",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                        className="pl-0 font-semibold"
+                    >
+                        Subscription Tier
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("subscription")}</div>
+            ),
+        },
+        {
+            accessorKey: "Action",
+            meta: "Action",
+            header: "Action",
+            cell: ({ row }) => (
+                <ActionButton icon="pencil" label="update" onClick={() => handleOpenUpdateModal(row.original.client_id)} />
+            ),
+        },
+    ];
+
+    //Table Config
     const table = useReactTable({
         data: dummyClientData,
         columns,
@@ -178,6 +222,7 @@ export function ManageClientTable() {
         },
     })
 
+    //Action Buttons' Logics
     const handleSearch = (value: string) => {
         table.setColumnFilters((prev) => [
             ...prev.filter((filter) => filter.id !== "company_name"),
@@ -189,11 +234,44 @@ export function ManageClientTable() {
         setSubscriptionFilter(value); // Update the filter value
     };
 
+    const handleDelete = () => {
+        const selectedRows = table.getSelectedRowModel().rows;
+
+        // Extract and log client_id from each selected row
+        const clientIds = selectedRows.map((row) => row.original.client_id);
+        console.log("Selected Client IDs:", clientIds);
+    };
+
+    const handleOpenUpdateModal = (id: string) => {
+        setClientId(id);
+        setIsUpdateModalVisible(true);
+    };
+
+    const handleCloseUpdateModal = () => {
+        setIsUpdateModalVisible(false);
+    };
+
+    const handleOpenRegisterModal = () => {
+        setIsRegisterModalVisible(true);
+    };
+
+    const handleCloseRegisterModal = () => {
+        setIsRegisterModalVisible(false);
+    };
+
+    const handleUpdate = (data: string) => {
+        console.log(data);
+    }
+
+    const handleRegister = (data: string) => {
+        console.log(data);
+    }
+
     React.useEffect(() => {
         const subscriptionFilterCondition = subscriptionFilter && subscriptionFilter !== "All"
             ? [{ id: "subscription", value: subscriptionFilter }]
             : [];
-    
+
         // Apply subscription filter without affecting other column filters
         setColumnFilters((prev) => [
             ...prev.filter((filter) => filter.id !== "subscription"),
@@ -202,65 +280,56 @@ export function ManageClientTable() {
     }, [subscriptionFilter]);
 
     return (
-        <div className="w-full px-4">
-            <div className="flex items-center py-4">
-                <div className="flex items-start">
+        <div className="w-full">
+            <div className="flex items-center justify-between py-4 xxxs:flex-wrap md:flex-nowrap gap-2">
+                <div className="flex items-start gap-2">
                     <Input
-                        placeholder="Search by company name..."
+                        placeholder="Search by Company Name"
                         onChange={(e) => handleSearch(e.target.value)}
-                        className="max-w-xs mr-2 h-[40px] bg-neutral-150"
+                        className="max-w-xs h-[40px] bg-neutral-150 w-[202px]"
                     />
                     <FilterDropdown
                         label="Subscription Tier"
                         items={["All", "Free Tier", "Bronze Tier", "Silver Tier", "Gold Tier", "Premium Tier"]}
                         value={subscriptionFilter || "All"}
                         onValueChange={handleSubscriptionFilter}
-                        minWidth="w-40"
+                        minWidth="min-w-[121px]"
                     />
                 </div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
-                            Columns <ChevronDown className="ml-2 h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        {table
-                            .getAllColumns()
-                            .filter((column) => column.getCanHide())
-                            .map((column) => {
-                                let headerContent;
+                <div className="flex items-end gap-2">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" className="h-[40px]">
+                                Columns <ChevronDown className="ml-2 h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            {table
+                                .getAllColumns()
+                                .filter((column) => column.getCanHide())
+                                .map((column) => {
 
-                                // Render the header content as before
-                                if (typeof column.columnDef.header === "function") {
-                                    // Mock a minimal HeaderContext for rendering header content
-                                    headerContent = column.columnDef.header({
-                                        column,
-                                        table,
-                                        header: {}, // Provide dummy header if needed
-                                    } as HeaderContext<Client, unknown>);
-                                } else {
-                                    headerContent = column.columnDef.header || column.id;
-                                }
+                                    // Get the meta property if defined
+                                    const metaContent = column.columnDef.meta || "No meta";
 
-                                // Get the meta property if defined
-                                const metaContent = column.columnDef.meta || "No meta";
-
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
-                                    >
-                                        {metaContent.toString()}
-                                    </DropdownMenuCheckboxItem>
-                                );
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                                    return (
+                                        <DropdownMenuCheckboxItem
+                                            key={column.id}
+                                            className="capitalize"
+                                            checked={column.getIsVisible()}
+                                            onCheckedChange={(value) =>
+                                                column.toggleVisibility(!!value)
+                                            }
+                                        >
+                                            {metaContent.toString()}
+                                        </DropdownMenuCheckboxItem>
+                                    );
+                                })}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <ActionButton icon="trash" label="delete" onClick={handleDelete} />
+                    <ActionButton icon="plus" label="register" onClick={handleOpenRegisterModal} />
+                </div>
             </div>
             <div className="rounded-md border border-neutral-500">
                 <Table>
@@ -336,6 +405,19 @@ export function ManageClientTable() {
                     </Button>
                 </div>
             </div>
+
+            {/* Update & Register Modals */}
+            <UpdateModal 
+                clientId={clientId} 
+                closeUpdateModal={handleCloseUpdateModal} 
+                handleUpdate={handleUpdate} 
+                updateModalVisibility={isUpdateModalVisible} 
+            />
+            <RegisterModal 
+                closeRegisterModal={handleCloseRegisterModal} 
+                handleRegister={handleRegister} 
+                registerModalVisibility={isRegisterModalVisible} 
+            />
         </div>
     )
 }

@@ -145,19 +145,6 @@ export function DashboardTable() {
                             .getAllColumns()
                             .filter((column) => column.getCanHide())
                             .map((column) => {
-                                let headerContent;
-
-                                // Render the header content as before
-                                if (typeof column.columnDef.header === "function") {
-                                    // Mock a minimal HeaderContext for rendering header content
-                                    headerContent = column.columnDef.header({
-                                        column,
-                                        table,
-                                        header: {}, // Provide dummy header if needed
-                                    } as HeaderContext<Activity, unknown>);
-                                } else {
-                                    headerContent = column.columnDef.header || column.id;
-                                }
 
                                 // Get the meta property if defined
                                 const metaContent = column.columnDef.meta || "No meta";

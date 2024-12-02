@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { cn } from "@/lib/utils";
+import { IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
@@ -101,4 +102,33 @@ const AnimatedIconButton: React.FC<AnimatedIconButtonProps> = ({
   </AnimatePresence>
 );
 
-export { Button, buttonVariants, AnimatedIconButton };
+interface ActionButtonProps {
+  onClick: () => void; 
+  icon: "trash" | "pencil" | "plus", 
+  label: string
+}
+
+const ActionButton = ({ onClick, icon, label }: ActionButtonProps) => {
+  let iconComponent;
+
+  if (icon === "trash") {
+      iconComponent = <IconTrash className="h-4 w-4 group-hover:text-neutral-100 duration-100 transition-all" />;
+  } else if (icon === "pencil") {
+      iconComponent = <IconPencil className="h-4 w-4" />;
+  } else if (icon === "plus") {
+      iconComponent = <IconPlus className="h-4 w-4" />;
+  }
+
+  return (
+      <Button
+          variant="outline"
+          className={`h-[40px] px-3 py-0 duration-500 transition-all group ${icon === "trash" ? "hover:bg-red-600" : ""}`}
+          onClick={onClick}
+          aria-label={label}
+      >
+          {iconComponent}
+      </Button>
+  );
+};
+
+export { Button, buttonVariants, AnimatedIconButton, ActionButton };
