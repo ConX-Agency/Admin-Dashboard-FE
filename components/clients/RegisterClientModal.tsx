@@ -54,7 +54,7 @@ export const RegisterModal = ({ closeRegisterModal, handleRegister, registerModa
                                 icon="plus"
                                 label="Add More Address"
                                 textBtn="More Address"
-                                className="bg-neutral-800 hover:bg-neutral-800/75"
+                                className="dark:bg-neutral-800 bg-neutral-300 hover:bg-neutral-300/75 dark:hover:bg-neutral-800/75"
                             />
                         </div>
                         {addresses.map((address, index) => (
@@ -66,7 +66,7 @@ export const RegisterModal = ({ closeRegisterModal, handleRegister, registerModa
                                             onClick={() => removeAddress(address.id)}
                                             icon="trash"
                                             label="Remove Address"
-                                            className="bg-neutral-800 py-0 px-0 ml-2 h-[35px] w-[35px]"
+                                            className="dark:bg-neutral-800 bg-neutral-300 py-0 px-0 ml-2 h-[35px] w-[35px]"
                                         />
                                     )}
                                 </div>

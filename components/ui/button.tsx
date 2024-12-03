@@ -124,7 +124,7 @@ const ActionButton = ({ onClick, icon, label, textBtn, className }: ActionButton
   return (
     <Button
       variant="outline"
-      className={`h-[40px] px-3 py-0 duration-500 transition-all group ${icon === "trash" ? "hover:bg-red-600" : ""} ${className}`}
+      className={`h-[40px] px-3 py-0 duration-500 transition-all group ${className} ${icon === "trash" ? "hover:bg-red-600 dark:hover:bg-red-600" : ""}`}
       onClick={onClick}
       aria-label={label}
     >
