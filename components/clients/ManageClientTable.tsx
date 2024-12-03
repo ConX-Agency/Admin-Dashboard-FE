@@ -195,7 +195,7 @@ export function ManageClientTable() {
         {
             accessorKey: "Action",
             meta: "Action",
-            header: "Action",
+            header: "",
             cell: ({ row }) => (
                 <ActionButton icon="pencil" label="update" onClick={() => handleOpenUpdateModal(row.original.client_id)} />
             ),

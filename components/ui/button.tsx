@@ -38,7 +38,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
@@ -103,31 +103,38 @@ const AnimatedIconButton: React.FC<AnimatedIconButtonProps> = ({
 );
 
 interface ActionButtonProps {
-  onClick: () => void; 
-  icon: "trash" | "pencil" | "plus", 
+  onClick: () => void;
+  icon: "trash" | "pencil" | "plus",
   label: string
+  textBtn?: string;
+  className?: string;
 }
 
-const ActionButton = ({ onClick, icon, label }: ActionButtonProps) => {
+const ActionButton = ({ onClick, icon, label, textBtn, className }: ActionButtonProps) => {
   let iconComponent;
 
   if (icon === "trash") {
-      iconComponent = <IconTrash className="h-4 w-4 group-hover:text-neutral-100 duration-100 transition-all" />;
+    iconComponent = <IconTrash className="h-4 w-4 group-hover:text-neutral-100 duration-100 transition-all" />;
   } else if (icon === "pencil") {
-      iconComponent = <IconPencil className="h-4 w-4" />;
+    iconComponent = <IconPencil className="h-4 w-4" />;
   } else if (icon === "plus") {
-      iconComponent = <IconPlus className="h-4 w-4" />;
+    iconComponent = <IconPlus className="h-4 w-4" />;
   }
 
   return (
-      <Button
-          variant="outline"
-          className={`h-[40px] px-3 py-0 duration-500 transition-all group ${icon === "trash" ? "hover:bg-red-600" : ""}`}
-          onClick={onClick}
-          aria-label={label}
-      >
-          {iconComponent}
-      </Button>
+    <Button
+      variant="outline"
+      className={`h-[40px] px-3 py-0 duration-500 transition-all group ${icon === "trash" ? "hover:bg-red-600" : ""} ${className}`}
+      onClick={onClick}
+      aria-label={label}
+    >
+      {textBtn && (
+        <span className="mr-2">
+          {textBtn}
+        </span>
+      )}
+      {iconComponent}
+    </Button>
   );
 };
 
