@@ -47,7 +47,7 @@ export function ManageClientTable() {
     const [subscriptionFilter, setSubscriptionFilter] = useState<string>("");
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
-    const [clientId, setClientId] = useState<string | null>(null);
+    const [clientData, setClientData] = useState<Client | null>(null);
     const [test, setTest] = useState<string | null>(null);
 
     //Table Columns Definitions
@@ -197,7 +197,7 @@ export function ManageClientTable() {
             meta: "Action",
             header: "",
             cell: ({ row }) => (
-                <ActionButton icon="pencil" label="update" onClick={() => handleOpenUpdateModal(row.original.client_id)} />
+                <ActionButton icon="pencil" label="update" onClick={() => handleOpenUpdateModal(row.original)} />
             ),
         },
     ];
@@ -242,8 +242,8 @@ export function ManageClientTable() {
         console.log("Selected Client IDs:", clientIds);
     };
 
-    const handleOpenUpdateModal = (id: string) => {
-        setClientId(id);
+    const handleOpenUpdateModal = (data: Client) => {
+        setClientData(data);
         setIsUpdateModalVisible(true);
     };
 
@@ -259,11 +259,11 @@ export function ManageClientTable() {
         setIsRegisterModalVisible(false);
     };
 
-    const handleUpdate = (data: string) => {
+    const handleUpdate = (data: Client) => {
         console.log(data);
     }
 
-    const handleRegister = (data: string) => {
+    const handleRegister = (data: Client) => {
         console.log(data);
     }
 
@@ -408,7 +408,7 @@ export function ManageClientTable() {
 
             {/* Update & Register Modals */}
             <UpdateModal 
-                clientId={clientId} 
+                clientData={clientData} 
                 closeUpdateModal={handleCloseUpdateModal} 
                 handleUpdate={handleUpdate} 
                 updateModalVisibility={isUpdateModalVisible} 

@@ -1,10 +1,13 @@
 export interface clientAddress {
+    id?: number;
     address: string;
     city: string;
     postcode: string;
     state: string;
     country: string;
 }
+
+export type SubscriptionType = "Free Tier" | "Bronze Tier" | "Silver Tier" | "Gold Tier" | "Premium Tier";
 
 export interface Client {
     client_id: string;
@@ -17,7 +20,7 @@ export interface Client {
     food_category: string;
     contact_no: string;
     alt_contact_no: string;
-    subscription: "Free Tier" | "Bronze Tier" | "Silver Tier" | "Gold Tier" | "Premium Tier";
+    subscription: SubscriptionType;
 }
 
 export const dummyClientData: Client[] = [
