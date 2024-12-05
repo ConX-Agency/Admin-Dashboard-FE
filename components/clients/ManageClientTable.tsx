@@ -2,7 +2,6 @@ import * as React from "react"
 import {
     ColumnDef,
     ColumnFiltersState,
-    HeaderContext,
     SortingState,
     VisibilityState,
     flexRender,
@@ -12,7 +11,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown } from "lucide-react"
 
 import { ActionButton, Button } from "@/components/ui/button"
 import {
@@ -35,9 +34,9 @@ import { dummyClientData, Client } from "@/data/clients"
 import { useState } from "react"
 import { Input } from "../ui/input"
 import { FilterDropdown } from "../ui/filterDropdown"
-import { IconPencil, IconTrash } from "@tabler/icons-react"
 import { UpdateModal } from "./UpdateClientModal"
 import { RegisterModal } from "./RegisterClientModal"
+import { useToast } from "@/hooks/use-toast"
 
 export function ManageClientTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -48,7 +47,7 @@ export function ManageClientTable() {
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [clientData, setClientData] = useState<Client | null>(null);
-    const [test, setTest] = useState<string | null>(null);
+    const { toast } = useToast();
 
     //Table Columns Definitions
     const columns: ColumnDef<Client>[] = [
@@ -235,11 +234,34 @@ export function ManageClientTable() {
     };
 
     const handleDelete = () => {
+
         const selectedRows = table.getSelectedRowModel().rows;
 
-        // Extract and log client_id from each selected row
-        const clientIds = selectedRows.map((row) => row.original.client_id);
-        console.log("Selected Client IDs:", clientIds);
+        if (!selectedRows || selectedRows.length === 0) {
+            toast({
+                variant: "destructive",
+                title: "User not Selected",
+                description: `Can't proceed, select a user to delete first!`,
+                duration: 3000
+            })
+        } else {
+            // Extract and log client_id from each selected row
+            const clientIds = selectedRows.map((row) => row.original.client_id);
+            const clientNames = selectedRows.map((row) => row.original.company_name);
+            var concatenatedNames = "";
+
+            if (clientNames.length > 1) {
+                concatenatedNames = clientNames.join(", ");
+            }
+
+            //To add delete API here.
+
+            toast({
+                title: "Deletion is Successful",
+                description: `Successfully deleted ${concatenatedNames}'s profile(s).`,
+                duration: 5000
+            })
+        }
     };
 
     const handleOpenUpdateModal = (data: Client) => {
@@ -261,10 +283,26 @@ export function ManageClientTable() {
 
     const handleUpdate = (data: Client) => {
         console.log(data);
+
+        //To add Update API here.
+
+        toast({
+            title: "Update Profile is Successful",
+            description: `Successfully updated ${data.company_name}'s profile.`,
+            duration: 3000
+        });
     }
 
     const handleRegister = (data: Client) => {
         console.log(data);
+
+        //To add Register API here.
+
+        toast({
+            title: "Registeration is Successful",
+            description: `Successfully registered new client, ${data.company_name}.`,
+            duration: 3000
+        });
     }
 
     React.useEffect(() => {
