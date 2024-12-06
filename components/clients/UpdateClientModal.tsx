@@ -5,7 +5,7 @@ import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useEffect, useState } from "react";
 
-export const UpdateModal = ({ clientData, closeUpdateModal, handleUpdate, updateModalVisibility }: {
+export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, updateModalVisibility }: {
     clientData: Client | null;
     closeUpdateModal: () => void;
     handleUpdate: (data: Client) => void;

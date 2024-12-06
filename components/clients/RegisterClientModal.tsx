@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
-export const RegisterModal = ({ closeRegisterModal, handleRegister, registerModalVisibility }:
+export const RegisterClientModal = ({ closeRegisterModal, handleRegister, registerModalVisibility }:
     {
         closeRegisterModal: () => void;
         handleRegister: (data: Client) => void;

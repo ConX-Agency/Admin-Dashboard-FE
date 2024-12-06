@@ -34,8 +34,8 @@ import { dummyClientData, Client } from "@/data/clients"
 import { useState } from "react"
 import { Input } from "../ui/input"
 import { FilterDropdown } from "../ui/filterDropdown"
-import { UpdateModal } from "./UpdateClientModal"
-import { RegisterModal } from "./RegisterClientModal"
+import { UpdateClientModal } from "./UpdateClientModal"
+import { RegisterClientModal } from "./RegisterClientModal"
 import { useToast } from "@/hooks/use-toast"
 
 export function ManageClientTable() {
@@ -445,13 +445,13 @@ export function ManageClientTable() {
             </div>
 
             {/* Update & Register Modals */}
-            <UpdateModal 
+            <UpdateClientModal 
                 clientData={clientData} 
                 closeUpdateModal={handleCloseUpdateModal} 
                 handleUpdate={handleUpdate} 
                 updateModalVisibility={isUpdateModalVisible} 
             />
-            <RegisterModal 
+            <RegisterClientModal 
                 closeRegisterModal={handleCloseRegisterModal} 
                 handleRegister={handleRegister} 
                 registerModalVisibility={isRegisterModalVisible} 
