@@ -1,10 +1,10 @@
 import React from 'react'
-// import { ManageInfluencerTable } from './ManageInfluencerTable'
+import { ManageInfluencerTable } from './ManageInfluencerTable'
 
 const ManageInfluencerContent = () => {
   return (
     <div className="h-full w-full flex">
-        {/* <ManageInfluencerTable /> */}
+        <ManageInfluencerTable />
     </div>
   )
 }

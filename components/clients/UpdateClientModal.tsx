@@ -63,7 +63,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
     return (
         <Dialog open={updateModalVisibility}>
             <DialogContent className="xxxs:max-w-[300px] xxs:max-w-[340px] xs:max-w-[461px] sm:max-w-[556px] 
-                md:max-w-[738px] lg:max-w-[962px] xl:max-w-[1170px]"
+                    md:max-w-[738px] lg:max-w-[962px] xl:max-w-[1170px] max-h-[550px] overflow-y-scroll"
                 onEscapeKeyDown={closeUpdateModal} modalTopRightClose={closeUpdateModal}>
                 <DialogHeader>
                     <DialogTitle>Editing {clientData?.company_name} Profile</DialogTitle>
