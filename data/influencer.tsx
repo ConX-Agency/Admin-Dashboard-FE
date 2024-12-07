@@ -13,7 +13,7 @@ export interface SocialMediaPlatform {
     audience_focus_country: string;
     platform_focus: string;
     follower_count: number;
-    follower_count_tag: string;
+    
 }
 
 export interface Influencer {
@@ -51,7 +51,6 @@ export const dummyInfluencerData: Influencer[] = [
                 audience_focus_country: "USA",
                 platform_focus: "Influencer",
                 follower_count: 250000,
-                follower_count_tag: "250k",
             },
             {
                 type: "tiktok",
@@ -59,7 +58,6 @@ export const dummyInfluencerData: Influencer[] = [
                 audience_focus_country: "USA",
                 platform_focus: "Content Creation",
                 follower_count: 500000,
-                follower_count_tag: "500k",
             },
         ],
         total_follower_count: 750000
@@ -86,7 +84,6 @@ export const dummyInfluencerData: Influencer[] = [
                 audience_focus_country: "Canada",
                 platform_focus: "Tech Reviews",
                 follower_count: 120000,
-                follower_count_tag: "120k",
             },
         ],
         total_follower_count: 120000
@@ -113,7 +110,6 @@ export const dummyInfluencerData: Influencer[] = [
                 audience_focus_country: "UK",
                 platform_focus: "Food Review",
                 follower_count: 95000,
-                follower_count_tag: "95k",
             },
             {
                 type: "RED",
@@ -121,7 +117,6 @@ export const dummyInfluencerData: Influencer[] = [
                 audience_focus_country: "China",
                 platform_focus: "Travel Vlogs",
                 follower_count: 80000,
-                follower_count_tag: "80k",
             },
         ],
         total_follower_count: 175000
@@ -148,7 +143,6 @@ export const dummyInfluencerData: Influencer[] = [
                 audience_focus_country: "India",
                 platform_focus: "Short Skits",
                 follower_count: 300000,
-                follower_count_tag: "300k",
             },
         ],
         total_follower_count: 300000
@@ -175,7 +169,6 @@ export const dummyInfluencerData: Influencer[] = [
                 audience_focus_country: "Japan",
                 platform_focus: "Game Streaming",
                 follower_count: 150000,
-                follower_count_tag: "150k",
             },
             {
                 type: "instagram",
@@ -183,7 +176,6 @@ export const dummyInfluencerData: Influencer[] = [
                 audience_focus_country: "Japan",
                 platform_focus: "Digital Art",
                 follower_count: 45000,
-                follower_count_tag: "45k",
             },
         ],
         total_follower_count: 195000

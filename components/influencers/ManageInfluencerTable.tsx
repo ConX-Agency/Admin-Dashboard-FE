@@ -40,10 +40,10 @@ import { useToast } from "@/hooks/use-toast"
 
 export function ManageInfluencerTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [followerRange, setFollowerRange] = useState<[number | null, number | null]>([null, null]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
-    const [subscriptionFilter, setSubscriptionFilter] = useState<string>("");
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [influencerData, setInfluencerData] = useState<Influencer | null>(null);
@@ -200,10 +200,6 @@ export function ManageInfluencerTable() {
         ]);
     };
 
-    const handleSubscriptionFilter = (value: string) => {
-        setSubscriptionFilter(value); // Update the filter value
-    };
-
     const handleDelete = () => {
 
         const selectedRows = table.getSelectedRowModel().rows;
@@ -276,17 +272,27 @@ export function ManageInfluencerTable() {
         });
     }
 
+    const handleFollowerRangeChange = (min: number | null, max: number | null) => {
+        setFollowerRange([min, max]);
+    };
+    
+    // Apply the filter logic
     React.useEffect(() => {
-        const subscriptionFilterCondition = subscriptionFilter && subscriptionFilter !== "All"
-            ? [{ id: "subscription", value: subscriptionFilter }]
+        const rangeFilterCondition =
+            followerRange && (followerRange[0] !== null || followerRange[1] !== null)
+            ? [
+                    {
+                        id: "total_follower_count",
+                        value: followerRange,
+                    },
+                ]
             : [];
-
-        // Apply subscription filter without affecting other column filters
+            
         setColumnFilters((prev) => [
-            ...prev.filter((filter) => filter.id !== "subscription"),
-            ...subscriptionFilterCondition
+            ...prev.filter((filter) => filter.id !== "total_follower_count"),
+            ...rangeFilterCondition,
         ]);
-    }, [subscriptionFilter]);
+    }, [followerRange]);
 
     return (
         <div className="w-full">
@@ -297,13 +303,20 @@ export function ManageInfluencerTable() {
                         onChange={(e) => handleSearch(e.target.value)}
                         className="max-w-xs h-[40px] bg-neutral-150 w-[202px]"
                     />
-                    <FilterDropdown
-                        label="Subscription Tier"
-                        items={["All", "Free Tier", "Bronze Tier", "Silver Tier", "Gold Tier", "Premium Tier"]}
-                        value={subscriptionFilter || "All"}
-                        onValueChange={handleSubscriptionFilter}
-                        minWidth="min-w-[121px]"
-                    />
+                    <div className="flex items-center gap-2">
+                        <Input
+                            placeholder="Min Followers"
+                            type="number"
+                            onChange={(e) => handleFollowerRangeChange(Number(e.target.value) || null, followerRange[1])}
+                            className="h-[40px] bg-neutral-150 w-[140px]"
+                        />
+                        <Input
+                            placeholder="Max Followers"
+                            type="number"
+                            onChange={(e) => handleFollowerRangeChange(followerRange[0], Number(e.target.value) || null)}
+                            className="h-[40px] bg-neutral-150 w-[140px]"
+                        />
+                    </div>
                 </div>
                 <div className="flex items-end gap-2">
                     <DropdownMenu>
