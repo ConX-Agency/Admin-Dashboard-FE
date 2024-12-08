@@ -35,32 +35,33 @@ export const UpdateInfluencerModal = ({
         }
     }, [influencerData]);
 
-    const handleTogglePlatform = (type: SocialMediaPlatform["type"]) => {
+    const handleTogglePlatform = (type: SocialMediaPlatform["platform_name"]) => {
         setPlatforms((prevPlatforms) => {
             // Check if platform type already exists
-            const existingPlatform = prevPlatforms.find((platform) => platform.type === type);
+            const existingPlatform = prevPlatforms.find((platform) => platform.platform_name === type);
             if (existingPlatform) {
                 // If it exists, remove it
-                return prevPlatforms.filter((platform) => platform.type !== type);
+                return prevPlatforms.filter((platform) => platform.platform_name !== type);
             } else {
                 // If not, add a new platform
                 return [
                     ...prevPlatforms,
                     {
-                        type,
-                        industry: "",
+                        account_id: crypto.randomUUID(),
+                        influencer_id: influencerData?.influencer_id || "",
+                        social_media_url: "",
+                        platform_name: type,
                         audience_focus_country: "",
-                        platform_focus: "",
+                        platform_focus: "UGC",
                         follower_count: 0,
-                        follower_count_tag: "",
                     },
                 ];
             }
         });
     };
 
-    const isPlatformSelected = (type: SocialMediaPlatform["type"]) =>
-        platforms.some((platform) => platform.type === type);
+    const isPlatformSelected = (type: SocialMediaPlatform["platform_name"]) =>
+        platforms.some((platform) => platform.platform_name === type);
 
     const handleSave = () => {
         // Extracting address fields
@@ -75,13 +76,12 @@ export const UpdateInfluencerModal = ({
         // Extracting platforms with their updated fields
         const updatedPlatforms = platforms.map((platform) => ({
             ...platform,
-            industry: (document.getElementById(`industry-${platform.type}`) as HTMLInputElement).value,
             audience_focus_country: (
-                document.getElementById(`audience-focus-country-${platform.type}`) as HTMLInputElement
+                document.getElementById(`audience-focus-country-${platform.platform_name}`) as HTMLInputElement
             ).value,
-            platform_focus: (document.getElementById(`platform-focus-${platform.type}`) as HTMLInputElement).value,
+            platform_focus: (document.getElementById(`platform-focus-${platform.platform_name}`) as HTMLInputElement).value as SocialMediaPlatform["platform_focus"],
             follower_count: parseInt(
-                (document.getElementById(`follower-count-${platform.type}`) as HTMLInputElement).value
+                (document.getElementById(`follower-count-${platform.platform_name}`) as HTMLInputElement).value
             ) || 0,
         }));
     
@@ -90,15 +90,19 @@ export const UpdateInfluencerModal = ({
             influencer_id: influencerData?.influencer_id || crypto.randomUUID(),
             full_name: (document.getElementById("full_name") as HTMLInputElement).value,
             preferred_name: (document.getElementById("preferred_name") as HTMLInputElement).value,
-            contact_no: (document.getElementById("contact_no") as HTMLInputElement).value,
-            alt_contact_no: (document.getElementById("alt_contact_no") as HTMLInputElement).value,
+            contact_number: (document.getElementById("contact_number") as HTMLInputElement).value,
+            alt_contact_number: (document.getElementById("alt_contact_number") as HTMLInputElement).value,
             email_address: (document.getElementById("email_address") as HTMLInputElement).value,
+            whatsapp_consent: false,
+            whatsapp_invited: false,
+            community_invited: false,
             address,
             platforms: updatedPlatforms,
             total_follower_count: updatedPlatforms.reduce(
                 (total, platform) => total + platform.follower_count,
                 0
             ),
+            invite_count: 0
         };
     
         // Call the update handler with the updated influencer object
@@ -140,17 +144,17 @@ export const UpdateInfluencerModal = ({
                     <Input
                         className="col-span-1"
                         type="text"
-                        id="contact_no"
+                        id="contact_number"
                         placeholder="Contact Number"
-                        defaultValue={influencerData?.contact_no}
+                        defaultValue={influencerData?.contact_number}
                         required
                     />
                     <Input
                         className="col-span-1"
                         type="text"
-                        id="alt_contact_no"
+                        id="alt_contact_number"
                         placeholder="Alternative Contact Number"
-                        defaultValue={influencerData?.alt_contact_no}
+                        defaultValue={influencerData?.alt_contact_number}
                         required
                     />
                     <Input
@@ -215,8 +219,8 @@ export const UpdateInfluencerModal = ({
                                 {["instagram", "tiktok", "youtube", "RED"].map((type) => (
                                     <DropdownMenuCheckboxItem
                                         key={type}
-                                        checked={isPlatformSelected(type as SocialMediaPlatform["type"])}
-                                        onSelect={() => handleTogglePlatform(type as SocialMediaPlatform["type"])}
+                                        checked={isPlatformSelected(type as SocialMediaPlatform["platform_name"])}
+                                        onSelect={() => handleTogglePlatform(type as SocialMediaPlatform["platform_name"])}
                                     >
                                         {type.charAt(0).toUpperCase() + type.slice(1)}
                                     </DropdownMenuCheckboxItem>
@@ -226,38 +230,30 @@ export const UpdateInfluencerModal = ({
                     </div>
                     {platforms.map((platform, index) => (
                         <div className="mb-2">
-                            <p className="capitalize ml-1 text-lg font-semibold mb-2">{platform.type}</p>
+                            <p className="capitalize ml-1 text-lg font-semibold mb-2">{platform.platform_name}</p>
                             <div className="grid grid-cols-4 gap-4">
                                 <Input
-                                    className="col-span-1"
+                                    className="col-span-4"
                                     type="text"
-                                    id={`industry-${platform.type}`}
+                                    id={`social_media_url-${platform.platform_name}`}
                                     placeholder="Type"
-                                    defaultValue={platform.industry}
+                                    defaultValue={platform.social_media_url}
                                     required
                                 />
                                 <Input
-                                    className="col-span-1"
+                                    className="col-span-4"
                                     type="text"
-                                    id={`audience-focus-country-${platform.type}`}
-                                    placeholder="Audience Focus Country"
+                                    id={`audience-focus-country-${platform.platform_name}`}
+                                    placeholder="Type"
                                     defaultValue={platform.audience_focus_country}
                                     required
                                 />
                                 <Input
-                                    className="col-span-1"
+                                    className="col-span-4"
                                     type="text"
-                                    id={`platform-focus-${platform.type}`}
-                                    placeholder="Platform Focus"
+                                    id={`platform-focus-${platform.platform_name}`}
+                                    placeholder="Type"
                                     defaultValue={platform.platform_focus}
-                                    required
-                                />
-                                <Input
-                                    className="col-span-1"
-                                    type="number"
-                                    id={`follower-count-${platform.type}`}
-                                    placeholder="Follower Count"
-                                    defaultValue={platform.follower_count}
                                     required
                                 />
                             </div>

@@ -94,8 +94,8 @@ export function ManageClientTable() {
             ),
         },
         {
-            accessorKey: "food_category",
-            meta: "Food Category",
+            accessorKey: "category",
+            meta: "Category",
             header: ({ column }) => {
                 return (
                     <Button
@@ -103,17 +103,17 @@ export function ManageClientTable() {
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                         className="pl-0 font-semibold"
                     >
-                        Food Category
+                        Category
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                 )
             },
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("food_category")}</div>
+                <div className="capitalize">{row.getValue("category")}</div>
             ),
         },
         {
-            accessorFn: (row) => row.company_addresses?.[0]?.city || "N/A",
+            accessorFn: (row) => row.addresses?.[0]?.city || "N/A",
             id: "city",
             meta: "City",
             header: ({ column }) => {
@@ -133,7 +133,7 @@ export function ManageClientTable() {
             ),
         },
         {
-            accessorFn: (row) => row.company_addresses?.[0]?.country || "N/A",
+            accessorFn: (row) => row.addresses?.[0]?.country || "N/A",
             id: "country",
             meta: "Country",
             header: ({ column }) => {
@@ -153,28 +153,28 @@ export function ManageClientTable() {
             ),
         },
         {
-            accessorKey: "pic_name",
+            accessorKey: "person_in_charge_name",
             meta: "PIC Name",
             header: "PIC Name",
             cell: ({ row }) => (
                 <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                    {row.getValue("pic_name")}
+                    {row.getValue("person_in_charge_name")}
                 </div>
             ),
         },
         {
-            accessorKey: "pic_email",
+            accessorKey: "person_in_charge_email",
             meta: "PIC Email",
             header: "PIC Email",
             cell: ({ row }) => (
                 <div className="transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                    {row.getValue("pic_email")}
+                    {row.getValue("person_in_charge_email")}
                 </div>
             ),
         },
         {
-            accessorKey: "subscription",
-            meta: "Subcription Tier",
+            accessorKey: "status",
+            meta: "Status",
             header: ({ column }) => {
                 return (
                     <Button
@@ -182,13 +182,13 @@ export function ManageClientTable() {
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                         className="pl-0 font-semibold"
                     >
-                        Subscription Tier
+                        Status
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                 )
             },
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("subscription")}</div>
+                <div className="capitalize">{row.getValue("status")}</div>
             ),
         },
         {

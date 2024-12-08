@@ -39,29 +39,30 @@ export const RegisterInfluencerModal = ({
         }
     }, [registerModalVisibility]);
 
-    const handleTogglePlatform = (type: SocialMediaPlatform["type"]) => {
+    const handleTogglePlatform = (type: SocialMediaPlatform["platform_name"]) => {
         setPlatforms((prevPlatforms) => {
-            const existingPlatform = prevPlatforms.find((platform) => platform.type === type);
+            const existingPlatform = prevPlatforms.find((platform) => platform.platform_name === type);
             if (existingPlatform) {
-                return prevPlatforms.filter((platform) => platform.type !== type);
+                return prevPlatforms.filter((platform) => platform.platform_name !== type);
             } else {
                 return [
                     ...prevPlatforms,
                     {
-                        type,
-                        industry: "",
+                        account_id: crypto.randomUUID(),
+                        influencer_id: crypto.randomUUID(),
+                        social_media_url: "",
+                        platform_name: type,
                         audience_focus_country: "",
-                        platform_focus: "",
+                        platform_focus: "UGC",
                         follower_count: 0,
-                        follower_count_tag: "",
                     },
                 ];
             }
         });
     };
 
-    const isPlatformSelected = (type: SocialMediaPlatform["type"]) =>
-        platforms.some((platform) => platform.type === type);
+    const isPlatformSelected = (type: SocialMediaPlatform["platform_name"]) =>
+        platforms.some((platform) => platform.platform_name === type);
 
     const handleSave = () => {
         const address = {
@@ -74,16 +75,16 @@ export const RegisterInfluencerModal = ({
 
         const updatedPlatforms = platforms.map((platform) => ({
             ...platform,
-            industry: (document.getElementById(`industry-${platform.type}`) as HTMLInputElement)
+            industry: (document.getElementById(`industry-${platform.platform_name}`) as HTMLInputElement)
                 .value,
             audience_focus_country: (
-                document.getElementById(`audience-focus-country-${platform.type}`) as HTMLInputElement
+                document.getElementById(`audience-focus-country-${platform.platform_name}`) as HTMLInputElement
             ).value,
             platform_focus: (
-                document.getElementById(`platform-focus-${platform.type}`) as HTMLInputElement
-            ).value,
+                document.getElementById(`platform-focus-${platform.platform_name}`) as HTMLInputElement
+            ).value as SocialMediaPlatform["platform_focus"],
             follower_count: parseInt(
-                (document.getElementById(`follower-count-${platform.type}`) as HTMLInputElement)
+                (document.getElementById(`follower-count-${platform.platform_name}`) as HTMLInputElement)
                     .value
             ) || 0,
         }));
@@ -92,15 +93,19 @@ export const RegisterInfluencerModal = ({
             influencer_id: crypto.randomUUID(),
             full_name: (document.getElementById("full_name") as HTMLInputElement).value,
             preferred_name: (document.getElementById("preferred_name") as HTMLInputElement).value,
-            contact_no: (document.getElementById("contact_no") as HTMLInputElement).value,
-            alt_contact_no: (document.getElementById("alt_contact_no") as HTMLInputElement).value,
+            contact_number: (document.getElementById("contact_number") as HTMLInputElement).value,
+            alt_contact_number: (document.getElementById("alt_contact_number") as HTMLInputElement).value,
             email_address: (document.getElementById("email_address") as HTMLInputElement).value,
+            whatsapp_consent: false,
+            whatsapp_invited: false,
+            community_invited: false,
             address,
             platforms: updatedPlatforms,
             total_follower_count: updatedPlatforms.reduce(
                 (total, platform) => total + platform.follower_count,
                 0
             ),
+            invite_count: 0
         };
 
         handleRegister(newInfluencer);
@@ -138,14 +143,14 @@ export const RegisterInfluencerModal = ({
                     <Input
                         className="col-span-1"
                         type="text"
-                        id="contact_no"
+                        id="contact_number"
                         placeholder="Contact Number"
                         required
                     />
                     <Input
                         className="col-span-1"
                         type="text"
-                        id="alt_contact_no"
+                        id="alt_contact_number"
                         placeholder="Alternative Contact Number"
                     />
                     <Input
@@ -204,8 +209,8 @@ export const RegisterInfluencerModal = ({
                                 {["instagram", "tiktok", "youtube", "RED"].map((type) => (
                                     <DropdownMenuCheckboxItem
                                         key={type}
-                                        checked={isPlatformSelected(type as SocialMediaPlatform["type"])}
-                                        onSelect={() => handleTogglePlatform(type as SocialMediaPlatform["type"])}
+                                        checked={isPlatformSelected(type as SocialMediaPlatform["platform_name"])}
+                                        onSelect={() => handleTogglePlatform(type as SocialMediaPlatform["platform_name"])}
                                     >
                                         {type.charAt(0).toUpperCase() + type.slice(1)}
                                     </DropdownMenuCheckboxItem>
@@ -214,34 +219,34 @@ export const RegisterInfluencerModal = ({
                         </DropdownMenu>
                     </div>
                     {platforms.map((platform) => (
-                        <div key={platform.type} className="mb-2">
-                            <p className="capitalize ml-1 text-lg font-semibold mb-2">{platform.type}</p>
+                        <div key={platform.platform_name} className="mb-2">
+                            <p className="capitalize ml-1 text-lg font-semibold mb-2">{platform.platform_name}</p>
                             <div className="grid grid-cols-4 gap-4">
                                 <Input
                                     className="col-span-1"
                                     type="text"
-                                    id={`industry-${platform.type}`}
+                                    id={`industry-${platform.platform_name}`}
                                     placeholder="Industry"
                                     required
                                 />
                                 <Input
                                     className="col-span-1"
                                     type="text"
-                                    id={`audience-focus-country-${platform.type}`}
+                                    id={`audience-focus-country-${platform.platform_name}`}
                                     placeholder="Audience Focus Country"
                                     required
                                 />
                                 <Input
                                     className="col-span-1"
                                     type="text"
-                                    id={`platform-focus-${platform.type}`}
+                                    id={`platform-focus-${platform.platform_name}`}
                                     placeholder="Platform Focus"
                                     required
                                 />
                                 <Input
                                     className="col-span-1"
                                     type="number"
-                                    id={`follower-count-${platform.type}`}
+                                    id={`follower-count-${platform.platform_name}`}
                                     placeholder="Follower Count"
                                     required
                                 />

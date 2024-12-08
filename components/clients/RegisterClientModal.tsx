@@ -12,13 +12,13 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
         registerModalVisibility: boolean;
     }) => {
     const [addresses, setAddresses] = useState<clientAddress[]>([
-        { id: Date.now(), address: "", city: "", postcode: "", state: "", country: "" },
+        { temp_id: Date.now(), client_location_id: "", client_id: "", address: "", city: "", postcode: "", state: "", country: "" },
     ]);
 
     useEffect(() => {
         if (registerModalVisibility) {
             setAddresses([
-                { id: Date.now(), address: "", city: "", postcode: "", state: "", country: "" },
+                { temp_id: Date.now(), client_location_id: "", client_id: "", address: "", city: "", postcode: "", state: "", country: "" },
             ]);
         }
     }, [registerModalVisibility]);
@@ -26,7 +26,7 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
     // Add a new address section with a unique ID
     const addAddress = () => {
         setAddresses([...addresses, {
-            id: Date.now(),
+            temp_id: Date.now(),
             address: "",
             city: "",
             postcode: "",
@@ -37,27 +37,31 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
 
     // Remove an address section based on its unique ID
     const removeAddress = (id: number) => {
-        setAddresses(addresses.filter((address) => address.id !== id));
+        setAddresses(addresses.filter((address) => address.temp_id !== id));
     };
 
     const saveClient = () => {
+        const client_id = crypto.randomUUID();
+
         const client: Client = {
-            client_id: crypto.randomUUID(), // Generate a unique ID for the client
+            client_id: client_id, // Generate a unique ID for the client
             company_name: (document.getElementById("company_name") as HTMLInputElement).value,
             company_email: (document.getElementById("company_email_address") as HTMLInputElement).value,
-            contact_no: (document.getElementById("contact_number") as HTMLInputElement).value,
-            alt_contact_no: (document.getElementById("alt_contact_no") as HTMLInputElement).value,
-            pic_name: (document.getElementById("pic_name") as HTMLInputElement).value,
-            pic_email: (document.getElementById("pic_email") as HTMLInputElement).value,
-            industry_type: (document.getElementById("industry") as HTMLInputElement).value,
-            food_category: (document.getElementById("category") as HTMLInputElement).value,
-            subscription: (document.getElementById("subscription") as HTMLInputElement).value as Client["subscription"],
-            company_addresses: addresses.map((address, index) => ({
-                address: (document.getElementById(`address-${index}`) as HTMLInputElement).value,
-                city: (document.getElementById(`city-${index}`) as HTMLInputElement).value,
-                postcode: (document.getElementById(`postcode-${index}`) as HTMLInputElement).value,
-                state: (document.getElementById(`state-${index}`) as HTMLInputElement).value,
-                country: (document.getElementById(`country-${index}`) as HTMLInputElement).value,
+            contact_number: (document.getElementById("contact_number") as HTMLInputElement).value,
+            additional_contact_number: (document.getElementById("additional_contact_number") as HTMLInputElement).value,
+            person_in_charge_name: (document.getElementById("person_in_charge_name") as HTMLInputElement).value,
+            person_in_charge_email: (document.getElementById("person_in_charge_email") as HTMLInputElement).value,
+            industry: (document.getElementById("industry") as HTMLInputElement).value,
+            category: (document.getElementById("category") as HTMLInputElement).value,
+            status: "Active",
+            addresses: addresses.map((address, index) => ({
+                client_location_id: crypto.randomUUID(),
+                client_id: client_id,
+                address: (document.getElementById(`address-${address.temp_id}`) as HTMLInputElement).value,
+                city: (document.getElementById(`city-${address.temp_id}`) as HTMLInputElement).value,
+                postcode: (document.getElementById(`postcode-${address.temp_id}`) as HTMLInputElement).value,
+                state: (document.getElementById(`state-${address.temp_id}`) as HTMLInputElement).value,
+                country: (document.getElementById(`country-${address.temp_id}`) as HTMLInputElement).value,
             })),
         };
 
@@ -82,12 +86,11 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                         <Input type="text" id="company_name" placeholder="Company Name" className="col-span-2" required />
                         <Input type="email" id="company_email_address" placeholder="Company Email Address" className="col-span-1" required />
                         <Input type="text" id="contact_number" placeholder="Contact Number" className="col-span-1" required />
-                        <Input type="text" id="pic_name" placeholder="PIC Name" className="col-span-2" required />
-                        <Input type="email" id="pic_email" placeholder="PIC Email" className="col-span-1" required />
-                        <Input type="text" id="alt_contact_no" placeholder="Alt Contact Number" className="col-span-1" required />
+                        <Input type="text" id="person_in_charge_name" placeholder="PIC Name" className="col-span-2" required />
+                        <Input type="email" id="person_in_charge_email" placeholder="PIC Email" className="col-span-1" required />
+                        <Input type="text" id="additional_contact_number" placeholder="Additional Contact Number" className="col-span-1" required />
                         <Input type="text" id="industry" placeholder="Industry" className="col-span-1" required />
                         <Input type="text" id="category" placeholder="Category" className="col-span-1" required />
-                        <Input type="text" id="subscription" placeholder="Subscription" className="col-span-1" required />
                     </div>
                     <Separator className="my-2 mb-0" />
                     <div className="flex flex-col w-full gap-4">
@@ -101,12 +104,12 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                             />
                         </div>
                         {addresses.map((address, index) => (
-                            <div key={address.id} className="flex flex-col gap-4 mb-2" id={`address-form-${address.id}`}>
+                            <div key={address.temp_id} className="flex flex-col gap-4 mb-2" id={`address-form-${address.temp_id}`}>
                                 <div className="flex flex-row items-center justify-between">
                                     <h1 className="ml-1 text-lg font-semibold">Address #{index + 1}</h1>
                                     {index > 0 && (
                                         <ActionButton
-                                            onClick={() => removeAddress(address.id!)}
+                                            onClick={() => removeAddress(address.temp_id!)}
                                             icon="trash"
                                             label="Remove Address"
                                             className="dark:bg-neutral-800 bg-neutral-300 py-0 px-0 ml-2 h-[35px] w-[35px]"
@@ -114,11 +117,11 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     )}
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                    <Input type="text" id={`address-${address.id}`} placeholder="Address" className="col-span-3" required />
-                                    <Input type="number" id={`postcode-${address.id}`} placeholder="Postcode" className="col-span-1" required />
-                                    <Input type="text" id={`city-${address.id}`} placeholder="City" className="col-span-1" required />
-                                    <Input type="text" id={`state-${address.id}`} placeholder="State" className="col-span-1" required />
-                                    <Input type="text" id={`country-${address.id}`} placeholder="Country" className="col-span-1" required />
+                                    <Input type="text" id={`country-${address.temp_id}`} placeholder="Country" className="col-span-1" required />
+                                    <Input type="text" id={`state-${address.temp_id}`} placeholder="State" className="col-span-1" required />
+                                    <Input type="text" id={`city-${address.temp_id}`} placeholder="City" className="col-span-1" required />
+                                    <Input type="number" id={`postcode-${address.temp_id}`} placeholder="Postcode" className="col-span-1" required />
+                                    <Input type="text" id={`address-${address.temp_id}`} placeholder="Address" className="col-span-3" required />
                                 </div>
                             </div>
                         ))}
