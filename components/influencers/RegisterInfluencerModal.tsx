@@ -222,32 +222,28 @@ export const RegisterInfluencerModal = ({
                         <div key={platform.platform_name} className="mb-2">
                             <p className="capitalize ml-1 text-lg font-semibold mb-2">{platform.platform_name}</p>
                             <div className="grid grid-cols-4 gap-4">
-                                <Input
-                                    className="col-span-1"
+                            <Input
+                                    className="col-span-2"
                                     type="text"
-                                    id={`industry-${platform.platform_name}`}
-                                    placeholder="Industry"
+                                    id={`social_media_url-${platform.platform_name}`}
+                                    placeholder="Type"
+                                    defaultValue={platform.social_media_url}
                                     required
                                 />
                                 <Input
                                     className="col-span-1"
                                     type="text"
                                     id={`audience-focus-country-${platform.platform_name}`}
-                                    placeholder="Audience Focus Country"
+                                    placeholder="Type"
+                                    defaultValue={platform.audience_focus_country}
                                     required
                                 />
                                 <Input
                                     className="col-span-1"
                                     type="text"
                                     id={`platform-focus-${platform.platform_name}`}
-                                    placeholder="Platform Focus"
-                                    required
-                                />
-                                <Input
-                                    className="col-span-1"
-                                    type="number"
-                                    id={`follower-count-${platform.platform_name}`}
-                                    placeholder="Follower Count"
+                                    placeholder="Type"
+                                    defaultValue={platform.platform_focus}
                                     required
                                 />
                             </div>

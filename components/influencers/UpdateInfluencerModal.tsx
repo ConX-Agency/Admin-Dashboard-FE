@@ -233,7 +233,7 @@ export const UpdateInfluencerModal = ({
                             <p className="capitalize ml-1 text-lg font-semibold mb-2">{platform.platform_name}</p>
                             <div className="grid grid-cols-4 gap-4">
                                 <Input
-                                    className="col-span-4"
+                                    className="col-span-2"
                                     type="text"
                                     id={`social_media_url-${platform.platform_name}`}
                                     placeholder="Type"
@@ -241,7 +241,7 @@ export const UpdateInfluencerModal = ({
                                     required
                                 />
                                 <Input
-                                    className="col-span-4"
+                                    className="col-span-1"
                                     type="text"
                                     id={`audience-focus-country-${platform.platform_name}`}
                                     placeholder="Type"
@@ -249,12 +249,19 @@ export const UpdateInfluencerModal = ({
                                     required
                                 />
                                 <Input
-                                    className="col-span-4"
+                                    className="col-span-1"
                                     type="text"
                                     id={`platform-focus-${platform.platform_name}`}
                                     placeholder="Type"
                                     defaultValue={platform.platform_focus}
                                     required
+                                />
+                                <Input
+                                    className="col-span-1 hidden"
+                                    type="text"
+                                    id={`follower-count-${platform.platform_name}`}
+                                    placeholder="Type"
+                                    defaultValue={platform.follower_count}
                                 />
                             </div>
                         </div>

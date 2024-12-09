@@ -37,6 +37,8 @@ import { FilterDropdown } from "../ui/filterDropdown"
 import { UpdateInfluencerModal } from "./UpdateInfluencerModal"
 import { RegisterInfluencerModal } from "./RegisterInfluencerModal"
 import { useToast } from "@/hooks/use-toast"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { Label } from "recharts"
 
 export function ManageInfluencerTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -100,7 +102,23 @@ export function ManageInfluencerTable() {
                 )
             },
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("total_follower_count")}</div>
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <div className="capitalize cursor-pointer">
+                            {row.getValue("total_follower_count")}
+                        </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80">
+                        <div className="grid gap-4">
+                            {row.original.platforms.map((platform) => (
+                                <div key={platform.platform_name}> {/* Add a key for each child */}
+                                    <div className="font-semibold">{platform.platform_name}</div>
+                                    <div>{platform.follower_count} followers</div>
+                                </div>
+                            ))}
+                        </div>
+                    </PopoverContent>
+                </Popover>
             ),
         },
         {
@@ -143,22 +161,22 @@ export function ManageInfluencerTable() {
             ),
         },
         {
-            accessorKey: "contact_no",
+            accessorKey: "contact_number",
             meta: "Contact Number",
             header: "Contact Number",
             cell: ({ row }) => (
                 <div className="capitalize transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                    {row.getValue("contact_no")}
+                    {row.getValue("contact_number")}
                 </div>
             ),
         },
         {
-            accessorKey: "alt_contact_no",
+            accessorKey: "alt_contact_number",
             meta: "Alt Contact Number",
             header: "Alt Contact Number",
             cell: ({ row }) => (
                 <div className="transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                    {row.getValue("alt_contact_no")}
+                    {row.getValue("alt_contact_number")}
                 </div>
             ),
         },
@@ -275,19 +293,19 @@ export function ManageInfluencerTable() {
     const handleFollowerRangeChange = (min: number | null, max: number | null) => {
         setFollowerRange([min, max]);
     };
-    
+
     // Apply the filter logic
     React.useEffect(() => {
         const rangeFilterCondition =
             followerRange && (followerRange[0] !== null || followerRange[1] !== null)
-            ? [
+                ? [
                     {
                         id: "total_follower_count",
                         value: followerRange,
                     },
                 ]
-            : [];
-            
+                : [];
+
         setColumnFilters((prev) => [
             ...prev.filter((filter) => filter.id !== "total_follower_count"),
             ...rangeFilterCondition,
@@ -429,16 +447,16 @@ export function ManageInfluencerTable() {
             </div>
 
             {/* Update & Register Modals */}
-            <UpdateInfluencerModal 
-                influencerData={influencerData} 
-                closeUpdateModal={handleCloseUpdateModal} 
-                handleUpdate={handleUpdate} 
-                updateModalVisibility={isUpdateModalVisible} 
+            <UpdateInfluencerModal
+                influencerData={influencerData}
+                closeUpdateModal={handleCloseUpdateModal}
+                handleUpdate={handleUpdate}
+                updateModalVisibility={isUpdateModalVisible}
             />
-            <RegisterInfluencerModal 
-                closeRegisterModal={handleCloseRegisterModal} 
-                handleRegister={handleRegister} 
-                registerModalVisibility={isRegisterModalVisible} 
+            <RegisterInfluencerModal
+                closeRegisterModal={handleCloseRegisterModal}
+                handleRegister={handleRegister}
+                registerModalVisibility={isRegisterModalVisible}
             />
         </div>
     )
