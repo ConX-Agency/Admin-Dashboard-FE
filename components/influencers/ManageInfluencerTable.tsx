@@ -33,12 +33,12 @@ import { Checkbox } from "../ui/checkbox"
 import { dummyInfluencerData, Influencer } from "@/data/influencer"
 import { useState } from "react"
 import { Input } from "../ui/input"
-import { FilterDropdown } from "../ui/filterDropdown"
 import { UpdateInfluencerModal } from "./UpdateInfluencerModal"
 import { RegisterInfluencerModal } from "./RegisterInfluencerModal"
 import { useToast } from "@/hooks/use-toast"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Label } from "recharts"
+import { formatFollowerCount } from "@/lib/utils"
+import Image from 'next/image'
 
 export function ManageInfluencerTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -50,6 +50,7 @@ export function ManageInfluencerTable() {
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [influencerData, setInfluencerData] = useState<Influencer | null>(null);
     const { toast } = useToast();
+    const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
 
     //Table Columns Definitions
     const columns: ColumnDef<Influencer>[] = [
@@ -108,12 +109,21 @@ export function ManageInfluencerTable() {
                             {row.getValue("total_follower_count")}
                         </div>
                     </PopoverTrigger>
-                    <PopoverContent className="w-80">
+                    <PopoverContent className="max-w-[200px]" align="start">
                         <div className="grid gap-4">
                             {row.original.platforms.map((platform) => (
-                                <div key={platform.platform_name}> {/* Add a key for each child */}
-                                    <div className="font-semibold">{platform.platform_name}</div>
-                                    <div>{platform.follower_count} followers</div>
+                                <div key={platform.platform_name} className="flex flex-row gap-4 items-center"> {/* Add a key for each child */}
+                                    <a href={platform.social_media_url} className="group">
+                                        <Image 
+                                            src={`${basePath}/images/logo/${platform.platform_name}.svg`} 
+                                            width={40} 
+                                            height={40} 
+                                            alt="platform-icon.svg"
+                                            className={`w-[30px] h-[30px] opacity-70 group-hover:opacity-100 duration-300 transition-all
+                                                ${platform.platform_name === "RED" ? "bg-white rounded-[5px]" : ""}`}
+                                        />
+                                    </a>
+                                    <div>{formatFollowerCount(platform.follower_count)} Followers</div>
                                 </div>
                             ))}
                         </div>

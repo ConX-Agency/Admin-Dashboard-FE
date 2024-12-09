@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import { AddressDropdown } from "../ui/addressDropdown";
 
 export const RegisterClientModal = ({ closeRegisterModal, handleRegister, registerModalVisibility }:
     {
