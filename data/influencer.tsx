@@ -47,7 +47,7 @@ export const dummyInfluencerData: Influencer[] = [
             city: "Los Angeles",
             postcode: "90001",
             state: "California",
-            country: "USA",
+            country: "United States",
         },
         platforms: [
             {
@@ -55,7 +55,7 @@ export const dummyInfluencerData: Influencer[] = [
                 influencer_id: "eb626727-ea74-4de7-87ab-db79039c5042",
                 social_media_url: "https://instagram.com/emily123",
                 platform_name: "instagram",
-                audience_focus_country: "USA",
+                audience_focus_country: "United States",
                 platform_focus: "Lifestyle",
                 follower_count: 250000,
             },
@@ -64,7 +64,7 @@ export const dummyInfluencerData: Influencer[] = [
                 influencer_id: "eb626727-ea74-4de7-87ab-db79039c5042",
                 social_media_url: "https://tiktok.com/@emily123",
                 platform_name: "tiktok",
-                audience_focus_country: "USA",
+                audience_focus_country: "United States",
                 platform_focus: "UGC",
                 follower_count: 500000,
             },
@@ -117,10 +117,10 @@ export const dummyInfluencerData: Influencer[] = [
         address: {
             id: 3,
             address: "789 Pine Road",
-            city: "London",
+            city: "",
             postcode: "E1 6AN",
-            state: "England",
-            country: "UK",
+            state: "Strabane District Council",
+            country: "United Kingdom",
         },
         platforms: [
             {
@@ -128,7 +128,7 @@ export const dummyInfluencerData: Influencer[] = [
                 influencer_id: "9d7c1722-18e7-4c99-94ed-a22f41f34e04",
                 social_media_url: "https://instagram.com/sophmart",
                 platform_name: "instagram",
-                audience_focus_country: "UK",
+                audience_focus_country: "United Kingdom",
                 platform_focus: "Food",
                 follower_count: 95000,
             },
@@ -190,7 +190,7 @@ export const dummyInfluencerData: Influencer[] = [
         address: {
             id: 5,
             address: "654 Willow Lane",
-            city: "Tokyo",
+            city: "Edogawa Ku",
             postcode: "100-0001",
             state: "Tokyo",
             country: "Japan",

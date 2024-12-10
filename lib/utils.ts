@@ -46,3 +46,7 @@ export function formatFollowerCount(count: number): string {
   }
   return count.toString();
 }
+
+export function getFollowerCount(platforms: string[]) {
+  // Need to Add this.
+}

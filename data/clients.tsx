@@ -2,7 +2,7 @@ export interface clientAddress {
     temp_id?: number;
     client_location_id: string;
     client_id: string;
-    country: string;
+    country: string; 
     state: string;
     city: string;
     postcode: string;
@@ -30,11 +30,10 @@ export const dummyClientData: Client[] = [
         company_email: "info@tastytreats.com",
         addresses: [
             {
-                temp_id: 1,
                 client_location_id: "loc1",
                 client_id: "eb626727-ea74-4de7-87ab-db79039c5042",
                 address: "123 Flavor Street",
-                city: "Kuala Lumpur",
+                city: "Klang",
                 postcode: "50000",
                 state: "Selangor",
                 country: "Malaysia",
@@ -54,7 +53,6 @@ export const dummyClientData: Client[] = [
         company_email: "contact@souvlakihaven.com",
         addresses: [
             {
-                temp_id: 2,
                 client_location_id: "loc2",
                 client_id: "1ba79f5d-e465-4287-85fd-c39b19dfcee1",
                 address: "56 Mediterranean Lane",
@@ -78,7 +76,6 @@ export const dummyClientData: Client[] = [
         company_email: "hello@currydelight.com",
         addresses: [
             {
-                temp_id: 3,
                 client_location_id: "loc3",
                 client_id: "9d7c1722-18e7-4c99-94ed-a22f41f34e04",
                 address: "22 Spice Road",
@@ -102,7 +99,6 @@ export const dummyClientData: Client[] = [
         company_email: "info@pizzaparadise.com",
         addresses: [
             {
-                temp_id: 4,
                 client_location_id: "loc4",
                 client_id: "c4ee145b-2781-4070-a00d-2862e19c2a4a",
                 address: "99 Italian Avenue",
@@ -126,7 +122,6 @@ export const dummyClientData: Client[] = [
         company_email: "contact@sushiworld.com",
         addresses: [
             {
-                temp_id: 5,
                 client_location_id: "loc5",
                 client_id: "5b1c7f01-90ae-4fab-9983-60b8cbdddf51",
                 address: "88 Sashimi Street",

@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { AddressDropdown } from "../ui/addressDropdown";
+import { AddressDropdowns } from "../ui/addressDropdown"; // Updated from AddressDropdown to AddressDropdowns
 
 export const RegisterClientModal = ({ closeRegisterModal, handleRegister, registerModalVisibility }:
     {
@@ -28,12 +28,14 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
     const addAddress = () => {
         setAddresses([...addresses, {
             temp_id: Date.now(),
+            client_id: crypto.randomUUID(),
+            client_location_id: crypto.randomUUID(),
             address: "",
             city: "",
             postcode: "",
             state: "",
-            country: ""
-        } as clientAddress ]);
+            country: "",
+        }]);
     };
 
     // Remove an address section based on its unique ID
@@ -55,7 +57,7 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
             industry: (document.getElementById("industry") as HTMLInputElement).value,
             category: (document.getElementById("category") as HTMLInputElement).value,
             status: "Active",
-            addresses: addresses.map((address, index) => ({
+            addresses: addresses.map((address) => ({
                 client_location_id: crypto.randomUUID(),
                 client_id: client_id,
                 address: (document.getElementById(`address-${address.temp_id}`) as HTMLInputElement).value,
@@ -118,11 +120,25 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     )}
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                    <Input type="text" id={`country-${address.temp_id}`} placeholder="Country" className="col-span-1" required />
-                                    <Input type="text" id={`state-${address.temp_id}`} placeholder="State" className="col-span-1" required />
-                                    <Input type="text" id={`city-${address.temp_id}`} placeholder="City" className="col-span-1" required />
-                                    <Input type="number" id={`postcode-${address.temp_id}`} placeholder="Postcode" className="col-span-1" required />
-                                    <Input type="text" id={`address-${address.temp_id}`} placeholder="Address" className="col-span-3" required />
+                                    {/* <AddressDropdowns
+                                        countryInputId={`country-${address.temp_id}`} 
+                                        stateInputId={`state-${address.temp_id}`}
+                                        cityInputId={`city-${address.temp_id}`}
+                                        country={address.country}
+                                        state={address.state}
+                                        city={address.city}
+                                        setCountry={(val: string) => setAddresses(addresses.map((addr) =>
+                                            addr.temp_id === address.temp_id ? { ...addr, country: val } : addr
+                                        ))}
+                                        setState={(val: string) => setAddresses(addresses.map((addr) =>
+                                            addr.temp_id === address.temp_id ? { ...addr, state: val } : addr
+                                        ))}
+                                        setCity={(val: string) => setAddresses(addresses.map((addr) =>
+                                            addr.temp_id === address.temp_id ? { ...addr, country: val } : addr
+                                        ))}
+                                    /> */}
+                                    <Input type="number" id={`postcode-${address.temp_id}`} placeholder="Postcode" defaultValue={address.postcode} className="col-span-1" required />
+                                    <Input type="text" id={`address-${address.temp_id}`} placeholder="Address" defaultValue={address.address} className="col-span-3" required />
                                 </div>
                             </div>
                         ))}

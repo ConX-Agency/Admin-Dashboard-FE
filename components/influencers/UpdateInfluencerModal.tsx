@@ -10,9 +10,12 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { PlusIcon } from "lucide-react";
+import { AddressDropdowns, CountryInput } from "../ui/addressDropdown";
+import { Country } from "@/data/shared";
+import { GetCountries } from "react-country-state-city";
 
 export const UpdateInfluencerModal = ({
     influencerData,
@@ -25,25 +28,69 @@ export const UpdateInfluencerModal = ({
     handleUpdate: (data: Influencer) => void;
     updateModalVisibility: boolean;
 }) => {
-    const [platforms, setPlatforms] = useState<SocialMediaPlatform[]>(
-        influencerData?.platforms || []
-    );
+    const [platforms, setPlatforms] = useState<SocialMediaPlatform[]>(influencerData?.platforms || []);
+    const [originalPlatforms, setOriginalPlatforms] = useState<SocialMediaPlatform[]>(influencerData?.platforms || []);
+    const [country, setCountry] = useState<string>("");
+    const [state, setState] = useState<string>("");
+    const [city, setCity] = useState<string>("");
+    const [countriesList, setCountriesList] = useState<Country[]>([]);
+
+    // References for form fields
+    const fullNameRef = useRef<HTMLInputElement>(null);
+    const preferredNameRef = useRef<HTMLInputElement>(null);
+    const contactNumberRef = useRef<HTMLInputElement>(null);
+    const altContactNumberRef = useRef<HTMLInputElement>(null);
+    const emailAddressRef = useRef<HTMLInputElement>(null);
+    const addressRef = useRef<HTMLInputElement>(null);
+    const cityRef = useRef<HTMLInputElement>(null);
+    const postcodeRef = useRef<HTMLInputElement>(null);
+    const stateRef = useRef<HTMLInputElement>(null);
+    const countryRef = useRef<HTMLInputElement>(null);
+
+    // Fetching the countries list
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const countries = await GetCountries();
+                setCountriesList(countries);
+            } catch (error) {
+                console.error("Failed to fetch countries", error);
+            }
+        };
+        fetchCountries();
+    }, []);
 
     useEffect(() => {
+        //Important for triggering setting the Influencer Platforms' Data.
         if (influencerData?.platforms) {
             setPlatforms(influencerData.platforms);
+            setOriginalPlatforms(influencerData.platforms);
+        }
+
+        //Important for triggering setting the Country, State, City Data.
+        if (influencerData?.address) {
+            const { country, state, city } = influencerData.address;
+            setCountry(country || "");
+            setState(state || "");
+            setCity(city || "");
         }
     }, [influencerData]);
 
+    useEffect(() => {
+        // Reset platforms when modal is closed
+        if (!updateModalVisibility) {
+            setPlatforms(originalPlatforms);
+        }
+    }, [updateModalVisibility, originalPlatforms]);
+
     const handleTogglePlatform = (type: SocialMediaPlatform["platform_name"]) => {
         setPlatforms((prevPlatforms) => {
-            // Check if platform type already exists
             const existingPlatform = prevPlatforms.find((platform) => platform.platform_name === type);
             if (existingPlatform) {
-                // If it exists, remove it
+                // Remove platform if it already exists
                 return prevPlatforms.filter((platform) => platform.platform_name !== type);
             } else {
-                // If not, add a new platform
+                // Add platform if it doesn't exist
                 return [
                     ...prevPlatforms,
                     {
@@ -64,35 +111,28 @@ export const UpdateInfluencerModal = ({
         platforms.some((platform) => platform.platform_name === type);
 
     const handleSave = () => {
-        // Extracting address fields
         const address = {
-            address: (document.getElementById("address") as HTMLInputElement).value,
-            city: (document.getElementById("city") as HTMLInputElement).value,
-            postcode: (document.getElementById("postcode") as HTMLInputElement).value,
-            state: (document.getElementById("state") as HTMLInputElement).value,
-            country: (document.getElementById("country") as HTMLInputElement).value,
+            address: addressRef.current?.value as string,
+            city: cityRef.current?.value as string,
+            postcode: postcodeRef.current?.value as string,
+            state: stateRef.current?.value as string,
+            country: countryRef.current?.value as string,
         };
-    
-        // Extracting platforms with their updated fields
+
         const updatedPlatforms = platforms.map((platform) => ({
             ...platform,
-            audience_focus_country: (
-                document.getElementById(`audience-focus-country-${platform.platform_name}`) as HTMLInputElement
-            ).value,
-            platform_focus: (document.getElementById(`platform-focus-${platform.platform_name}`) as HTMLInputElement).value as SocialMediaPlatform["platform_focus"],
-            follower_count: parseInt(
-                (document.getElementById(`follower-count-${platform.platform_name}`) as HTMLInputElement).value
-            ) || 0,
+            audience_focus_country: platform.audience_focus_country,
+            platform_focus: platform.platform_focus,
+            follower_count: platform.follower_count,
         }));
-    
-        // Constructing the updated influencer object
+
         const updatedInfluencer: Influencer = {
             influencer_id: influencerData?.influencer_id || crypto.randomUUID(),
-            full_name: (document.getElementById("full_name") as HTMLInputElement).value,
-            preferred_name: (document.getElementById("preferred_name") as HTMLInputElement).value,
-            contact_number: (document.getElementById("contact_number") as HTMLInputElement).value,
-            alt_contact_number: (document.getElementById("alt_contact_number") as HTMLInputElement).value,
-            email_address: (document.getElementById("email_address") as HTMLInputElement).value,
+            full_name: fullNameRef.current?.value as string,
+            preferred_name: preferredNameRef.current?.value as string,
+            contact_number: contactNumberRef.current?.value as string,
+            alt_contact_number: altContactNumberRef.current?.value as string,
+            email_address: emailAddressRef.current?.value as string,
             whatsapp_consent: false,
             whatsapp_invited: false,
             community_invited: false,
@@ -104,8 +144,7 @@ export const UpdateInfluencerModal = ({
             ),
             invite_count: 0
         };
-    
-        // Call the update handler with the updated influencer object
+
         handleUpdate(updatedInfluencer);
         closeUpdateModal();
     };
@@ -128,6 +167,7 @@ export const UpdateInfluencerModal = ({
                     <Input
                         className="col-span-1"
                         type="text"
+                        ref={fullNameRef}
                         id="full_name"
                         placeholder="Full Name"
                         defaultValue={influencerData?.full_name}
@@ -136,6 +176,7 @@ export const UpdateInfluencerModal = ({
                     <Input
                         className="col-span-1"
                         type="text"
+                        ref={preferredNameRef}
                         id="preferred_name"
                         placeholder="Preferred Name"
                         defaultValue={influencerData?.preferred_name}
@@ -144,6 +185,7 @@ export const UpdateInfluencerModal = ({
                     <Input
                         className="col-span-1"
                         type="text"
+                        ref={contactNumberRef}
                         id="contact_number"
                         placeholder="Contact Number"
                         defaultValue={influencerData?.contact_number}
@@ -152,6 +194,7 @@ export const UpdateInfluencerModal = ({
                     <Input
                         className="col-span-1"
                         type="text"
+                        ref={altContactNumberRef}
                         id="alt_contact_number"
                         placeholder="Alternative Contact Number"
                         defaultValue={influencerData?.alt_contact_number}
@@ -160,49 +203,39 @@ export const UpdateInfluencerModal = ({
                     <Input
                         className="col-span-1"
                         type="email"
+                        ref={emailAddressRef}
                         id="email_address"
                         placeholder="Email Address"
                         defaultValue={influencerData?.email_address}
                         required
                     />
-                    <Input
-                        className="col-span-2"
-                        type="text"
-                        id="address"
-                        placeholder="Address"
-                        defaultValue={influencerData?.address.address}
-                        required
+                    <AddressDropdowns
+                        countryInputId="country"
+                        stateInputId="state"
+                        cityInputId="city"
+                        country={country}
+                        setCountry={setCountry}
+                        state={state}
+                        setState={setState}
+                        city={city}
+                        setCity={setCity}
                     />
                     <Input
                         className="col-span-1"
                         type="text"
+                        ref={postcodeRef}
                         id="postcode"
                         placeholder="Postcode"
                         defaultValue={influencerData?.address.postcode}
                         required
                     />
                     <Input
-                        className="col-span-1"
+                        className="col-span-2"
                         type="text"
-                        id="city"
-                        placeholder="City"
-                        defaultValue={influencerData?.address.city}
-                        required
-                    />
-                    <Input
-                        className="col-span-1"
-                        type="text"
-                        id="state"
-                        placeholder="State"
-                        defaultValue={influencerData?.address.state}
-                        required
-                    />
-                    <Input
-                        className="col-span-1"
-                        type="text"
-                        id="country"
-                        placeholder="Country"
-                        defaultValue={influencerData?.address.country}
+                        ref={addressRef}
+                        id="address"
+                        placeholder="Address"
+                        defaultValue={influencerData?.address.address}
                         required
                     />
                 </div>
@@ -222,37 +255,46 @@ export const UpdateInfluencerModal = ({
                                         checked={isPlatformSelected(type as SocialMediaPlatform["platform_name"])}
                                         onSelect={() => handleTogglePlatform(type as SocialMediaPlatform["platform_name"])}
                                     >
-                                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                                        <label htmlFor={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</label>
                                     </DropdownMenuCheckboxItem>
                                 ))}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-                    {platforms.map((platform, index) => (
-                        <div className="mb-2">
-                            <p className="capitalize ml-1 text-lg font-semibold mb-2">{platform.platform_name}</p>
+                    {platforms.map((platform) => (
+                        <div key={platform.platform_name} className="mb-2">
+                            <p className="capitalize ml-1 text-lg font-semibold">{platform.platform_name}</p>
                             <div className="grid grid-cols-4 gap-4">
                                 <Input
                                     className="col-span-2"
                                     type="text"
                                     id={`social_media_url-${platform.platform_name}`}
-                                    placeholder="Type"
+                                    placeholder="Social Media URL"
                                     defaultValue={platform.social_media_url}
                                     required
                                 />
-                                <Input
+                                <CountryInput
+                                    country={platform.audience_focus_country}
+                                    setCountry={(value) => {
+                                        setPlatforms((prev) =>
+                                            prev.map((plat) =>
+                                                plat.platform_name === platform.platform_name
+                                                    ? { ...plat, audience_focus_country: value }
+                                                    : plat
+                                            )
+                                        );
+                                    }}
+                                    setCountryId={() => { }}
+                                    countriesList={countriesList}
+                                    inputId={`audience-focus-country-${platform.platform_name}`}
                                     className="col-span-1"
-                                    type="text"
-                                    id={`audience-focus-country-${platform.platform_name}`}
-                                    placeholder="Type"
-                                    defaultValue={platform.audience_focus_country}
-                                    required
+                                    placeholder="Audience Focus Country"
                                 />
                                 <Input
                                     className="col-span-1"
                                     type="text"
                                     id={`platform-focus-${platform.platform_name}`}
-                                    placeholder="Type"
+                                    placeholder="Platform Focus"
                                     defaultValue={platform.platform_focus}
                                     required
                                 />
@@ -260,7 +302,7 @@ export const UpdateInfluencerModal = ({
                                     className="col-span-1 hidden"
                                     type="text"
                                     id={`follower-count-${platform.platform_name}`}
-                                    placeholder="Type"
+                                    placeholder="Follower Count"
                                     defaultValue={platform.follower_count}
                                 />
                             </div>
