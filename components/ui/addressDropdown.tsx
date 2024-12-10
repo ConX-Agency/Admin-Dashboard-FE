@@ -28,8 +28,8 @@ export const CountryInput = ({
             value={country}
             onValueChange={(selectedCountry) => {
               const countryData = countriesList.find((item) => item.name === selectedCountry);
-              setCountry(countryData?.name || ""); // Ensure the setter is called with a string value
-              setCountryId(countryData?.id || 0); // Updating countryId as well
+              setCountry(countryData?.name || "");
+              setCountryId(countryData?.id || 0);
             }}
           >
             {countriesList.map((item) => (
@@ -137,13 +137,13 @@ export const AddressDropdowns = ({
   countryClassname,
   stateClassname,
   cityClassname,
+  countryPlaceholder,
   country,
   setCountry,
   state,
   setState,
   city,
   setCity,
-  countryPlaceholder
 }: AddressDropdownsProps) => {
   const [countryId, setCountryId] = useState<number>(0);
   const [stateId, setStateId] = useState<number>(0);
@@ -168,11 +168,11 @@ export const AddressDropdowns = ({
       const fetchStates = async () => {
         const states = await GetState(countryId);
         setStateList(states);
-        setState("");
+        setState(""); // Reset state when country changes
         setStateId(0);
-        setCity("");
+        setCity(""); // Reset city when state changes
         setCityId(0);
-        setCityList([]);
+        setCityList([]); // Reset city list
       };
       fetchStates();
     }
@@ -184,18 +184,36 @@ export const AddressDropdowns = ({
       const fetchCities = async () => {
         const cities = await GetCity(countryId, stateId);
         setCityList(cities);
-        setCity("");
+        setCity(""); // Reset city when state changes
         setCityId(0);
       };
       fetchCities();
     }
   }, [stateId]);
 
+  // Handle country change
+  const handleCountryChange = (newCountry: string, newCountryId: number) => {
+    setCountry(newCountry); // Update the parent component's state
+    setCountryId(newCountryId); // Set the countryId for fetching states
+  };
+
+  // Handle state change
+  const handleStateChange = (newState: string, newStateId: number) => {
+    setState(newState); // Update the parent component's state
+    setStateId(newStateId); // Set the stateId for fetching cities
+  };
+
+  // Handle city change
+  const handleCityChange = (newCity: string, newCityId: number) => {
+    setCity(newCity); // Update the parent component's state
+    setCityId(newCityId);
+  };
+
   return (
     <>
       <CountryInput
         country={country}
-        setCountry={setCountry}
+        setCountry={(newCountry) => handleCountryChange(newCountry, countryId)}
         setCountryId={setCountryId}
         countriesList={countriesList}
         inputId={countryInputId}
@@ -204,7 +222,7 @@ export const AddressDropdowns = ({
       />
       <StateInput
         state={state}
-        setState={setState}
+        setState={(newState) => handleStateChange(newState, stateId)}
         setStateId={setStateId}
         stateList={stateList}
         isDisabled={!stateList.length}
@@ -213,7 +231,7 @@ export const AddressDropdowns = ({
       />
       <CityInput
         city={city}
-        setCity={setCity}
+        setCity={(newCity) => handleCityChange(newCity, cityId)}
         setCityId={setCityId}
         cityList={cityList}
         isDisabled={!cityList.length}

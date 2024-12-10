@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { Country } from "@/data/shared";
 import { AddressDropdowns } from "../ui/addressDropdown";
 
@@ -109,14 +109,78 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                         ref={companyNameRef}
                         required
                     />
-                    <Input type="email" id="company_email_address" placeholder="Company Email Address" className="col-span-1" defaultValue={clientData?.company_email} required />
-                    <Input type="text" id="contact_number" placeholder="Contact Number" className="col-span-1" defaultValue={clientData?.contact_number} required />
-                    <Input type="text" id="pic_name" placeholder="PIC Name" className="col-span-2" defaultValue={clientData?.person_in_charge_name} required />
-                    <Input type="email" id="pic_email" placeholder="PIC Email" className="col-span-1" defaultValue={clientData?.person_in_charge_email} required />
-                    <Input type="text" id="alt_contact_no" placeholder="Alt Contact Number" className="col-span-1" defaultValue={clientData?.additional_contact_number} required />
-                    <Input type="text" id="industry" placeholder="Industry" className="col-span-1" defaultValue={clientData?.industry} required />
-                    <Input type="text" id="category" placeholder="Category" className="col-span-1" defaultValue={clientData?.category} required />
-                    <Input type="text" id="status" placeholder="Status" className="col-span-1" defaultValue={clientData?.status} required />
+                    <Input 
+                        type="email" 
+                        id="company_email_address" 
+                        placeholder="Company Email Address" 
+                        className="col-span-1" 
+                        defaultValue={clientData?.company_email} 
+                        ref={companyEmailRef}
+                        required 
+                    />
+                    <Input 
+                        type="text" 
+                        id="contact_number" 
+                        placeholder="Contact Number" 
+                        className="col-span-1" 
+                        defaultValue={clientData?.contact_number} 
+                        ref={contactNumberRef}
+                        required 
+                    />
+                    <Input 
+                        type="text" 
+                        id="pic_name" 
+                        placeholder="PIC Name" 
+                        className="col-span-2" 
+                        defaultValue={clientData?.person_in_charge_name} 
+                        ref={picNameRef}
+                        required 
+                    />
+                    <Input 
+                        type="email" 
+                        id="pic_email" 
+                        placeholder="PIC Email" 
+                        className="col-span-1" 
+                        defaultValue={clientData?.person_in_charge_email} 
+                        ref={picEmailRef}
+                        required 
+                    />
+                    <Input 
+                        type="text" 
+                        id="alt_contact_no" 
+                        placeholder="Alt Contact Number" 
+                        className="col-span-1" 
+                        defaultValue={clientData?.additional_contact_number} 
+                        ref={altContactNumberRef}
+                        required 
+                    />
+                    <Input 
+                        type="text" 
+                        id="industry" 
+                        placeholder="Industry" 
+                        className="col-span-1" 
+                        defaultValue={clientData?.industry} 
+                        ref={industryRef}
+                        required 
+                        />
+                    <Input 
+                        type="text" 
+                        id="category" 
+                        placeholder="Category" 
+                        className="col-span-1" 
+                        defaultValue={clientData?.category} 
+                        ref={categoryRef}
+                        required 
+                        />
+                    <Input 
+                        type="text" 
+                        id="status" 
+                        placeholder="Status" 
+                        className="col-span-1" 
+                        defaultValue={clientData?.status} 
+                        ref={statusRef}
+                        required 
+                    />
                 </div>
                 <Separator className="my-2 mb-0" />
                 <div className="flex flex-col w-full gap-4">
@@ -144,15 +208,33 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <AddressDropdowns
-                                    countryInputId={`country_${address.temp_id}`} 
-                                    stateInputId={`state_${address.temp_id}`}
-                                    cityInputId={`city_${address.temp_id}`}
-                                    country={country}
-                                    setCountry={setCountry}
-                                    state={state}
-                                    setState={setState}
-                                    city={city}
-                                    setCity={setCity}
+                                    countryInputId={`country-${address.temp_id}`} 
+                                    stateInputId={`state-${address.temp_id}`}
+                                    cityInputId={`city-${address.temp_id}`}
+                                    country={address.country}
+                                    state={address.state}
+                                    city={address.city}
+                                    setCountry={(value: SetStateAction<string>) => {
+                                        setAddresses((prevAddresses) =>
+                                            prevAddresses.map((addr) =>
+                                                addr.temp_id === address.temp_id ? { ...addr, country: value as string } : addr
+                                            )
+                                        );
+                                    }}
+                                    setState={(value: SetStateAction<string>) => {
+                                        setAddresses((prevAddresses) =>
+                                            prevAddresses.map((addr) =>
+                                                addr.temp_id === address.temp_id ? { ...addr, state: value as string } : addr
+                                            )
+                                        );
+                                    }}
+                                    setCity={(value: SetStateAction<string>) => {
+                                        setAddresses((prevAddresses) =>
+                                            prevAddresses.map((addr) =>
+                                                addr.temp_id === address.temp_id ? { ...addr, city: value as string } : addr
+                                            )
+                                        );
+                                    }}
                                 />
                                 <Input
                                     ref={(el) => {
