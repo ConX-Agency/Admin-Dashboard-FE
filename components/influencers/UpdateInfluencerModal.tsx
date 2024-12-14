@@ -16,6 +16,7 @@ import { PlusIcon } from "lucide-react";
 import { AddressDropdowns, CountryInput } from "../ui/addressDropdown";
 import { Country } from "@/data/shared";
 import { GetCountries } from "react-country-state-city";
+import { toast } from "@/hooks/use-toast";
 
 export const UpdateInfluencerModal = ({
     influencerData,
@@ -46,6 +47,7 @@ export const UpdateInfluencerModal = ({
     const postcodeRef = useRef<HTMLInputElement>(null);
     const stateRef = useRef<HTMLInputElement>(null);
     const countryRef = useRef<HTMLInputElement>(null);
+    const statusRef = useRef<HTMLInputElement>(null);
 
     // Fetching the countries list
     useEffect(() => {
@@ -110,7 +112,51 @@ export const UpdateInfluencerModal = ({
     const isPlatformSelected = (type: SocialMediaPlatform["platform_name"]) =>
         platforms.some((platform) => platform.platform_name === type);
 
+    const validateInputs = (): { error: boolean; message: string } => {
+        const inputRefs = [
+            { ref: fullNameRef, name: "Full Name" },
+            { ref: preferredNameRef, name: "Preferred Name" },
+            { ref: contactNumberRef, name: "Contact Number" },
+            { ref: emailAddressRef, name: "Email Address" },
+            { ref: countryRef, name: "Country" },
+            { ref: addressRef, name: "Address" },
+            { ref: postcodeRef, name: "Postcode" },
+        ];
+    
+        const missingFields: string[] = [];
+    
+        // Validate inputRefs
+        inputRefs.forEach(({ ref, name }) => {
+            if (!ref.current || !ref.current.value.trim()) {
+                missingFields.push(name);
+            }
+        });
+    
+        if (missingFields.length > 0) {
+            return {
+                error: true,
+                message: `Missing fields: ${missingFields.join(", ")}`,
+            };
+        }
+    
+        return { error: false, message: "" };
+    };
+
     const handleSave = () => {
+        //Validate input if there's any errors.
+        const { error, message } = validateInputs();
+
+        if (error) {
+            toast({
+                title: "Validation Error",
+                description: message,
+                variant: "destructive",
+                duration: 3000
+            });
+            return; // Stop execution if validation fails
+        }
+        
+        //Handle Update if there's no errors.
         const address = {
             address: addressRef.current?.value as string,
             city: cityRef.current?.value as string,
@@ -142,7 +188,8 @@ export const UpdateInfluencerModal = ({
                 (total, platform) => total + platform.follower_count,
                 0
             ),
-            invite_count: 0
+            invite_count: 0,
+            status: statusRef.current?.value as string
         };
 
         handleUpdate(updatedInfluencer);
@@ -154,8 +201,7 @@ export const UpdateInfluencerModal = ({
             <DialogContent
                 className="xxxs:max-w-[300px] xxs:max-w-[340px] xs:max-w-[461px] sm:max-w-[556px] 
                     md:max-w-[738px] lg:max-w-[962px] xl:max-w-[1170px] max-h-[550px] overflow-y-scroll"
-                onEscapeKeyDown={closeUpdateModal}
-                modalTopRightClose={closeUpdateModal}
+                onEscapeKeyDown={closeUpdateModal} modalTopRightClose={closeUpdateModal}
             >
                 <DialogHeader>
                     <DialogTitle>Editing {influencerData?.full_name}'s Profile</DialogTitle>
@@ -238,6 +284,15 @@ export const UpdateInfluencerModal = ({
                         defaultValue={influencerData?.address.address}
                         required
                     />
+                    <Input
+                        className="col-span-2"
+                        type="text"
+                        ref={statusRef}
+                        id="status"
+                        placeholder="Status"
+                        defaultValue={influencerData?.status}
+                        required
+                    />
                 </div>
                 <Separator className="my-4" />
                 <div className="flex flex-col w-full gap-4">
@@ -310,7 +365,7 @@ export const UpdateInfluencerModal = ({
                     ))}
                 </div>
                 <DialogFooter>
-                    <Button onClick={closeUpdateModal} className="bg-gray-400 hover:bg-gray-500">
+                    <Button onClick={closeUpdateModal} className="bg-gray-400 hover:bg-red-600">
                         Cancel
                     </Button>
                     <Button onClick={handleSave}>

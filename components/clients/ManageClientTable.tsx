@@ -37,13 +37,15 @@ import { FilterDropdown } from "../ui/filterDropdown"
 import { UpdateClientModal } from "./UpdateClientModal"
 import { RegisterClientModal } from "./RegisterClientModal"
 import { useToast } from "@/hooks/use-toast"
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react"
+import { checkNullInputs } from "@/lib/utils"
 
 export function ManageClientTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
-    const [subscriptionFilter, setSubscriptionFilter] = useState<string>("");
+    const [statusFilter, setStatusFilter] = useState<string>("");
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [clientData, setClientData] = useState<Client | null>(null);
@@ -229,8 +231,8 @@ export function ManageClientTable() {
         ]);
     };
 
-    const handleSubscriptionFilter = (value: string) => {
-        setSubscriptionFilter(value); // Update the filter value
+    const handleStatusFilter = (value: string) => {
+        setStatusFilter(value); // Update the filter value
     };
 
     const handleDelete = () => {
@@ -306,21 +308,21 @@ export function ManageClientTable() {
     }
 
     React.useEffect(() => {
-        const subscriptionFilterCondition = subscriptionFilter && subscriptionFilter !== "All"
-            ? [{ id: "subscription", value: subscriptionFilter }]
+        const statusFilterCondition = statusFilter && statusFilter !== "All"
+            ? [{ id: "status", value: statusFilter }]
             : [];
 
-        // Apply subscription filter without affecting other column filters
+        // Apply status filter without affecting other column filters
         setColumnFilters((prev) => [
-            ...prev.filter((filter) => filter.id !== "subscription"),
-            ...subscriptionFilterCondition
+            ...prev.filter((filter) => filter.id !== "status"),
+            ...statusFilterCondition
         ]);
-    }, [subscriptionFilter]);
+    }, [statusFilter]);
 
     return (
         <div className="w-full">
             <div className="flex items-center justify-between py-4 xxxs:flex-wrap md:flex-nowrap gap-2">
-                <div className="flex items-start gap-2">
+                <div className="flex items-start gap-2  flex-wrap">
                     <Input
                         placeholder="Search by Company Name"
                         onChange={(e) => handleSearch(e.target.value)}
@@ -328,13 +330,13 @@ export function ManageClientTable() {
                     />
                     <FilterDropdown
                         label="Subscription Tier"
-                        items={["All", "Free Tier", "Bronze Tier", "Silver Tier", "Gold Tier", "Premium Tier"]}
-                        value={subscriptionFilter || "All"}
-                        onValueChange={handleSubscriptionFilter}
+                        items={["All", "Active" , "Pending Approval" , "Blacklisted" , "Deactivated"]}
+                        value={statusFilter || "All"}
+                        onValueChange={handleStatusFilter}
                         minWidth="min-w-[121px]"
                     />
                 </div>
-                <div className="flex items-end gap-2">
+                <div className="flex items-end gap-2 flex-wrap">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="h-[40px]">
@@ -424,14 +426,14 @@ export function ManageClientTable() {
                 <div className="items-start">
                     <RowsPerPageDropdown table={table} />
                 </div>
-                <div className="space-x-2">
+                <div className="space-x-2 flex">
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                        Previous
+                        <IconArrowLeft className="h-4 w-4 flex-shrink-0"/>
                     </Button>
                     <Button
                         variant="outline"
@@ -439,7 +441,7 @@ export function ManageClientTable() {
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                        Next
+                        <IconArrowRight className="h-4 w-4 flex-shrink-0"/>
                     </Button>
                 </div>
             </div>
@@ -472,7 +474,7 @@ function RowsPerPageDropdown({ table }: { table: any }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="text-sm">
+                <Button variant="outline" className="text-sm h-[32px]">
                     Rows per page: {rowsPerPage}
                 </Button>
             </DropdownMenuTrigger>

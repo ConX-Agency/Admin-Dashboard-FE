@@ -6,6 +6,7 @@ import { Separator } from "../ui/separator";
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { Country } from "@/data/shared";
 import { AddressDropdowns } from "../ui/addressDropdown";
+import { toast } from "@/hooks/use-toast";
 
 export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, updateModalVisibility }: {
     clientData: Client | null;
@@ -58,7 +59,66 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
         addressRefs.current.delete(id);
     };
 
+    const validateInputs = (): { error: boolean; message: string } => {
+        const inputRefs = [
+            { ref: companyNameRef, name: "Company Name" },
+            { ref: companyEmailRef, name: "Company Email" },
+            { ref: contactNumberRef, name: "Contact Number" },
+            { ref: picNameRef, name: "PIC Name" },
+            { ref: picEmailRef, name: "PIC Email" },
+            { ref: industryRef, name: "Industry" },
+            { ref: categoryRef, name: "Category" },
+            { ref: statusRef, name: "Status" },
+        ];
+
+        const missingFields: string[] = [];
+
+        // Validate inputRefs
+        inputRefs.forEach(({ ref, name }) => {
+            if (!ref.current || !ref.current.value.trim()) {
+                missingFields.push(name);
+            }
+        });
+
+        // Validate addressRefs (only `postcode`, `country`, and `address`)
+        addresses.forEach((address, index) => {
+            const ref = addressRefs.current.get(address?.temp_id!);
+            if (!ref?.address?.value.trim()) {
+                missingFields.push(`Address Line for Address #${index + 1}`);
+            }
+            if (!ref?.postcode?.value.trim()) {
+                missingFields.push(`Postcode for Address #${index + 1}`);
+            }
+            if (!address.country.trim()) {
+                missingFields.push(`Country for Address #${index + 1}`);
+            }
+        });
+
+        if (missingFields.length > 0) {
+            return {
+                error: true,
+                message: `Missing fields: ${missingFields.join(", ")}`,
+            };
+        }
+
+        return { error: false, message: "" };
+    };
+
     const handleSave = () => {
+        //Validate input if there's any errors.
+        const { error, message } = validateInputs();
+
+        if (error) {
+            toast({
+                title: "Validation Error",
+                description: message,
+                variant: "destructive",
+                duration: 3000
+            });
+            return; // Stop execution if validation fails
+        }
+
+        //Handle Update if there's no errors.
         const updatedClient: Client = {
             client_id: clientData?.client_id!,
             company_name: companyNameRef.current?.value as string,
@@ -271,7 +331,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                 <DialogFooter>
                     <Button onClick={closeUpdateModal}
                         className="bg-neutral-400 hover:bg-red-600 hover:text-white transition-all duration-300 flex-shrink-0">
-                        Discard Changes
+                        Cancel
                     </Button>
                     <Button onClick={handleSave}>Save Changes</Button>
                 </DialogFooter>

@@ -21,6 +21,7 @@ import { PlusIcon } from "lucide-react";
 import { AddressDropdowns, CountryInput } from "../ui/addressDropdown";
 import { GetCountries } from "react-country-state-city";
 import { Country } from "@/data/shared";
+import { toast } from "@/hooks/use-toast";
 
 export const RegisterInfluencerModal = ({
     closeRegisterModal,
@@ -91,7 +92,51 @@ export const RegisterInfluencerModal = ({
     const isPlatformSelected = (type: SocialMediaPlatform["platform_name"]) =>
         platforms.some((platform) => platform.platform_name === type);
 
+    const validateInputs = (): { error: boolean; message: string } => {
+        const inputRefs = [
+            { ref: fullNameRef, name: "Full Name" },
+            { ref: preferredNameRef, name: "Preferred Name" },
+            { ref: contactNumberRef, name: "Contact Number" },
+            { ref: emailAddressRef, name: "Email Address" },
+            { ref: countryRef, name: "Country" },
+            { ref: addressRef, name: "Address" },
+            { ref: postcodeRef, name: "Postcode" },
+        ];
+    
+        const missingFields: string[] = [];
+    
+        // Validate inputRefs
+        inputRefs.forEach(({ ref, name }) => {
+            if (!ref.current || !ref.current.value.trim()) {
+                missingFields.push(name);
+            }
+        });
+    
+        if (missingFields.length > 0) {
+            return {
+                error: true,
+                message: `Missing fields: ${missingFields.join(", ")}`,
+            };
+        }
+    
+        return { error: false, message: "" };
+    };
+
     const handleSave = () => {
+        //Validate input if there's any errors.
+        const { error, message } = validateInputs();
+
+        if (error) {
+            toast({
+                title: "Validation Error",
+                description: message,
+                variant: "destructive",
+                duration: 3000
+            });
+            return; // Stop execution if validation fails
+        }
+        
+        //Handle Register if there's no errors.
         const address = {
             address: addressRef.current?.value as string,
             city: cityRef.current?.value as string,
@@ -123,7 +168,8 @@ export const RegisterInfluencerModal = ({
                 (total, platform) => total + platform.follower_count,
                 0
             ),
-            invite_count: 0
+            invite_count: 0,
+            status: "Pending for Approval"
         };
 
         handleRegister(newInfluencer);
@@ -135,7 +181,7 @@ export const RegisterInfluencerModal = ({
             <DialogContent
                 className="xxxs:max-w-[300px] xxs:max-w-[340px] xs:max-w-[461px] sm:max-w-[556px] 
                     md:max-w-[738px] lg:max-w-[962px] xl:max-w-[1170px] max-h-[550px] overflow-y-scroll"
-                onEscapeKeyDown={closeRegisterModal}
+                onEscapeKeyDown={closeRegisterModal} modalTopRightClose={closeRegisterModal}
             >
                 <DialogHeader>
                     <DialogTitle>Register New Influencer</DialogTitle>

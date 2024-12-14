@@ -39,6 +39,8 @@ import { useToast } from "@/hooks/use-toast"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { formatFollowerCount } from "@/lib/utils"
 import Image from 'next/image'
+import { FilterDropdown } from "../ui/filterDropdown"
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react"
 
 export function ManageInfluencerTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -50,6 +52,7 @@ export function ManageInfluencerTable() {
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [influencerData, setInfluencerData] = useState<Influencer | null>(null);
     const { toast } = useToast();
+    const [statusFilter, setStatusFilter] = useState<string>("");
     const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
 
     //Table Columns Definitions
@@ -191,6 +194,25 @@ export function ManageInfluencerTable() {
             ),
         },
         {
+            accessorKey: "status",
+            meta: "Status",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                        className="pl-0 font-semibold"
+                    >
+                        Status
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("status")}</div>
+            ),
+        },
+        {
             accessorKey: "Action",
             meta: "Action",
             header: "",
@@ -226,6 +248,10 @@ export function ManageInfluencerTable() {
             ...prev.filter((filter) => filter.id !== "company_name"),
             { id: "company_name", value },
         ]);
+    };
+
+    const handleStatusFilter = (value: string) => {
+        setStatusFilter(value); // Update the filter value
     };
 
     const handleDelete = () => {
@@ -315,17 +341,33 @@ export function ManageInfluencerTable() {
                     },
                 ]
                 : [];
-
+    
+        const statusFilterCondition =
+            statusFilter && statusFilter !== "All"
+                ? [
+                    {
+                        id: "status",
+                        value: statusFilter,
+                    },
+                ]
+                : [];
+    
+        // Combine both filter conditions while keeping other existing filters intact
         setColumnFilters((prev) => [
-            ...prev.filter((filter) => filter.id !== "total_follower_count"),
+            // Remove old filters related to follower count and status
+            ...prev.filter(
+                (filter) => filter.id !== "total_follower_count" && filter.id !== "status"
+            ),
+            // Add the new conditions
             ...rangeFilterCondition,
+            ...statusFilterCondition,
         ]);
-    }, [followerRange]);
+    }, [followerRange, statusFilter]);
 
     return (
         <div className="w-full">
             <div className="flex items-center justify-between py-4 xxxs:flex-wrap md:flex-nowrap gap-2">
-                <div className="flex items-start gap-2">
+                <div className="flex items-start gap-2 flex-wrap">
                     <Input
                         placeholder="Search by Company Name"
                         onChange={(e) => handleSearch(e.target.value)}
@@ -345,8 +387,15 @@ export function ManageInfluencerTable() {
                             className="h-[40px] bg-neutral-150 w-[140px]"
                         />
                     </div>
+                    <FilterDropdown
+                        label="Subscription Tier"
+                        items={["All", "Active" , "Pending Approval" , "Blacklisted" , "Deactivated"]}
+                        value={statusFilter || "All"}
+                        onValueChange={handleStatusFilter}
+                        minWidth="min-w-[121px]"
+                    />
                 </div>
-                <div className="flex items-end gap-2">
+                <div className="flex items-end gap-2 flex-wrap">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" className="h-[40px]">
@@ -436,14 +485,14 @@ export function ManageInfluencerTable() {
                 <div className="items-start">
                     <RowsPerPageDropdown table={table} />
                 </div>
-                <div className="space-x-2">
+                <div className="space-x-2 flex">
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                        Previous
+                        <IconArrowLeft className="h-4 w-4 flex-shrink-0"/>
                     </Button>
                     <Button
                         variant="outline"
@@ -451,7 +500,7 @@ export function ManageInfluencerTable() {
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                        Next
+                        <IconArrowRight className="h-4 w-4 flex-shrink-0"/>
                     </Button>
                 </div>
             </div>
@@ -484,7 +533,7 @@ function RowsPerPageDropdown({ table }: { table: any }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="text-sm">
+                <Button variant="outline" className="text-sm h-[32px]">
                     Rows per page: {rowsPerPage}
                 </Button>
             </DropdownMenuTrigger>

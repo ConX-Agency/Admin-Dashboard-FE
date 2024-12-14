@@ -5,6 +5,8 @@ import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { AddressDropdowns } from "../ui/addressDropdown"; // Updated from AddressDropdown to AddressDropdowns
+import { checkNullInputs } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 export const RegisterClientModal = ({ closeRegisterModal, handleRegister, registerModalVisibility }:
     {
@@ -57,7 +59,68 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
         setAddresses(addresses.filter((address) => address.temp_id !== id));
     };
 
+    // Validators
+    const validateInputs = (): { error: boolean; message: string } => {
+        const inputRefs = [
+            { ref: companyNameRef, name: "Company Name" },
+            { ref: companyEmailRef, name: "Company Email" },
+            { ref: contactNumberRef, name: "Contact Number" },
+            { ref: picNameRef, name: "PIC Name" },
+            { ref: picEmailRef, name: "PIC Email" },
+            { ref: industryRef, name: "Industry" },
+            { ref: categoryRef, name: "Category" },
+            { ref: statusRef, name: "Status" },
+        ];
+
+        const missingFields: string[] = [];
+
+        // Validate inputRefs
+        inputRefs.forEach(({ ref, name }) => {
+            if (!ref.current || !ref.current.value.trim()) {
+                missingFields.push(name);
+            }
+        });
+
+        // Validate addressRefs (only `postcode`, `country`, and `address`)
+        addresses.forEach((address, index) => {
+            const ref = addressRefs.current.get(address?.temp_id!);
+            if (!ref?.address?.value.trim()) {
+                missingFields.push(`Address Line for Address #${index + 1}`);
+            }
+            if (!ref?.postcode?.value.trim()) {
+                missingFields.push(`Postcode for Address #${index + 1}`);
+            }
+            if (!address.country.trim()) {
+                missingFields.push(`Country for Address #${index + 1}`);
+            }
+        });
+
+        if (missingFields.length > 0) {
+            return {
+                error: true,
+                message: `Missing fields: ${missingFields.join(", ")}`,
+            };
+        }
+
+        return { error: false, message: "" };
+    };
+
     const saveClient = () => {
+
+        //Validate input if there's any errors.
+        const { error, message } = validateInputs();
+
+        if (error) {
+            toast({
+                title: "Validation Error",
+                description: message,
+                variant: "destructive",
+                duration: 3000
+            });
+            return; // Stop execution if validation fails
+        }
+
+        //Handle Register if there's no errors.
         const client_id = crypto.randomUUID();
 
         const client: Client = {
@@ -70,7 +133,7 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
             person_in_charge_email: picEmailRef.current?.value as string,
             industry: industryRef.current?.value as string,
             category: categoryRef.current?.value as string,
-            status: statusRef.current?.value as Client["status"],
+            status: "Pending Approval",
             addresses: addresses.map((address) => {
                 const ref = addressRefs.current.get(address.temp_id!);
                 return {
@@ -167,14 +230,6 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                         ref={categoryRef}
                         required 
                         />
-                    <Input 
-                        type="text" 
-                        id="status" 
-                        placeholder="Status" 
-                        className="col-span-1" 
-                        ref={statusRef}
-                        required 
-                    />
                     </div>
                     <Separator className="my-2 mb-0" />
                     <div className="flex flex-col w-full gap-4">

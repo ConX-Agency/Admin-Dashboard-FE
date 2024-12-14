@@ -31,6 +31,7 @@ export interface Influencer {
     whatsapp_invited?: boolean;
     community_invited?: boolean;
     invite_count: number;
+    status: string;
 }
 
 export const dummyInfluencerData: Influencer[] = [
@@ -74,6 +75,7 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: false,
         community_invited: true,
         invite_count: 3,
+        status: "Active"
     },
     {
         influencer_id: "1ba79f5d-e465-4287-85fd-c39b19dfcee1",
@@ -106,6 +108,7 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: true,
         community_invited: false,
         invite_count: 1,
+        status: "Active"
     },
     {
         influencer_id: "9d7c1722-18e7-4c99-94ed-a22f41f34e04",
@@ -147,6 +150,7 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: true,
         community_invited: true,
         invite_count: 5,
+        status: "Active"
     },
     {
         influencer_id: "c4ee145b-2781-4070-a00d-2862e19c2a4a",
@@ -179,6 +183,7 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: false,
         community_invited: false,
         invite_count: 2,
+        status: "Active"
     },
     {
         influencer_id: "e8b7a78e-34e6-45b7-8bc4-c58fd88cc84a",
@@ -220,5 +225,6 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: true,
         community_invited: true,
         invite_count: 4,
+        status: "Active"
     },
 ];

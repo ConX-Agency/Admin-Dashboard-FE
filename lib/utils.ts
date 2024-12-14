@@ -50,3 +50,13 @@ export function formatFollowerCount(count: number): string {
 export function getFollowerCount(platforms: string[]) {
   // Need to Add this.
 }
+
+export function checkNullInputs(refs: { ref: React.RefObject<HTMLInputElement>; name: string }[]) {
+  const invalidFields: string[] = [];
+  refs.forEach(({ ref, name }) => {
+      if (!ref.current || !ref.current.value.trim()) {
+          invalidFields.push(name);
+      }
+  });
+  return invalidFields;
+}
