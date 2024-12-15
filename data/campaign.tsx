@@ -141,6 +141,7 @@ export const dummyCampaignsData: Campaign[] = [
         whatsapp_invited: false,
         community_invited: true,
         invite_count: 3,
+        status: "Active"
       },
     ],
     services: [
@@ -242,6 +243,7 @@ export const dummyCampaignsData: Campaign[] = [
         whatsapp_invited: true,
         community_invited: false,
         invite_count: 1,
+        status: "Active"
       },
       {
         influencer_id: "9d7c1722-18e7-4c99-94ed-a22f41f34e04",
@@ -283,6 +285,7 @@ export const dummyCampaignsData: Campaign[] = [
         whatsapp_invited: true,
         community_invited: true,
         invite_count: 5,
+        status: "Active"
       },
     ],
     services: [
@@ -393,6 +396,7 @@ export const dummyCampaignsData: Campaign[] = [
         whatsapp_invited: true,
         community_invited: true,
         invite_count: 5,
+        status: "Active"
       },
     ],
     services: [
@@ -494,6 +498,7 @@ export const dummyCampaignsData: Campaign[] = [
         whatsapp_invited: false,
         community_invited: false,
         invite_count: 2,
+        status: "Active"
       },
     ],
     services: [
@@ -604,6 +609,7 @@ export const dummyCampaignsData: Campaign[] = [
         whatsapp_invited: true,
         community_invited: true,
         invite_count: 4,
+        status: "Active"
       },
     ],
     services: [
