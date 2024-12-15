@@ -46,10 +46,7 @@ export const RegisterInfluencerModal = ({
     const altContactNumberRef = useRef<HTMLInputElement>(null);
     const emailAddressRef = useRef<HTMLInputElement>(null);
     const addressRef = useRef<HTMLInputElement>(null);
-    const cityRef = useRef<HTMLInputElement>(null);
     const postcodeRef = useRef<HTMLInputElement>(null);
-    const stateRef = useRef<HTMLInputElement>(null);
-    const countryRef = useRef<HTMLInputElement>(null);
 
     //Get the Countries List.
     useEffect(() => {
@@ -93,16 +90,17 @@ export const RegisterInfluencerModal = ({
         platforms.some((platform) => platform.platform_name === type);
 
     const validateInputs = (): { error: boolean; message: string } => {
+        const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+
         const inputRefs = [
             { ref: fullNameRef, name: "Full Name" },
             { ref: preferredNameRef, name: "Preferred Name" },
             { ref: contactNumberRef, name: "Contact Number" },
             { ref: emailAddressRef, name: "Email Address" },
-            { ref: countryRef, name: "Country" },
             { ref: addressRef, name: "Address" },
             { ref: postcodeRef, name: "Postcode" },
         ];
-    
+
         const missingFields: string[] = [];
     
         // Validate inputRefs
@@ -112,6 +110,21 @@ export const RegisterInfluencerModal = ({
             }
         });
     
+        // Validate country
+        if (!country.trim()) missingFields.push("Country");
+
+        // Validate platform fields
+        platforms.forEach((platform) => {
+            const platformName = capitalizeFirstLetter(platform.platform_name);
+    
+            if (!platform.social_media_url.trim()) {
+                missingFields.push(`${platformName}'s Social Media URL`);
+            }
+            if (!platform.audience_focus_country.trim()) {
+                missingFields.push(`${platformName}'s Audience Focus Country`);
+            }
+        });
+
         if (missingFields.length > 0) {
             return {
                 error: true,
@@ -139,10 +152,10 @@ export const RegisterInfluencerModal = ({
         //Handle Register if there's no errors.
         const address = {
             address: addressRef.current?.value as string,
-            city: cityRef.current?.value as string,
+            city: city,
             postcode: postcodeRef.current?.value as string,
-            state: stateRef.current?.value as string,
-            country: countryRef.current?.value as string,
+            state: state,
+            country: country
         };
 
         const updatedPlatforms = platforms.map((platform) => ({
