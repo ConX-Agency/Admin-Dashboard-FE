@@ -38,7 +38,6 @@ import { UpdateClientModal } from "./UpdateClientModal"
 import { RegisterClientModal } from "./RegisterClientModal"
 import { useToast } from "@/hooks/use-toast"
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react"
-import { checkNullInputs } from "@/lib/utils"
 
 export function ManageClientTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);

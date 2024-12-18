@@ -51,16 +51,6 @@ export function getFollowerCount(platforms: string[]) {
   // Need to Add this.
 }
 
-export function checkNullInputs(refs: { ref: React.RefObject<HTMLInputElement>; name: string }[]) {
-  const invalidFields: string[] = [];
-  refs.forEach(({ ref, name }) => {
-      if (!ref.current || !ref.current.value.trim()) {
-          invalidFields.push(name);
-      }
-  });
-  return invalidFields;
-}
-
 export function capitalizeFirstLetter(str: string): string {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
