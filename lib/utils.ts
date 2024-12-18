@@ -60,3 +60,8 @@ export function checkNullInputs(refs: { ref: React.RefObject<HTMLInputElement>; 
   });
   return invalidFields;
 }
+
+export function capitalizeFirstLetter(str: string): string {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

@@ -1,5 +1,4 @@
 export interface clientAddress {
-    temp_id?: number;
     client_location_id: string;
     client_id: string;
     country: string; 

@@ -108,10 +108,11 @@ interface ActionButtonProps {
   label: string
   textBtn?: string;
   className?: string;
+  type?: "button" | "submit" | "reset";
 }
 
 const ActionButton = React.forwardRef<HTMLButtonElement, ActionButtonProps>(
-  ({ onClick, icon, label, textBtn, className }, ref) => {
+  ({ onClick, icon, label, textBtn, className, type }, ref) => {
     let iconComponent;
 
     if (icon === "trash") {
@@ -131,6 +132,7 @@ const ActionButton = React.forwardRef<HTMLButtonElement, ActionButtonProps>(
         }`}
         onClick={onClick}
         aria-label={label}
+        type={type}
       >
         {textBtn && <span className="mr-2">{textBtn}</span>}
         {iconComponent}

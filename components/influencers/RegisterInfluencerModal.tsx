@@ -10,7 +10,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -22,6 +22,8 @@ import { AddressDropdowns, CountryInput } from "../ui/addressDropdown";
 import { GetCountries } from "react-country-state-city";
 import { Country } from "@/data/shared";
 import { toast } from "@/hooks/use-toast";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { capitalizeFirstLetter } from "@/lib/utils";
 
 export const RegisterInfluencerModal = ({
     closeRegisterModal,
@@ -32,27 +34,54 @@ export const RegisterInfluencerModal = ({
     handleRegister: (data: Influencer) => void;
     registerModalVisibility: boolean;
 }) => {
-    const initialPlatforms: SocialMediaPlatform[] = []; // Default empty or initial state
+    const initialPlatforms: SocialMediaPlatform[] = [];
 
-    const [platforms, setPlatforms] = useState<SocialMediaPlatform[]>(initialPlatforms);
+    const [countriesList, setCountriesList] = useState<Country[]>([]);
     const [country, setCountry] = useState<string>("");
     const [state, setState] = useState<string>("");
     const [city, setCity] = useState<string>("");
-    const [countriesList, setCountriesList] = useState<Country[]>([]);
 
-    const fullNameRef = useRef<HTMLInputElement>(null);
-    const preferredNameRef = useRef<HTMLInputElement>(null);
-    const contactNumberRef = useRef<HTMLInputElement>(null);
-    const altContactNumberRef = useRef<HTMLInputElement>(null);
-    const emailAddressRef = useRef<HTMLInputElement>(null);
-    const addressRef = useRef<HTMLInputElement>(null);
-    const postcodeRef = useRef<HTMLInputElement>(null);
+    const {
+        control,
+        handleSubmit,
+        register,
+        setValue,
+        getValues,
+        formState: { errors },
+        trigger,
+        reset,
+    } = useForm({
+        mode: 'onSubmit',
+        defaultValues: {
+            full_name: "",
+            preferred_name: "",
+            contact_number: "",
+            alt_contact_number: "",
+            email_address: "",
+            country: "",
+            state: "",
+            city: "",
+            address: "",
+            postcode: "",
+            status: "",
+            platforms: initialPlatforms,
+        },
+    });
+
+    const { fields: platformFields, append, remove } = useFieldArray({
+        control,
+        name: "platforms", // Corresponds to the default value's platforms
+    });
 
     //Get the Countries List.
     useEffect(() => {
         const fetchCountries = async () => {
-            const countries = await GetCountries();
-            setCountriesList(countries);
+            try {
+                const countries = await GetCountries();
+                setCountriesList(countries);
+            } catch (error) {
+                console.error("Failed to fetch countries", error);
+            }
         };
         fetchCountries();
     }, []);
@@ -60,132 +89,92 @@ export const RegisterInfluencerModal = ({
     // Reset platforms when modal visibility changes to closed
     useEffect(() => {
         if (!registerModalVisibility) {
-            setPlatforms(initialPlatforms);
+            reset();
         }
-    }, [registerModalVisibility]);
+    }, [registerModalVisibility, setValue]);
 
     const handleTogglePlatform = (type: SocialMediaPlatform["platform_name"]) => {
-        setPlatforms((prevPlatforms) => {
-            const existingPlatform = prevPlatforms.find((platform) => platform.platform_name === type);
-            if (existingPlatform) {
-                return prevPlatforms.filter((platform) => platform.platform_name !== type);
-            } else {
-                return [
-                    ...prevPlatforms,
-                    {
-                        account_id: crypto.randomUUID(),
-                        influencer_id: crypto.randomUUID(),
-                        social_media_url: "",
-                        platform_name: type,
-                        audience_focus_country: "",
-                        platform_focus: "UGC",
-                        follower_count: 0,
-                    },
-                ];
-            }
-        });
+        const existingIndex = platformFields.findIndex(
+            (platform) => platform.platform_name === type
+        );
+
+        if (existingIndex !== -1) {
+            // Remove the platform if it exists
+            remove(existingIndex);
+        } else {
+            // Add a new platform
+            append({
+                account_id: crypto.randomUUID(),
+                influencer_id: crypto.randomUUID(),
+                social_media_url: "",
+                platform_name: type,
+                audience_focus_country: "",
+                platform_focus: "UGC",
+                follower_count: 0,
+            });
+        }
     };
 
     const isPlatformSelected = (type: SocialMediaPlatform["platform_name"]) =>
-        platforms.some((platform) => platform.platform_name === type);
+        platformFields.some((platform) => platform.platform_name === type);
 
-    const validateInputs = (): { error: boolean; message: string } => {
-        const capitalizeFirstLetter = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+    const handleValidation = async () => {
+        const isValid = await trigger();
 
-        const inputRefs = [
-            { ref: fullNameRef, name: "Full Name" },
-            { ref: preferredNameRef, name: "Preferred Name" },
-            { ref: contactNumberRef, name: "Contact Number" },
-            { ref: emailAddressRef, name: "Email Address" },
-            { ref: addressRef, name: "Address" },
-            { ref: postcodeRef, name: "Postcode" },
-        ];
-
-        const missingFields: string[] = [];
-    
-        // Validate inputRefs
-        inputRefs.forEach(({ ref, name }) => {
-            if (!ref.current || !ref.current.value.trim()) {
-                missingFields.push(name);
-            }
-        });
-    
-        // Validate country
-        if (!country.trim()) missingFields.push("Country");
-
-        // Validate platform fields
-        platforms.forEach((platform) => {
-            const platformName = capitalizeFirstLetter(platform.platform_name);
-    
-            if (!platform.social_media_url.trim()) {
-                missingFields.push(`${platformName}'s Social Media URL`);
-            }
-            if (!platform.audience_focus_country.trim()) {
-                missingFields.push(`${platformName}'s Audience Focus Country`);
-            }
-        });
-
-        if (missingFields.length > 0) {
-            return {
-                error: true,
-                message: `Missing fields: ${missingFields.join(", ")}`,
+        if (!isValid) {
+            const displayErrorMessages = (fieldErrors: any) => {
+                Object.values(fieldErrors).forEach((error: any) => {
+                    if (error?.message) {
+                        // Display error message directly
+                        toast({
+                            title: "Validation Error",
+                            description: error.message,
+                            variant: "destructive",
+                            duration: 3000,
+                        });
+                    } else if (Array.isArray(error)) {
+                        // Recursively handle arrays (e.g., platforms)
+                        error.forEach((nestedError) => displayErrorMessages(nestedError));
+                    } else if (typeof error === "object") {
+                        // Recursively handle nested objects
+                        displayErrorMessages(error);
+                    }
+                });
             };
+
+            displayErrorMessages(errors); // Start processing the errors object
         }
-    
-        return { error: false, message: "" };
     };
 
-    const handleSave = () => {
-        //Validate input if there's any errors.
-        const { error, message } = validateInputs();
-
-        if (error) {
-            toast({
-                title: "Validation Error",
-                description: message,
-                variant: "destructive",
-                duration: 3000
-            });
-            return; // Stop execution if validation fails
-        }
-        
-        //Handle Register if there's no errors.
-        const address = {
-            address: addressRef.current?.value as string,
-            city: city,
-            postcode: postcodeRef.current?.value as string,
-            state: state,
-            country: country
-        };
-
-        const updatedPlatforms = platforms.map((platform) => ({
-            ...platform,
-            audience_focus_country: platform.audience_focus_country,
-            platform_focus: platform.platform_focus,
-            follower_count: 1000,
-        }));
-
+    const onSubmit = async (data: any) => {
         const newInfluencer: Influencer = {
             influencer_id: crypto.randomUUID(),
-            full_name: fullNameRef.current?.value as string,
-            preferred_name: preferredNameRef.current?.value as string,
-            contact_number: contactNumberRef.current?.value as string,
-            alt_contact_number: altContactNumberRef.current?.value as string,
-            email_address: emailAddressRef.current?.value as string,
+            full_name: data.full_name,
+            preferred_name: data.preferred_name,
+            contact_number: data.contact_number,
+            alt_contact_number: data.alt_contact_number,
+            email_address: data.email_address,
             whatsapp_consent: false,
             whatsapp_invited: false,
             community_invited: false,
-            address,
-            platforms: updatedPlatforms,
-            total_follower_count: updatedPlatforms.reduce(
-                (total, platform) => total + platform.follower_count,
+            address: {
+                address: data.address,
+                city: data.city,
+                postcode: data.postcode,
+                state: data.state,
+                country: data.country,
+            },
+            platforms: data.platforms, // Use data.platforms directly
+            total_follower_count: data.platforms.reduce(
+                (total: number, platform: SocialMediaPlatform) => total + platform.follower_count,
                 0
             ),
             invite_count: 0,
-            status: "Pending for Approval"
+            status: data.status,
         };
 
         handleRegister(newInfluencer);
+        reset();
         closeRegisterModal();
     };
 
@@ -202,134 +191,193 @@ export const RegisterInfluencerModal = ({
                         Fill in the details below to add a new influencer.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid grid-cols-4 gap-4">
-                    <Input
-                        className="col-span-1"
-                        type="text"
-                        id="full_name"
-                        placeholder="Full Name"
-                        required
-                    />
-                    <Input
-                        className="col-span-1"
-                        type="text"
-                        id="preferred_name"
-                        placeholder="Preferred Name"
-                        required
-                    />
-                    <Input
-                        className="col-span-1"
-                        type="text"
-                        id="contact_number"
-                        placeholder="Contact Number"
-                        required
-                    />
-                    <Input
-                        className="col-span-1"
-                        type="text"
-                        id="alt_contact_number"
-                        placeholder="Alternative Contact Number"
-                    />
-                    <Input
-                        className="col-span-1"
-                        type="email"
-                        id="email_address"
-                        placeholder="Email Address"
-                        required
-                    />
-                    <AddressDropdowns
-                        countryInputId="country"
-                        stateInputId="state"
-                        cityInputId="city"
-                        country={country}
-                        setCountry={setCountry}
-                        state={state}
-                        setState={setState}
-                        city={city}
-                        setCity={setCity}
-                    />
-                    <Input
-                        className="col-span-1"
-                        type="text"
-                        id="postcode"
-                        placeholder="Postcode"
-                        required
-                    />
-                    <Input
-                        className="col-span-2"
-                        type="text"
-                        id="address"
-                        placeholder="Address"
-                        required
-                    />
-                </div>
-                <Separator className="my-4" />
-                <div className="flex flex-col w-full gap-4">
-                    <div className="w-full justify-end flex items-center">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="dark:bg-neutral-800 bg-neutral-300 hover:bg-neutral-300/75 dark:hover:bg-neutral-800/75">
-                                    Add Platform <PlusIcon className="w-4 h-4 ml-2 flex-shrink-0" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                {["instagram", "tiktok", "youtube", "RED"].map((type) => (
-                                    <DropdownMenuCheckboxItem
-                                        key={type}
-                                        checked={isPlatformSelected(type as SocialMediaPlatform["platform_name"])}
-                                        onSelect={() => handleTogglePlatform(type as SocialMediaPlatform["platform_name"])}
-                                    >
-                                        {type.charAt(0).toUpperCase() + type.slice(1)}
-                                    </DropdownMenuCheckboxItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="grid grid-cols-4 gap-4">
+                        <Input
+                            className={`col-span-1 ${errors.full_name ? 'border-red-500' : ''}`}
+                            type="text"
+                            {...register("full_name", {
+                                required: { value: true, message: "Full Name is required." }
+                            })}
+                            placeholder="Full Name"
+                        />
+                        <Input
+                            className={`col-span-1 ${errors.preferred_name ? 'border-red-500' : ''}`}
+                            type="text"
+                            {...register("preferred_name", {
+                                required: { value: true, message: "Preferred Name is required." }
+                            })}
+                            placeholder="Preferred Name"
+                        />
+                        <Input
+                            className={`col-span-1 ${errors.contact_number ? 'border-red-500' : ''}`}
+                            type="text"
+                            {...register("contact_number", {
+                                required: { value: true, message: "Contact Number is required." }
+                            })}
+                            placeholder="Contact Number"
+                        />
+                        <Input
+                            className={`col-span-1 ${errors.alt_contact_number ? 'border-red-500' : ''}`}
+                            type="text"
+                            {...register("alt_contact_number")}
+                            placeholder="Alternative Contact Number"
+                        />
+                        <Input
+                            className={`col-span-1 ${errors.email_address ? 'border-red-500' : ''}`}
+                            type="email"
+                            {...register("email_address", {
+                                required: { value: true, message: "Email Address is required." }
+                            })}
+                            placeholder="Email Address"
+                        />
+                        <AddressDropdowns
+                            country={getValues("country")}
+                            setCountry={(value) => {
+                                setValue("country", value, { shouldValidate: true });
+                                trigger();
+                            }}
+                            countryMessage="Country is required."
+                            countryClassname={`${errors.country ? 'border-red-500' : ''}`}
+                            countryInputName="country"
+                            state={getValues("state")}
+                            setState={(value) => {
+                                setValue("state", value, { shouldValidate: true });
+                                trigger();
+                            }}
+                            stateMessage="State is required."
+                            stateClassname={`${errors.state ? 'border-red-500' : ''}`}
+                            stateInputName="state"
+                            city={getValues("city")}
+                            setCity={(value) => {
+                                setValue("city", value, { shouldValidate: true });
+                                trigger();
+                            }}
+                            cityMessage="City is required."
+                            cityClassname={`${errors.city ? 'border-red-500' : ''}`}
+                            cityInputName="city"
+                            control={control}
+                        />
+                        <Input
+                            className={`col-span-1 ${errors.postcode ? 'border-red-500' : ''}`}
+                            type="text"
+                            {...register("postcode", {
+                                required: { value: true, message: "Postcode is required." }
+                            })}
+                            placeholder="Postcode"
+                        />
+                        <Input
+                            className={`col-span-2 ${errors.address ? 'border-red-500' : ''}`}
+                            type="text"
+                            {...register("address", {
+                                required: { value: true, message: "Address is required." }
+                            })}
+                            placeholder="Address"
+                        />
+                        <Input
+                            className={`col-span-1 ${errors.status ? 'border-red-500' : ''}`}
+                            type="text"
+                            {...register("status")}
+                            placeholder="Status"
+                        />
                     </div>
-                    {platforms.map((platform) => (
-                        <div key={platform.platform_name} className="mb-2">
-                            <p className="capitalize ml-1 text-lg font-semibold mb-2">{platform.platform_name}</p>
-                            <div className="grid grid-cols-4 gap-4">
-                                <Input
-                                    className="col-span-2"
-                                    type="text"
-                                    id={`social_media_url-${platform.platform_name}`}
-                                    placeholder="Social Media URL"
-                                    required
-                                />
-                                <CountryInput
-                                    country={platform.audience_focus_country}
-                                    setCountry={(value) => {
-                                        setPlatforms((prev) =>
-                                            prev.map((plat) =>
-                                                plat.platform_name === platform.platform_name
-                                                    ? { ...plat, audience_focus_country: value }
-                                                    : plat
-                                            )
-                                        );
-                                    }}
-                                    setCountryId={() => { }}
-                                    countriesList={countriesList}
-                                    inputId={`audience-focus-country-${platform.platform_name}`}
-                                    className="col-span-1"
-                                    placeholder="Audience Focus Country"
-                                />
-                                <Input
-                                    className="col-span-1"
-                                    type="text"
-                                    id={`platform-focus-${platform.platform_name}`}
-                                    placeholder="Platform Focus"
-                                    required
-                                />
-                            </div>
+                    <Separator className="my-4" />
+                    <div className="flex flex-col w-full gap-4">
+                        <div className="w-full justify-end flex items-center">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="dark:bg-neutral-800 bg-neutral-300 hover:bg-neutral-300/75 dark:hover:bg-neutral-800/75">
+                                        Add Platform <PlusIcon className="w-4 h-4 ml-2 flex-shrink-0" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    {["instagram", "tiktok", "youtube", "RED"].map((type) => (
+                                        <DropdownMenuCheckboxItem
+                                            key={type}
+                                            checked={isPlatformSelected(type as SocialMediaPlatform["platform_name"])}
+                                            onSelect={() => handleTogglePlatform(type as SocialMediaPlatform["platform_name"])}
+                                        >
+                                            <label htmlFor={type}>{capitalizeFirstLetter(type)}</label>
+                                        </DropdownMenuCheckboxItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
-                    ))}
-                </div>
-                <DialogFooter>
-                    <Button onClick={closeRegisterModal} className="bg-gray-400 hover:bg-gray-500">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleSave}>Register</Button>
-                </DialogFooter>
+                        {platformFields.map((platform, index) => (
+                            <div key={platform.id} className="mb-2">
+                                <p className="capitalize ml-1 text-lg font-semibold">{platform.platform_name}</p>
+                                <div className="grid grid-cols-4 gap-4">
+                                    {/* Social Media URL */}
+                                    <Input
+                                        className={`col-span-2 ${errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
+                                            }`}
+                                        type="text"
+                                        placeholder="Social Media URL"
+                                        {...register(`platforms.${index}.social_media_url`, {
+                                            required: {
+                                                value: true,
+                                                message: `${capitalizeFirstLetter(platform.platform_name)}'s Social Media URL is required.`,
+                                            }
+                                        })}
+                                    />
+
+                                    {/* Audience Focus Country */}
+                                    <CountryInput
+                                        country={getValues(`platforms.${index}.audience_focus_country`)}
+                                        setCountry={(value: string) => {
+                                            setValue(`platforms.${index}.audience_focus_country`, value, { shouldValidate: true });
+                                            trigger();
+                                        }}
+                                        countriesList={countriesList}
+                                        className={`col-span-1 ${errors.platforms?.[index]?.audience_focus_country ? 'border-red-500' : ''}`}
+                                        placeholder="Audience Focus Country"
+                                        setCountryId={() => { }}
+                                        input_name={`platforms.${index}.audience_focus_country`}
+                                        message={`${capitalizeFirstLetter(platform.platform_name)}'s Audience Focus Country is required.`}
+                                        control={control}
+                                    />
+
+                                    {/* Platform Focus */}
+                                    <Input
+                                        className={`col-span-1 ${errors.platforms?.[index]?.platform_focus ? 'border-red-500' : ''
+                                            }`}
+                                        type="text"
+                                        placeholder="Platform Focus"
+                                        {...register(`platforms.${index}.platform_focus`, {
+                                            required: {
+                                                value: true,
+                                                message: `${capitalizeFirstLetter(platform.platform_name)}'s Platform Focus is required.`
+                                            },
+                                        })}
+                                    />
+
+                                    {/* Follower Count */}
+                                    <Input
+                                        className={`col-span-1 hidden ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
+                                            }`}
+                                        type="number"
+                                        placeholder="Follower Count"
+                                        {...register(`platforms.${index}.follower_count`, {
+                                            valueAsNumber: true,
+                                            required: {
+                                                value: true,
+                                                message: `${capitalizeFirstLetter(platform.platform_name)}'s Follower Count is required.`
+                                            },
+                                        })}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <DialogFooter className="mt-5">
+                        <Button type="button" onClick={closeRegisterModal} className="bg-gray-400 hover:bg-red-600">
+                            Cancel
+                        </Button>
+                        <Button type="submit" onClick={handleValidation}>
+                            Save Changes
+                        </Button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     );

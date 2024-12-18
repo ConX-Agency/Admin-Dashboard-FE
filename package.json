@@ -42,6 +42,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
     "react-grid-layout": "^1.4.4",
+    "react-hook-form": "^7.54.1",
     "react-tilt": "^1.0.2",
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.5.2",

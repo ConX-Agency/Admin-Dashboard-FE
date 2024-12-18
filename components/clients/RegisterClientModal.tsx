@@ -1,12 +1,12 @@
 import { Client, clientAddress } from "@/data/clients";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { AddressDropdowns } from "../ui/addressDropdown"; // Updated from AddressDropdown to AddressDropdowns
-import { checkNullInputs } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { useFieldArray, useForm } from "react-hook-form";
 
 export const RegisterClientModal = ({ closeRegisterModal, handleRegister, registerModalVisibility }:
     {
@@ -14,143 +14,96 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
         handleRegister: (data: Client) => void;
         registerModalVisibility: boolean;
     }) => {
-    const [addresses, setAddresses] = useState<clientAddress[]>([
-        { temp_id: Date.now(), client_location_id: "", client_id: "", address: "", city: "", postcode: "", state: "", country: "" },
-    ]);
+    const {
+        control,
+        handleSubmit,
+        register,
+        setValue,
+        getValues,
+        formState: { errors },
+        trigger,
+        reset,
+    } = useForm<Client>({
+        mode: "onSubmit",
+        defaultValues: {
+            company_name: "",
+            company_email: "",
+            contact_number: "",
+            additional_contact_number: "",
+            person_in_charge_name: "",
+            person_in_charge_email: "",
+            industry: "",
+            category: "",
+            addresses: [
+                { address: "", city: "", postcode: "", state: "", country: "" } as clientAddress,
+            ],
+        },
+    });
 
-    const companyNameRef = useRef<HTMLInputElement>(null);
-    const companyEmailRef = useRef<HTMLInputElement>(null);
-    const contactNumberRef = useRef<HTMLInputElement>(null);
-    const altContactNumberRef = useRef<HTMLInputElement>(null);
-    const picNameRef = useRef<HTMLInputElement>(null);
-    const picEmailRef = useRef<HTMLInputElement>(null);
-    const industryRef = useRef<HTMLInputElement>(null);
-    const categoryRef = useRef<HTMLInputElement>(null);
-    const statusRef = useRef<HTMLInputElement>(null);
-    const addressRefs = useRef<Map<number, { postcode: HTMLInputElement | null; address: HTMLInputElement | null }>>(
-        new Map()
-    );
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "addresses",
+    });
 
-
+    // Reset form when modal visibility changes
     useEffect(() => {
-        if (registerModalVisibility) {
-            setAddresses([
-                { temp_id: Date.now(), client_location_id: "", client_id: "", address: "", city: "", postcode: "", state: "", country: "" },
-            ]);
+        if (!registerModalVisibility) {
+            reset();
         }
-    }, [registerModalVisibility]);
+    }, [registerModalVisibility, reset]);
 
-    // Add a new address section with a unique ID
     const addAddress = () => {
-        setAddresses([...addresses, {
-            temp_id: Date.now(),
-            client_id: crypto.randomUUID(),
-            client_location_id: "",
-            address: "",
-            city: "",
-            postcode: "",
-            state: "",
-            country: "",
-        }]);
+        append({ address: "", city: "", postcode: "", state: "", country: "" } as clientAddress);
     };
 
-    // Remove an address section based on its unique ID
-    const removeAddress = (id: number) => {
-        setAddresses(addresses.filter((address) => address.temp_id !== id));
+    const removeAddress = (index: number) => {
+        remove(index);
     };
 
-    // Validators
-    const validateInputs = (): { error: boolean; message: string } => {
-        const inputRefs = [
-            { ref: companyNameRef, name: "Company Name" },
-            { ref: companyEmailRef, name: "Company Email" },
-            { ref: contactNumberRef, name: "Contact Number" },
-            { ref: picNameRef, name: "PIC Name" },
-            { ref: picEmailRef, name: "PIC Email" },
-            { ref: industryRef, name: "Industry" },
-            { ref: categoryRef, name: "Category" },
-            { ref: statusRef, name: "Status" },
-        ];
+    const handleValidation = async () => {
+        const isValid = await trigger();
 
-        const missingFields: string[] = [];
-
-        // Validate inputRefs
-        inputRefs.forEach(({ ref, name }) => {
-            if (!ref.current || !ref.current.value.trim()) {
-                missingFields.push(name);
-            }
-        });
-
-        // Validate addressRefs (only `postcode`, `country`, and `address`)
-        addresses.forEach((address, index) => {
-            const ref = addressRefs.current.get(address?.temp_id!);
-            if (!ref?.address?.value.trim()) {
-                missingFields.push(`Address Line for Address #${index + 1}`);
-            }
-            if (!ref?.postcode?.value.trim()) {
-                missingFields.push(`Postcode for Address #${index + 1}`);
-            }
-            if (!address.country.trim()) {
-                missingFields.push(`Country for Address #${index + 1}`);
-            }
-        });
-
-        if (missingFields.length > 0) {
-            return {
-                error: true,
-                message: `Missing fields: ${missingFields.join(", ")}`,
+        if (!isValid) {
+            const displayErrorMessages = (fieldErrors: any) => {
+                Object.values(fieldErrors).forEach((error: any) => {
+                    if (error?.message) {
+                        // Display error message directly
+                        toast({
+                            title: "Validation Error",
+                            description: error.message,
+                            variant: "destructive",
+                            duration: 3000,
+                        });
+                    } else if (Array.isArray(error)) {
+                        // Recursively handle arrays (e.g., platforms)
+                        error.forEach((nestedError) => displayErrorMessages(nestedError));
+                    } else if (typeof error === "object") {
+                        // Recursively handle nested objects
+                        displayErrorMessages(error);
+                    }
+                });
             };
-        }
 
-        return { error: false, message: "" };
+            displayErrorMessages(errors); // Start processing the errors object
+        }
     };
 
-    const saveClient = () => {
-
-        //Validate input if there's any errors.
-        const { error, message } = validateInputs();
-
-        if (error) {
-            toast({
-                title: "Validation Error",
-                description: message,
-                variant: "destructive",
-                duration: 3000
-            });
-            return; // Stop execution if validation fails
-        }
-
-        //Handle Register if there's no errors.
+    const onSubmit = (data: Client) => {
+        console.log(data);
         const client_id = crypto.randomUUID();
-
-        const client: Client = {
-            client_id: client_id,
-            company_name: companyNameRef.current?.value as string,
-            company_email: companyEmailRef.current?.value as string,
-            contact_number: contactNumberRef.current?.value as string,
-            additional_contact_number: altContactNumberRef.current?.value as string,
-            person_in_charge_name: picNameRef.current?.value as string,
-            person_in_charge_email: picEmailRef.current?.value as string,
-            industry: industryRef.current?.value as string,
-            category: categoryRef.current?.value as string,
-            status: "Pending Approval",
-            addresses: addresses.map((address) => {
-                const ref = addressRefs.current.get(address.temp_id!);
-                return {
-                    client_id: client_id,
-                    client_location_id: crypto.randomUUID(),
-                    address: ref?.address?.value || "",
-                    postcode: ref?.postcode?.value || "",
-                    city: address.city || "",
-                    state: address.state || "",
-                    country: address.country || "",
-                };
-            }),
+        const formattedClient = {
+            ...data,
+            client_id,
+            addresses: data.addresses.map((address: clientAddress) => ({
+                ...address,
+                client_id,
+                client_location_id: crypto.randomUUID(),
+            })),
         };
 
-        // Pass the client object to the handleRegister callback
-        handleRegister(client);
-        closeRegisterModal(); // Close the modal after saving
+        handleRegister(formattedClient);
+        closeRegisterModal();
+        reset();
     };
 
     return (
@@ -165,139 +118,169 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                             Register a new client here. Click save when you're done.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                    <Input
-                        type="text"
-                        id="company_name"
-                        placeholder="Company Name"
-                        className="col-span-2"
-                        ref={companyNameRef}
-                        required
-                    />
-                    <Input 
-                        type="email" 
-                        id="company_email_address" 
-                        placeholder="Company Email Address" 
-                        className="col-span-1" 
-                        ref={companyEmailRef}
-                        required 
-                    />
-                    <Input 
-                        type="text" 
-                        id="contact_number" 
-                        placeholder="Contact Number" 
-                        className="col-span-1" 
-                        ref={contactNumberRef}
-                        required 
-                    />
-                    <Input 
-                        type="text" 
-                        id="pic_name" 
-                        placeholder="PIC Name" 
-                        className="col-span-2" 
-                        ref={picNameRef}
-                        required 
-                    />
-                    <Input 
-                        type="email" 
-                        id="pic_email" 
-                        placeholder="PIC Email" 
-                        className="col-span-1" 
-                        ref={picEmailRef}
-                        required 
-                    />
-                    <Input 
-                        type="text" 
-                        id="alt_contact_no" 
-                        placeholder="Alt Contact Number" 
-                        className="col-span-1" 
-                        ref={altContactNumberRef}
-                        required 
-                    />
-                    <Input 
-                        type="text" 
-                        id="industry" 
-                        placeholder="Industry" 
-                        className="col-span-1" 
-                        ref={industryRef}
-                        required 
-                        />
-                    <Input 
-                        type="text" 
-                        id="category" 
-                        placeholder="Category" 
-                        className="col-span-1" 
-                        ref={categoryRef}
-                        required 
-                        />
-                    </div>
-                    <Separator className="my-2 mb-0" />
-                    <div className="flex flex-col w-full gap-4">
-                        <div className="w-full justify-end flex items-center">
-                            <ActionButton
-                                onClick={addAddress} // Replace with function to add new address section
-                                icon="plus"
-                                label="Add More Address"
-                                textBtn="More Address"
-                                className="dark:bg-neutral-800 bg-neutral-300 hover:bg-neutral-300/75 dark:hover:bg-neutral-800/75"
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Input
+                                type="text"
+                                placeholder="Company Name"
+                                className={`col-span-2 ${errors.company_name ? 'border-red-500' : ''}`}
+                                {...register("company_name", {
+                                    required: { value: true, message: "Company Name is required." }
+                                })}
+                            />
+                            <Input
+                                type="email"
+                                placeholder="Company Email Address"
+                                className={`col-span-1 ${errors.company_email ? 'border-red-500' : ''}`}
+                                {...register("company_email", {
+                                    required: { value: true, message: "Company Email Address is required." }
+                                })}
+                            />
+                            <Input
+                                type="text"
+                                placeholder="Contact Number"
+                                className={`col-span-1 ${errors.contact_number ? 'border-red-500' : ''}`}
+                                {...register("contact_number", {
+                                    required: { value: true, message: "Contact Number is required." }
+                                })}
+                            />
+                            <Input
+                                type="text"
+                                placeholder="PIC Name"
+                                className={`col-span-2 ${errors.person_in_charge_name ? 'border-red-500' : ''}`}
+                                {...register("person_in_charge_name", {
+                                    required: { value: true, message: "Person in Charge's Name is required." }
+                                })}
+                            />
+                            <Input
+                                type="email"
+                                placeholder="PIC Email"
+                                className={`col-span-1 ${errors.person_in_charge_email ? 'border-red-500' : ''}`}
+                                {...register("person_in_charge_email", {
+                                    required: { value: true, message: "Person in Charge's Email is required." }
+                                })}
+                            />
+                            <Input
+                                type="text"
+                                placeholder="Alt Contact Number"
+                                className={`col-span-1 ${errors.additional_contact_number ? 'border-red-500' : ''}`}
+                                {...register("additional_contact_number")}
+                            />
+                            <Input
+                                type="text"
+                                id="industry"
+                                placeholder="Industry"
+                                className={`col-span-1 ${errors.industry ? 'border-red-500' : ''}`}
+                                {...register("industry", {
+                                    required: { value: true, message: "Industry is required." }
+                                })}
+                            />
+                            <Input
+                                type="text"
+                                id="category"
+                                placeholder="Category"
+                                className={`col-span-1 ${errors.category ? 'border-red-500' : ''}`}
+                                {...register("category", {
+                                    required: { value: true, message: "Category is required." }
+                                })}
                             />
                         </div>
-                        {addresses.map((address, index) => (
-                            <div key={address.temp_id} className="flex flex-col gap-4 mb-2" id={`address-form-${address.temp_id}`}>
-                                <div className="flex flex-row items-center justify-between">
-                                    <h1 className="ml-1 text-lg font-semibold">Address #{index + 1}</h1>
-                                    {index > 0 && (
-                                        <ActionButton
-                                            onClick={() => removeAddress(address.temp_id!)}
-                                            icon="trash"
-                                            label="Remove Address"
-                                            className="dark:bg-neutral-800 bg-neutral-300 py-0 px-0 ml-2 h-[35px] w-[35px]"
-                                        />
-                                    )}
-                                </div>
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <AddressDropdowns
-                                        countryInputId={`country-${address.temp_id}`} 
-                                        stateInputId={`state-${address.temp_id}`}
-                                        cityInputId={`city-${address.temp_id}`}
-                                        country={address.country}
-                                        state={address.state}
-                                        city={address.city}
-                                        setCountry={(value: SetStateAction<string>) => {
-                                            setAddresses((prevAddresses) =>
-                                                prevAddresses.map((addr) =>
-                                                    addr.temp_id === address.temp_id ? { ...addr, country: value as string } : addr
-                                                )
-                                            );
-                                        }}
-                                        setState={(value: SetStateAction<string>) => {
-                                            setAddresses((prevAddresses) =>
-                                                prevAddresses.map((addr) =>
-                                                    addr.temp_id === address.temp_id ? { ...addr, state: value as string } : addr
-                                                )
-                                            );
-                                        }}
-                                        setCity={(value: SetStateAction<string>) => {
-                                            setAddresses((prevAddresses) =>
-                                                prevAddresses.map((addr) =>
-                                                    addr.temp_id === address.temp_id ? { ...addr, city: value as string } : addr
-                                                )
-                                            );
-                                        }}
-                                    />
-                                    <Input type="number" id={`postcode-${address.temp_id}`} placeholder="Postcode" defaultValue={address.postcode} className="col-span-1" required />
-                                    <Input type="text" id={`address-${address.temp_id}`} placeholder="Address" defaultValue={address.address} className="col-span-3" required />
-                                </div>
+                        <Separator className="my-2 mb-0" />
+                        <div className="flex flex-col w-full gap-4">
+                            <div className="w-full justify-end flex items-center mt-3">
+                                <ActionButton
+                                    onClick={addAddress}
+                                    icon="plus"
+                                    label="Add More Address"
+                                    textBtn="More Address"
+                                    className="dark:bg-neutral-800 bg-neutral-300 hover:bg-neutral-300/75 dark:hover:bg-neutral-800/75"
+                                    type="button"
+                                />
                             </div>
-                        ))}
-                    </div>
-                    <DialogFooter>
-                        <Button onClick={closeRegisterModal}
-                            className="bg-neutral-400 hover:bg-red-600 hover:text-white transition-all duration-300 flex-shrink-0">
-                            Cancel
-                        </Button>
-                        <Button onClick={saveClient} className="">Save</Button>
-                    </DialogFooter>
+                            {fields.map((address, index) => (
+                                <div key={address.id} className="flex flex-col gap-4 mb-2" id={`address-form-${address.id}`}>
+                                    <div className="flex flex-row items-center justify-between">
+                                        <h1 className="ml-1 text-lg font-semibold">Address #{index + 1}</h1>
+                                        {index > 0 && (
+                                            <ActionButton
+                                                onClick={() => removeAddress(index)}
+                                                icon="trash"
+                                                label="Remove Address"
+                                                className="dark:bg-neutral-800 bg-neutral-300 py-0 px-0 ml-2 h-[35px] w-[35px]"
+                                                type="button"
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <AddressDropdowns
+                                            country={getValues(`addresses.${index}.country`)}
+                                            setCountry={(value: string) => {
+                                                setValue(`addresses.${index}.country`, value, { shouldValidate: true });
+                                                trigger(); //retrigger validation after fixing error.
+                                            }}
+                                            countryMessage={`Address #${index + 1}'s Country is required.`}
+                                            countryClassname={`${errors.addresses?.[index]?.country ? 'border-red-500' : ''}`}
+                                            countryInputName={`addresses.${index}.country`}
+                                            state={getValues(`addresses.${index}.state`)}
+                                            stateMessage={`Address #${index + 1}'s State is required.`}
+                                            setState={(value: string) => {
+                                                setValue(`addresses.${index}.state`, value, { shouldValidate: true });
+                                                trigger();
+                                            }}
+                                            stateClassname={`${errors.addresses?.[index]?.state ? 'border-red-500' : ''}`}
+                                            stateInputName={`addresses.${index}.state`}
+                                            city={getValues(`addresses.${index}.city`)}
+                                            cityMessage={`Address #${index + 1}'s City is required.`}
+                                            setCity={(value: string) => {
+                                                setValue(`addresses.${index}.city`, value, { shouldValidate: true });
+                                                trigger();
+                                            }}
+                                            cityClassname={`${errors.addresses?.[index]?.city ? 'border-red-500' : ''}`}
+                                            cityInputName={`addresses.${index}.city`}
+                                            control={control}
+                                        />
+                                        <Input
+                                            type="number"
+                                            id={`postcode-${address.id}`}
+                                            placeholder="Postcode"
+                                            {...register(`addresses.${index}.postcode` as const,
+                                                {
+                                                    required: {
+                                                        value: true,
+                                                        message: `Address #${index + 1}'s Postcode is required.`
+                                                    }
+                                                }
+                                            )}
+                                            className={`col-span-1 ${errors.addresses?.[index]?.postcode ? 'border-red-500' : ''}`}
+                                        />
+                                        <Input
+                                            type="text"
+                                            id={`address-${address.id}`}
+                                            placeholder="Address"
+                                            {...register(`addresses.${index}.address` as const,
+                                                {
+                                                    required: {
+                                                        value: true,
+                                                        message: `Address #${index + 1}'s Address is required.`
+                                                    }
+                                                }
+                                            )}
+                                            className={`col-span-3 ${errors.addresses?.[index]?.address ? 'border-red-500' : ''}`}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" onClick={closeRegisterModal}
+                                className="bg-neutral-400 hover:bg-red-600 hover:text-white transition-all duration-300 flex-shrink-0">
+                                Cancel
+                            </Button>
+                            <Button type="submit" onClick={handleValidation}>
+                                Save
+                            </Button>
+                        </DialogFooter>
+                    </form>
                 </DialogContent>
             </Dialog>
         </>

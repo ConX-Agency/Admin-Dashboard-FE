@@ -117,10 +117,10 @@ export function ManageInfluencerTable() {
                             {row.original.platforms.map((platform) => (
                                 <div key={platform.platform_name} className="flex flex-row gap-4 items-center"> {/* Add a key for each child */}
                                     <a href={platform.social_media_url} className="group">
-                                        <Image 
-                                            src={`${basePath}/images/logo/${platform.platform_name}.svg`} 
-                                            width={40} 
-                                            height={40} 
+                                        <Image
+                                            src={`${basePath}/images/logo/${platform.platform_name}.svg`}
+                                            width={40}
+                                            height={40}
                                             alt="platform-icon.svg"
                                             className={`w-[30px] h-[30px] opacity-70 group-hover:opacity-100 duration-300 transition-all
                                                 ${platform.platform_name === "RED" ? "bg-white rounded-[5px]" : ""}`}
@@ -307,11 +307,13 @@ export function ManageInfluencerTable() {
 
         //To add Update API here.
 
-        toast({
-            title: "Update Profile is Successful",
-            description: `Successfully updated ${data.full_name}'s profile.`,
-            duration: 3000
-        });
+        if (data) {
+            toast({
+                title: "Update Profile is Successful",
+                description: `Successfully updated ${data.full_name}'s profile.`,
+                duration: 3000
+            });
+        }
     }
 
     const handleRegister = (data: Influencer) => {
@@ -319,11 +321,13 @@ export function ManageInfluencerTable() {
 
         //To add Register API here.
 
-        toast({
-            title: "Registeration is Successful",
-            description: `Successfully registered new client, ${data.full_name}.`,
-            duration: 3000
-        });
+        if (data) {
+            toast({
+                title: "Registeration is Successful",
+                description: `Successfully registered new client, ${data.full_name}.`,
+                duration: 3000
+            });
+        }
     }
 
     const handleFollowerRangeChange = (min: number | null, max: number | null) => {
@@ -341,7 +345,7 @@ export function ManageInfluencerTable() {
                     },
                 ]
                 : [];
-    
+
         const statusFilterCondition =
             statusFilter && statusFilter !== "All"
                 ? [
@@ -351,7 +355,7 @@ export function ManageInfluencerTable() {
                     },
                 ]
                 : [];
-    
+
         // Combine both filter conditions while keeping other existing filters intact
         setColumnFilters((prev) => [
             // Remove old filters related to follower count and status
@@ -377,22 +381,24 @@ export function ManageInfluencerTable() {
                         <Input
                             placeholder="Min Followers"
                             type="number"
+                            min="0"
                             onChange={(e) => handleFollowerRangeChange(Number(e.target.value) || null, followerRange[1])}
                             className="h-[40px] bg-neutral-150 w-[140px]"
                         />
                         <Input
                             placeholder="Max Followers"
                             type="number"
+                            min="0"
                             onChange={(e) => handleFollowerRangeChange(followerRange[0], Number(e.target.value) || null)}
                             className="h-[40px] bg-neutral-150 w-[140px]"
                         />
                     </div>
                     <FilterDropdown
                         label="Subscription Tier"
-                        items={["All", "Active" , "Pending Approval" , "Blacklisted" , "Deactivated"]}
+                        items={["All", "Active", "Pending Approval", "Blacklisted", "Deactivated"]}
                         value={statusFilter || "All"}
                         onValueChange={handleStatusFilter}
-                        minWidth="min-w-[121px]"
+                        minWidth="min-w-[147px]"
                     />
                 </div>
                 <div className="flex items-end gap-2 flex-wrap">
@@ -492,7 +498,7 @@ export function ManageInfluencerTable() {
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                        <IconArrowLeft className="h-4 w-4 flex-shrink-0"/>
+                        <IconArrowLeft className="h-4 w-4 flex-shrink-0" />
                     </Button>
                     <Button
                         variant="outline"
@@ -500,7 +506,7 @@ export function ManageInfluencerTable() {
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                        <IconArrowRight className="h-4 w-4 flex-shrink-0"/>
+                        <IconArrowRight className="h-4 w-4 flex-shrink-0" />
                     </Button>
                 </div>
             </div>

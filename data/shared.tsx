@@ -1,37 +1,39 @@
+import { Control, UseFormRegisterReturn } from "react-hook-form";
+
 export interface Country {
     id: number;
     name: string;
-    iso3: string;
-    iso2: string;
-    numeric_code: string;
-    phone_code: string;
-    capital: string;
-    currency: string;
-    currency_name: string;
-    currency_symbol: string;
-    native: string;
-    region: string;
-    subregion: string;
-    emoji: string;
-    emojiU: string;
-    tld: string;
-    latitude: string;
-    longitude: string;
+    iso3?: string;
+    iso2?: string;
+    numeric_code?: string;
+    phone_code?: string;
+    capital?: string;
+    currency?: string;
+    currency_name?: string;
+    currency_symbol?: string;
+    native?: string;
+    region?: string;
+    subregion?: string;
+    emoji?: string;
+    emojiU?: string;
+    tld?: string;
+    latitude?: string;
+    longitude?: string;
 }
 
 export interface State {
     id: number;
     name: string;
-    state_code: string;
-    latitude: string;
-    longitude: string;
+    state_code?: string;
+    latitude?: string;
+    longitude?: string;
 }
 
 export interface City {
     id: number;
     name: string;
-    latitude: string;
-    longitude: string;
+    latitude?: string;
+    longitude?: string;
 }
 
 export interface CountryInputProps {
@@ -39,10 +41,11 @@ export interface CountryInputProps {
     setCountry: (country: string) => void;
     setCountryId: (id: number) => void;
     countriesList: Country[];
-    inputId: string;
     className?: string;
     placeholder?: string;
     ref?: React.Ref<HTMLButtonElement>;
+    message: string;
+    input_name: string;
 }
 
 export interface StateInputProps {
@@ -50,10 +53,11 @@ export interface StateInputProps {
     setState: (state: string) => void;
     setStateId: (id: number) => void;
     stateList: State[];
-    inputId: string;
     className?: string;
     isDisabled: boolean;
     ref?: React.Ref<HTMLButtonElement>;
+    message: string;
+    input_name: string;
 }
 
 export interface CityInputProps {
@@ -61,24 +65,29 @@ export interface CityInputProps {
     setCity: (city: string) => void;
     setCityId: (id: number) => void;
     cityList: City[];
-    inputId: string;
     className?: string;
     isDisabled: boolean;
     ref?: React.Ref<HTMLButtonElement>;
+    message: string;
+    input_name: string;
 }
 
 export interface AddressDropdownsProps {
-    countryInputId: string;
-    stateInputId: string;
-    cityInputId: string;
+    country: string;
+    setCountry: (country: string) => void;
+    state: string;
+    setState: (state: string) => void;
+    city: string;
+    setCity: (city: string) => void;
+    countryMessage: string; // Customized Messages for the required validation.
+    stateMessage: string;
+    cityMessage: string;
     countryClassname?: string;
     stateClassname?: string;
     cityClassname?: string;
-    country: string;
-    setCountry: React.Dispatch<React.SetStateAction<string>>;
-    state: string;
-    setState: React.Dispatch<React.SetStateAction<string>>;
-    city: string;
-    setCity: React.Dispatch<React.SetStateAction<string>>;
     countryPlaceholder?: string;
+    countryInputName: string; //React-Hook-Form utilizes the name in the controller to set the values.
+    stateInputName: string;
+    cityInputName: string;
+    control: Control<any>;
 }
