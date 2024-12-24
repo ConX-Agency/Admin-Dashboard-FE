@@ -15,15 +15,18 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { PlusIcon } from "lucide-react";
+import { ChevronDown, PlusIcon } from "lucide-react";
 import { AddressDropdowns, CountryInput } from "../ui/addressDropdown";
 import { GetCountries } from "react-country-state-city";
 import { Country } from "@/data/shared";
 import { toast } from "@/hooks/use-toast";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import { ddPlatformFocusValues, ddSocialMediaPlatformsValues } from "@/data/dropdown-values";
+import { Checkbox } from "../ui/checkbox";
 
 export const RegisterInfluencerModal = ({
     closeRegisterModal,
@@ -37,9 +40,6 @@ export const RegisterInfluencerModal = ({
     const initialPlatforms: SocialMediaPlatform[] = [];
 
     const [countriesList, setCountriesList] = useState<Country[]>([]);
-    const [country, setCountry] = useState<string>("");
-    const [state, setState] = useState<string>("");
-    const [city, setCity] = useState<string>("");
 
     const {
         control,
@@ -48,6 +48,7 @@ export const RegisterInfluencerModal = ({
         setValue,
         getValues,
         formState: { errors },
+        clearErrors,
         trigger,
         reset,
     } = useForm({
@@ -63,6 +64,8 @@ export const RegisterInfluencerModal = ({
             city: "",
             address: "",
             postcode: "",
+            tnc_consent: false,
+            whatsapp_consent: false,
             status: "",
             platforms: initialPlatforms,
         },
@@ -89,6 +92,7 @@ export const RegisterInfluencerModal = ({
     // Reset platforms when modal visibility changes to closed
     useEffect(() => {
         if (!registerModalVisibility) {
+            clearErrors();
             reset();
         }
     }, [registerModalVisibility, setValue]);
@@ -125,7 +129,6 @@ export const RegisterInfluencerModal = ({
             const displayErrorMessages = (fieldErrors: any) => {
                 Object.values(fieldErrors).forEach((error: any) => {
                     if (error?.message) {
-                        // Display error message directly
                         toast({
                             title: "Validation Error",
                             description: error.message,
@@ -133,10 +136,8 @@ export const RegisterInfluencerModal = ({
                             duration: 3000,
                         });
                     } else if (Array.isArray(error)) {
-                        // Recursively handle arrays (e.g., platforms)
                         error.forEach((nestedError) => displayErrorMessages(nestedError));
                     } else if (typeof error === "object") {
-                        // Recursively handle nested objects
                         displayErrorMessages(error);
                     }
                 });
@@ -146,7 +147,25 @@ export const RegisterInfluencerModal = ({
         }
     };
 
+    const handleSocMedValidation = () => {
+        if (platformFields.length === 0) {
+            toast({
+                title: "Validation Error",
+                description: "Please provide at least one Social Media Platform.",
+                variant: "destructive",
+                duration: 3000,
+            });
+            return false;
+        }
+
+        return true;
+    }
+
     const onSubmit = async (data: any) => {
+        // Stop Form Submission when Validation Fails.
+        const isValid = handleSocMedValidation();
+        if (!isValid) return;
+
         const newInfluencer: Influencer = {
             influencer_id: crypto.randomUUID(),
             full_name: data.full_name,
@@ -170,7 +189,8 @@ export const RegisterInfluencerModal = ({
                 0
             ),
             invite_count: 0,
-            status: data.status,
+            tnc_consent: data.tnc_consent,
+            status: "Pending Approval",
         };
 
         handleRegister(newInfluencer);
@@ -192,9 +212,9 @@ export const RegisterInfluencerModal = ({
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="grid grid-cols-4 gap-4">
+                    <div className="grid xxxs:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         <Input
-                            className={`col-span-1 ${errors.full_name ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.full_name ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("full_name", {
                                 required: { value: true, message: "Full Name is required." }
@@ -202,7 +222,7 @@ export const RegisterInfluencerModal = ({
                             placeholder="Full Name"
                         />
                         <Input
-                            className={`col-span-1 ${errors.preferred_name ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.preferred_name ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("preferred_name", {
                                 required: { value: true, message: "Preferred Name is required." }
@@ -210,21 +230,49 @@ export const RegisterInfluencerModal = ({
                             placeholder="Preferred Name"
                         />
                         <Input
-                            className={`col-span-1 ${errors.contact_number ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.contact_number ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("contact_number", {
-                                required: { value: true, message: "Contact Number is required." }
+                                required: { 
+                                    value: true, 
+                                    message: "Contact Number is required." 
+                                },
+                                pattern: {
+                                    value: /^\+\d{1,4}\d{7,15}$/,
+                                    message: "Contact Number must include country code and be digits only.",
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: "Contact Number must be at least 8 digits.",
+                                },
+                                maxLength: {
+                                    value: 19, // + (1-4 country code) + (7-15 phone number)
+                                    message: "Contact Number must not exceed 19 digits.",
+                                },
                             })}
-                            placeholder="Contact Number"
+                            placeholder="Contact Number (+1234567890)"
                         />
                         <Input
-                            className={`col-span-1 ${errors.alt_contact_number ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.alt_contact_number ? 'border-red-500' : ''}`}
                             type="text"
-                            {...register("alt_contact_number")}
-                            placeholder="Alternative Contact Number"
+                            {...register("alt_contact_number", {
+                                pattern: {
+                                    value: /^\+\d{1,4}\d{7,15}$/,
+                                    message: "Alternative Contact Number must include country code and be digits only.",
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: "Alternative Contact Number must be at least 8 digits.",
+                                },
+                                maxLength: {
+                                    value: 19, // + (1-4 country code) + (7-15 phone number)
+                                    message: "Alternative Contact Number must not exceed 19 digits.",
+                                },
+                            })}
+                            placeholder="Alt Contact Number (+1234567890)"
                         />
                         <Input
-                            className={`col-span-1 ${errors.email_address ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.email_address ? 'border-red-500' : ''}`}
                             type="email"
                             {...register("email_address", {
                                 required: { value: true, message: "Email Address is required." }
@@ -238,7 +286,7 @@ export const RegisterInfluencerModal = ({
                                 trigger();
                             }}
                             countryMessage="Country is required."
-                            countryClassname={`${errors.country ? 'border-red-500' : ''}`}
+                            countryClassname={`xxxs:col-span-1 md:col-span-2 ${errors.country ? 'border-red-500' : ''}`}
                             countryInputName="country"
                             state={getValues("state")}
                             setState={(value) => {
@@ -246,7 +294,7 @@ export const RegisterInfluencerModal = ({
                                 trigger();
                             }}
                             stateMessage="State is required."
-                            stateClassname={`${errors.state ? 'border-red-500' : ''}`}
+                            stateClassname={`xxxs:col-span-1 md:col-span-2 ${errors.state ? 'border-red-500' : ''}`}
                             stateInputName="state"
                             city={getValues("city")}
                             setCity={(value) => {
@@ -254,31 +302,40 @@ export const RegisterInfluencerModal = ({
                                 trigger();
                             }}
                             cityMessage="City is required."
-                            cityClassname={`${errors.city ? 'border-red-500' : ''}`}
+                            cityClassname={`xxxs:col-span-1 md:col-span-2 ${errors.city ? 'border-red-500' : ''}`}
                             cityInputName="city"
                             control={control}
                         />
                         <Input
-                            className={`col-span-1 ${errors.postcode ? 'border-red-500' : ''}`}
+                            className={`xxxs:col-span-1 lg:col-span-2 ${errors.postcode ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("postcode", {
-                                required: { value: true, message: "Postcode is required." }
+                                required: {
+                                    value: true,
+                                    message: `Postcode is required.`
+                                },
+                                minLength: {
+                                    value: 4,
+                                    message: `Postcode must be at least 4 numbers.`,
+                                },
+                                maxLength: {
+                                    value: 6,
+                                    message: `Postcode must be no more than 6 numbers.`,
+                                },
+                                pattern: {
+                                    value: /^\d+$/,
+                                    message: `Postcode must contain numbers only.`,
+                                },
                             })}
                             placeholder="Postcode"
                         />
                         <Input
-                            className={`col-span-2 ${errors.address ? 'border-red-500' : ''}`}
+                            className={`xxxs:col-span-2 md:col-span-3 lg:col-span-4 ${errors.address ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("address", {
                                 required: { value: true, message: "Address is required." }
                             })}
                             placeholder="Address"
-                        />
-                        <Input
-                            className={`col-span-1 ${errors.status ? 'border-red-500' : ''}`}
-                            type="text"
-                            {...register("status")}
-                            placeholder="Status"
                         />
                     </div>
                     <Separator className="my-4" />
@@ -291,7 +348,7 @@ export const RegisterInfluencerModal = ({
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    {["instagram", "tiktok", "youtube", "RED"].map((type) => (
+                                    {ddSocialMediaPlatformsValues.map((type) => (
                                         <DropdownMenuCheckboxItem
                                             key={type}
                                             checked={isPlatformSelected(type as SocialMediaPlatform["platform_name"])}
@@ -304,9 +361,9 @@ export const RegisterInfluencerModal = ({
                             </DropdownMenu>
                         </div>
                         {platformFields.map((platform, index) => (
-                            <div key={platform.id} className="mb-2">
+                            <div key={platform.id} className="mb-0">
                                 <p className="capitalize ml-1 text-lg font-semibold">{platform.platform_name}</p>
-                                <div className="grid grid-cols-4 gap-4">
+                                <div className="grid xxxs:grid-cols-2 lg:grid-cols-4 gap-4">
                                     {/* Social Media URL */}
                                     <Input
                                         className={`col-span-2 ${errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
@@ -317,7 +374,11 @@ export const RegisterInfluencerModal = ({
                                             required: {
                                                 value: true,
                                                 message: `${capitalizeFirstLetter(platform.platform_name)}'s Social Media URL is required.`,
-                                            }
+                                            },
+                                            pattern: {
+                                                value: /^(https?:\/\/)?(www\.)?(youtube\.com|tiktok\.com|xiaohongshu\.com|instagram\.com)(\/.*)?$/,
+                                                message: `${capitalizeFirstLetter(platform.platform_name)}'s Social Media URL must be from YouTube, TikTok, XiaoHongShu, or Instagram.`,
+                                            },
                                         })}
                                     />
 
@@ -329,7 +390,7 @@ export const RegisterInfluencerModal = ({
                                             trigger();
                                         }}
                                         countriesList={countriesList}
-                                        className={`col-span-1 ${errors.platforms?.[index]?.audience_focus_country ? 'border-red-500' : ''}`}
+                                        className={`xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.audience_focus_country ? 'border-red-500' : ''}`}
                                         placeholder="Audience Focus Country"
                                         setCountryId={() => { }}
                                         input_name={`platforms.${index}.audience_focus_country`}
@@ -338,22 +399,45 @@ export const RegisterInfluencerModal = ({
                                     />
 
                                     {/* Platform Focus */}
-                                    <Input
-                                        className={`col-span-1 ${errors.platforms?.[index]?.platform_focus ? 'border-red-500' : ''
-                                            }`}
-                                        type="text"
-                                        placeholder="Platform Focus"
-                                        {...register(`platforms.${index}.platform_focus`, {
-                                            required: {
-                                                value: true,
-                                                message: `${capitalizeFirstLetter(platform.platform_name)}'s Platform Focus is required.`
-                                            },
-                                        })}
+                                    <Controller
+                                        name={`platforms.${index}.platform_focus`}
+                                        control={control}
+                                        rules={{
+                                            required: { value: true, message: `${capitalizeFirstLetter(platform.platform_name)}'s Platform Focus is required.` },
+                                        }}
+                                        render={({ field }) => (
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        {...field} // Spread the Controller field here
+                                                        variant="outline"
+                                                        className="xxxs:col-span-2 sm:col-span-1 justify-between"
+                                                    >
+                                                        <span>{field.value || "Select Platform Focus"}</span>
+                                                        <ChevronDown className="h-5 w-5 ml-2" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="start" className="w-[200px]">
+                                                    {ddPlatformFocusValues.map((option) => (
+                                                        <DropdownMenuItem
+                                                            key={option}
+                                                            onClick={() => 
+                                                                setValue(`platforms.${index}.platform_focus`, 
+                                                                option as SocialMediaPlatform["platform_focus"], 
+                                                                { shouldValidate: true })}
+                                                            className="cursor-pointer"
+                                                        >
+                                                            {capitalizeFirstLetter(option)}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        )}
                                     />
 
                                     {/* Follower Count */}
                                     <Input
-                                        className={`col-span-1 hidden ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
+                                        className={`xxxs:col-span-2 sm:col-span-1 hidden ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
                                             }`}
                                         type="number"
                                         placeholder="Follower Count"
@@ -369,13 +453,58 @@ export const RegisterInfluencerModal = ({
                             </div>
                         ))}
                     </div>
+                    <Separator className="my-4" />
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center space-x-2">
+                            <Checkbox 
+                                className={`${errors.whatsapp_consent ? 'border-red-500' : ''}`}
+                                onCheckedChange={(checked: boolean) => {
+                                    setValue("whatsapp_consent", checked);
+                                }}
+                                {...register("whatsapp_consent")} 
+                            />
+                            <label
+                                htmlFor="terms"
+                                className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 leading-4"
+                            >
+                                I will like to receive more updates by joining the 
+                                <a className="underline ml-1 cursor-pointer transition-all duration-300 hover:opacity-70">
+                                    WhatsApp Community Group
+                                </a>.
+                            </label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox 
+                                className={`${errors.tnc_consent ? 'border-red-500' : ''}`}
+                                onCheckedChange={(checked: boolean) => {
+                                    setValue("tnc_consent", checked);
+                                }}
+                                {...register("tnc_consent", { 
+                                    required: {
+                                        value: true, 
+                                        message: "You must agree to the terms and conditions."
+                                    },
+                                })} 
+                            />
+                            <label
+                                htmlFor="terms"
+                                className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 leading-4"
+                            >
+                                By submitting this form, I acknowledge and agree that my information may be shared with clients for future collaboration invitations or updates.
+                                <span className="text-red-600 text-sm">*</span>
+                            </label>
+                        </div>
+                    </div>
                     <DialogFooter className="mt-5">
-                        <Button type="button" onClick={closeRegisterModal} className="bg-gray-400 hover:bg-red-600">
-                            Cancel
-                        </Button>
-                        <Button type="submit" onClick={handleValidation}>
-                            Save Changes
-                        </Button>
+                        <div className="flex xxxs:flex-col sm:flex-row gap-2">
+                            <Button type="button" onClick={closeRegisterModal}
+                                className="lg:bg-neutral-400 xxxs:bg-red-600 hover:bg-red-600 hover:text-white transition-all duration-300 flex-shrink-0">
+                                Cancel
+                            </Button>
+                            <Button type="submit" onClick={handleValidation}>
+                                Save
+                            </Button>
+                        </div>
                     </DialogFooter>
                 </form>
             </DialogContent>

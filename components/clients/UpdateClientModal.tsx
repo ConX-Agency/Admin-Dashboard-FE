@@ -8,6 +8,11 @@ import { Country } from "@/data/shared";
 import { AddressDropdowns } from "../ui/addressDropdown";
 import { toast } from "@/hooks/use-toast";
 import { useFieldArray, useForm } from "react-hook-form";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Influencer } from "@/data/influencer";
+import { capitalizeFirstLetter } from "@/lib/utils";
+import { ChevronDown } from "lucide-react";
+import { ddIndustryValues, ddStatusValues } from "@/data/dropdown-values";
 
 export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, updateModalVisibility }: {
     clientData: Client | null;
@@ -15,7 +20,8 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
     handleUpdate: (data: Client) => void;
     updateModalVisibility: boolean;
 }) => {
-
+    const [status, setStatus] = useState<Client["status"]>("Active");
+    const [industry, setIndustry] = useState<Client["industry"]>("Food & Beverage");
     const {
         control,
         handleSubmit,
@@ -31,11 +37,11 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
             company_name: "",
             company_email: "",
             contact_number: "",
-            additional_contact_number: "",
+            alt_contact_number: "",
             person_in_charge_name: "",
             person_in_charge_email: "",
             industry: "",
-            category: "",
+            cuisine_type: "",
             addresses: [
                 { address: "", city: "", postcode: "", state: "", country: "" } as clientAddress,
             ],
@@ -54,10 +60,10 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
             setValue("person_in_charge_email", clientData.person_in_charge_email || "");
             setValue("company_email", clientData.company_email || "");
             setValue("contact_number", clientData.contact_number || "");
-            setValue("additional_contact_number", clientData.additional_contact_number || "");
+            setValue("alt_contact_number", clientData.alt_contact_number || "");
             setValue("industry", clientData.industry || "");
-            setValue("category", clientData.category || "");
-            setValue("status", clientData.status || "");
+            setValue("cuisine_type", clientData.cuisine_type || "");
+            setStatus(clientData.status);
             setValue("addresses", clientData.addresses || []);
             replace(clientData.addresses || []);
         }
@@ -99,12 +105,13 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
         }
     };
 
-    const onSubmit = (data: Client) => {
-        console.log(data);
+    const onSubmit = async (data: Client) => {
+
         const client_id = crypto.randomUUID();
         const formattedClient = {
             ...data,
             client_id,
+            status,
             addresses: data.addresses.map((address: clientAddress) => ({
                 ...address,
                 client_id,
@@ -129,11 +136,11 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="grid grid-cols-4 items-center gap-4">
+                    <div className="grid xxxs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 items-center gap-4 mb-4">
                         <Input
                             type="text"
                             placeholder="Company Name"
-                            className={`col-span-2 ${errors.company_name ? 'border-red-500' : ''}`}
+                            className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.company_name ? 'border-red-500' : ''}`}
                             {...register("company_name", {
                                 required: { value: true, message: "Company Name is required." }
                             })}
@@ -141,59 +148,115 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                         <Input
                             type="email"
                             placeholder="Company Email Address"
-                            className={`col-span-1 ${errors.company_email ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.company_email ? 'border-red-500' : ''}`}
                             {...register("company_email", {
                                 required: { value: true, message: "Company Email Address is required." }
                             })}
                         />
                         <Input
                             type="text"
-                            placeholder="Contact Number"
-                            className={`col-span-1 ${errors.contact_number ? 'border-red-500' : ''}`}
+                            placeholder="Contact Number (+1234567890)"
+                            className={`col-span-2 ${errors.contact_number ? 'border-red-500' : ''}`}
                             {...register("contact_number", {
-                                required: { value: true, message: "Contact Number is required." }
+                                required: { 
+                                    value: true, 
+                                    message: "Contact Number is required." 
+                                },
+                                pattern: {
+                                    value: /^\+\d{1,4}\d{7,15}$/,
+                                    message: "Contact Number must include country code and be digits only.",
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: "Contact Number must be at least 8 digits.",
+                                },
+                                maxLength: {
+                                    value: 19, // + (1-4 country code) + (7-15 phone number)
+                                    message: "Contact Number must not exceed 19 digits.",
+                                },
                             })}
                         />
                         <Input
                             type="text"
-                            placeholder="PIC Name"
-                            className={`col-span-2 ${errors.person_in_charge_name ? 'border-red-500' : ''}`}
+                            placeholder="Person-In-Charge (PIC) Name"
+                            className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.person_in_charge_name ? 'border-red-500' : ''}`}
                             {...register("person_in_charge_name", {
                                 required: { value: true, message: "Person in Charge's Name is required." }
                             })}
                         />
                         <Input
                             type="email"
-                            placeholder="PIC Email"
-                            className={`col-span-1 ${errors.person_in_charge_email ? 'border-red-500' : ''}`}
+                            placeholder="PIC Email Address"
+                            className={`col-span-2 ${errors.person_in_charge_email ? 'border-red-500' : ''}`}
                             {...register("person_in_charge_email", {
                                 required: { value: true, message: "Person in Charge's Email is required." }
                             })}
                         />
                         <Input
                             type="text"
-                            placeholder="Alt Contact Number"
-                            className={`col-span-1 ${errors.additional_contact_number ? 'border-red-500' : ''}`}
-                            {...register("additional_contact_number")}
-                        />
-                        <Input
-                            type="text"
-                            id="industry"
-                            placeholder="Industry"
-                            className={`col-span-1 ${errors.industry ? 'border-red-500' : ''}`}
-                            {...register("industry", {
-                                required: { value: true, message: "Industry is required." }
+                            placeholder="Alt Contact Number (+1234567890)"
+                            className={`col-span-2 ${errors.alt_contact_number ? 'border-red-500' : ''}`}
+                            {...register("alt_contact_number", {
+                                pattern: {
+                                    value: /^\+\d{1,4}\d{7,15}$/,
+                                    message: "Alternative Contact Number must include country code and be digits only.",
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: "Alternative Contact Number must be at least 8 digits.",
+                                },
+                                maxLength: {
+                                    value: 19, // + (1-4 country code) + (7-15 phone number)
+                                    message: "Alternative Contact Number must not exceed 19 digits.",
+                                },
                             })}
                         />
+                        <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
+                                        {capitalizeFirstLetter(industry)}
+                                        <ChevronDown className="h-5 w-5 ml-2" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-full" align="start">
+                                    {ddIndustryValues.map((option) => (
+                                        <DropdownMenuItem
+                                            key={option}
+                                            onClick={() => setIndustry(option as Client["industry"])}
+                                            className="cursor-pointer"
+                                        >
+                                            {capitalizeFirstLetter(option)}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         <Input
                             type="text"
-                            id="category"
-                            placeholder="Category"
-                            className={`col-span-1 ${errors.category ? 'border-red-500' : ''}`}
-                            {...register("category", {
-                                required: { value: true, message: "Category is required." }
+                            placeholder="Cuisine Type (Italian, Thai, Malaysian)"
+                            className={`col-span-2 ${errors.cuisine_type ? 'border-red-500' : ''}`}
+                            {...register("cuisine_type", {
+                                required: { value: true, message: "Cuisine Type is required." }
                             })}
                         />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
+                                    {capitalizeFirstLetter(status)}
+                                    <ChevronDown className="h-5 w-5 ml-2" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-[266px] max-w-full" align="start">
+                                {ddStatusValues.map((option) => (
+                                    <DropdownMenuItem
+                                        key={option}
+                                        onClick={() => setStatus(option as Client["status"])}
+                                        className="cursor-pointer"
+                                    >
+                                        {capitalizeFirstLetter(option)}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                     <Separator className="my-2 mb-0" />
                     <div className="flex flex-col w-full gap-4">
@@ -221,7 +284,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                         />
                                     )}
                                 </div>
-                                <div className="grid grid-cols-4 items-center gap-4">
+                                <div className="grid xxxs:grid-cols-4 sm:grid-cols-6 items-center gap-4">
                                     <AddressDropdowns
                                         country={getValues(`addresses.${index}.country`)}
                                         setCountry={(value: string) => {
@@ -229,7 +292,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                             trigger(); //retrigger validation after fixing error.
                                         }}
                                         countryMessage={`Address #${index + 1}'s Country is required.`}
-                                        countryClassname={`${errors.addresses?.[index]?.country ? 'border-red-500' : ''}`}
+                                        countryClassname={`col-span-2 ${errors.addresses?.[index]?.country ? 'border-red-500' : ''}`}
                                         countryInputName={`addresses.${index}.country`}
                                         state={getValues(`addresses.${index}.state`)}
                                         stateMessage={`Address #${index + 1}'s State is required.`}
@@ -237,7 +300,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                             setValue(`addresses.${index}.state`, value, { shouldValidate: true });
                                             trigger();
                                         }}
-                                        stateClassname={`${errors.addresses?.[index]?.state ? 'border-red-500' : ''}`}
+                                        stateClassname={`col-span-2 ${errors.addresses?.[index]?.state ? 'border-red-500' : ''}`}
                                         stateInputName={`addresses.${index}.state`}
                                         city={getValues(`addresses.${index}.city`)}
                                         cityMessage={`Address #${index + 1}'s City is required.`}
@@ -245,12 +308,12 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                             setValue(`addresses.${index}.city`, value, { shouldValidate: true });
                                             trigger();
                                         }}
-                                        cityClassname={`${errors.addresses?.[index]?.city ? 'border-red-500' : ''}`}
+                                        cityClassname={`col-span-2 ${errors.addresses?.[index]?.city ? 'border-red-500' : ''}`}
                                         cityInputName={`addresses.${index}.city`}
                                         control={control}
                                     />
                                     <Input
-                                        type="number"
+                                        type="text"
                                         id={`postcode-${address.id}`}
                                         placeholder="Postcode"
                                         {...register(`addresses.${index}.postcode` as const,
@@ -258,10 +321,22 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                                 required: {
                                                     value: true,
                                                     message: `Address #${index + 1}'s Postcode is required.`
-                                                }
+                                                },
+                                                minLength: {
+                                                    value: 4,
+                                                    message: `Address #${index + 1}'s Postcode must be at least 4 numbers.`,
+                                                },
+                                                maxLength: {
+                                                    value: 6,
+                                                    message: `Address #${index + 1}'s Postcode must be no more than 6 numbers.`,
+                                                },
+                                                pattern: {
+                                                    value: /^\d+$/,
+                                                    message: `Address #${index + 1}'s Postcode must contain numbers only.`,
+                                                },
                                             }
                                         )}
-                                        className={`col-span-1 ${errors.addresses?.[index]?.postcode ? 'border-red-500' : ''}`}
+                                        className={`col-span-2 ${errors.addresses?.[index]?.postcode ? 'border-red-500' : ''}`}
                                     />
                                     <Input
                                         type="text"
@@ -275,20 +350,22 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                                 }
                                             }
                                         )}
-                                        className={`col-span-3 ${errors.addresses?.[index]?.address ? 'border-red-500' : ''}`}
+                                        className={`col-span-4 ${errors.addresses?.[index]?.address ? 'border-red-500' : ''}`}
                                     />
                                 </div>
                             </div>
                         ))}
                     </div>
                     <DialogFooter>
-                        <Button type="button" onClick={closeUpdateModal}
-                            className="bg-neutral-400 hover:bg-red-600 hover:text-white transition-all duration-300 flex-shrink-0">
-                            Cancel
-                        </Button>
-                        <Button type="submit" onClick={handleValidation}>
-                            Save
-                        </Button>
+                        <div className="flex xxxs:flex-col sm:flex-row gap-2 mt-4">
+                            <Button type="button" onClick={closeUpdateModal}
+                                className="lg:bg-neutral-400 xxxs:bg-red-600 hover:bg-red-600 hover:text-white transition-all duration-300 flex-shrink-0">
+                                Cancel
+                            </Button>
+                            <Button type="submit" onClick={handleValidation}>
+                                Save
+                            </Button>
+                        </div>
                     </DialogFooter>
                 </form>
             </DialogContent>

@@ -194,6 +194,44 @@ export function ManageInfluencerTable() {
             ),
         },
         {
+            accessorKey: "invite_count",
+            meta: "Invite Count",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                        className="pl-0 font-semibold"
+                    >
+                        Invite Count
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => (
+                <div>{row.getValue("invite_count")}</div>
+            ),
+        },
+        {
+            accessorKey: "whatsapp_consent",
+            meta: "WhatsApp Consent",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                        className="pl-0 font-semibold"
+                    >
+                        WhatsApp Consent
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("whatsapp_consent")?.toString()}</div>
+            ),
+        },
+        {
             accessorKey: "status",
             meta: "Status",
             header: ({ column }) => {
@@ -370,7 +408,7 @@ export function ManageInfluencerTable() {
 
     return (
         <div className="w-full">
-            <div className="flex items-center justify-between py-4 xxxs:flex-wrap md:flex-nowrap gap-2">
+            <div className="flex items-center justify-between py-4 flex-wrap gap-2">
                 <div className="flex items-start gap-2 flex-wrap">
                     <Input
                         placeholder="Search by Company Name"

@@ -15,10 +15,11 @@ export interface Client {
     person_in_charge_email: string;
     company_email: string;
     contact_number: string;
-    additional_contact_number: string;
+    alt_contact_number: string;
     industry: string;
-    category: string;
+    cuisine_type: string;
     addresses: clientAddress[];
+    tnc_consent?: boolean,
     status: "Active" | "Pending Approval" | "Blacklisted" | "Cancelled";
 }
 
@@ -41,9 +42,10 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "John Doe",
         person_in_charge_email: "john.doe@tastytreats.com",
         industry: "Food & Beverage",
-        category: "Chinese",
+        cuisine_type: "Chinese",
         contact_number: "+60123456789",
-        additional_contact_number: "+60129876543",
+        alt_contact_number: "+60129876543",
+        tnc_consent: true,
         status: "Active"
     },
     {
@@ -64,9 +66,10 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "Maria Papadopoulos",
         person_in_charge_email: "maria@souvlakihaven.com",
         industry: "Food & Beverage",
-        category: "Greek",
+        cuisine_type: "Greek",
         contact_number: "+302101234567",
-        additional_contact_number: "+302107654321",
+        alt_contact_number: "+302107654321",
+        tnc_consent: true,
         status: "Active"
     },
     {
@@ -87,9 +90,10 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "Rajesh Kapoor",
         person_in_charge_email: "rajesh@currydelight.com",
         industry: "Food & Beverage",
-        category: "Indian",
+        cuisine_type: "Indian",
         contact_number: "+912223456789",
-        additional_contact_number: "+912298765432",
+        alt_contact_number: "+912298765432",
+        tnc_consent: true,
         status: "Active"
     },
     {
@@ -110,9 +114,10 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "Giovanni Rossi",
         person_in_charge_email: "giovanni@pizzaparadise.com",
         industry: "Food & Beverage",
-        category: "Italian",
+        cuisine_type: "Italian",
         contact_number: "+390612345678",
-        additional_contact_number: "+390698765432",
+        alt_contact_number: "+390698765432",
+        tnc_consent: true,
         status: "Active"
     },
     {
@@ -133,9 +138,10 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "Haruto Tanaka",
         person_in_charge_email: "haruto@sushiworld.com",
         industry: "Food & Beverage",
-        category: "Japanese",
+        cuisine_type: "Japanese",
         contact_number: "+81312345678",
-        additional_contact_number: "+81387654321",
+        alt_contact_number: "+81387654321",
+        tnc_consent: true,
         status: "Active"
     },
 ];

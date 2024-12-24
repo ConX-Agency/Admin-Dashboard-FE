@@ -1,7 +1,7 @@
 import { GetCountries, GetState, GetCity } from "react-country-state-city";
 import { useEffect, useState } from "react";
 import { AddressDropdownsProps, City, CityInputProps, Country, CountryInputProps, State, StateInputProps } from "../../data/shared";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "./dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Control, Controller } from "react-hook-form";
@@ -15,49 +15,53 @@ export const CountryInput = ({
   placeholder,
   control,
   message,
-  input_name
+  input_name,
 }: CountryInputProps & { control: Control<any> }) => {
   return (
-      <Controller
-        name={input_name}// The name that matches the form field name
-        control={control} // Connect with react-hook-form control
-        rules={{
-          required:
-            { value: true, message: `${message}` }
-        }} // Add validation rule
-        render={({ field, fieldState }) => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                {...field} // Spread the Controller field here
-                variant="outline"
-                className={`flex justify-between items-center p-3 w-full ${className}`}
-              >
-                <span>{country || placeholder}</span>
-                <ChevronDown className="h-5 w-5 ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-max overflow-y-scroll max-h-[200px]">
-              <DropdownMenuRadioGroup
-                value={country}
-                onValueChange={(selectedCountry) => {
-                  const countryData = countriesList.find((item: any) => item.name === selectedCountry);
-                  setCountry(countryData?.name || "");
-                  setCountryId(countryData?.id || 0);
+    <Controller
+      name={input_name} // The name that matches the form field name
+      control={control} // Connect with react-hook-form control
+      rules={{
+        required: {
+          value: true,
+          message: `${message}`,
+        },
+      }} // Add validation rule
+      render={({ field }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className={`flex justify-between items-center p-3 w-full ${className}`}
+            >
+              <span>{country || placeholder}</span>
+              <ChevronDown className="h-5 w-5 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[200px] overflow-y-scroll max-h-[200px]" align="start">
+            {countriesList.map((item: any) => (
+              <DropdownMenuItem
+                key={item.id}
+                onClick={() => {
+                  const selectedCountry = countriesList.find(
+                    (countryItem) => countryItem.name === item.name
+                  );
+                  setCountry(selectedCountry?.name || "");
+                  setCountryId(selectedCountry?.id || 0);
+                  field.onChange(selectedCountry?.name || ""); // Update field value
                 }}
+                className="cursor-pointer"
               >
-                {countriesList.map((item: any) => (
-                  <DropdownMenuRadioItem key={item.id} value={item.name}>
-                    {item.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-      />
+                {item.name}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    />
   );
 };
+
 
 const StateInput = ({
   state,
@@ -68,52 +72,54 @@ const StateInput = ({
   className,
   control,
   message,
-  input_name
+  input_name,
 }: StateInputProps & { control: Control<any> }) => {
   return (
-      <Controller
-        name={input_name} // The name that matches the form field name
-        control={control} // Connect with react-hook-form control
-        rules={{
-          validate: (value) => {
-            if (isDisabled) return true; // Skip validation if disabled
-            return value ? true : `${message}`;
-          },
-        }}
-        render={({ field, fieldState }) => (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                {...field} // Spread the Controller field here
-                variant="outline"
-                className={`flex justify-between items-center p-3 w-full ${className}`}
-                disabled={isDisabled}
-              >
-                <span>{state || "State"}</span>
-                <ChevronDown className="h-5 w-5 ml-2" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-max overflow-y-scroll max-h-[200px]">
-              <DropdownMenuRadioGroup
-                value={state}
-                onValueChange={(selectedState) => {
-                  const stateData = stateList.find((item: any) => item.name === selectedState);
-                  setState(stateData?.name || "");
-                  setStateId(stateData?.id || 0);
+    <Controller
+      name={input_name} // The name that matches the form field name
+      control={control} // Connect with react-hook-form control
+      rules={{
+        validate: (value) => {
+          if (isDisabled) return true; // Skip validation if disabled
+          return value ? true : `${message}`;
+        },
+      }}
+      render={({ field }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className={`flex justify-between items-center p-3 w-full ${className}`}
+              disabled={isDisabled}
+            >
+              <span>{state || "State"}</span>
+              <ChevronDown className="h-5 w-5 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[200px] overflow-y-scroll max-h-[200px]" align="start">
+            {stateList.map((item: any) => (
+              <DropdownMenuItem
+                key={item.id}
+                onClick={() => {
+                  const selectedState = stateList.find(
+                    (stateItem) => stateItem.name === item.name
+                  );
+                  setState(selectedState?.name || "");
+                  setStateId(selectedState?.id || 0);
+                  field.onChange(selectedState?.name || ""); // Update field value
                 }}
+                className="cursor-pointer"
               >
-                {stateList.map((item: any) => (
-                  <DropdownMenuRadioItem key={item.id} value={item.name}>
-                    {item.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-      />
+                {item.name}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    />
   );
 };
+
 
 const CityInput = ({
   city,
@@ -149,21 +155,23 @@ const CityInput = ({
                 <ChevronDown className="h-5 w-5 ml-2" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-max overflow-y-scroll max-h-[200px]">
-              <DropdownMenuRadioGroup
-                value={city}
-                onValueChange={(selectedCity) => {
-                  const cityData = cityList.find((item: any) => item.name === selectedCity);
-                  setCity(cityData?.name || "");
-                  setCityId(cityData?.id || 0);
-                }}
-              >
-                {cityList.map((item: any) => (
-                  <DropdownMenuRadioItem key={item.id} value={item.name}>
-                    {item.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
+            <DropdownMenuContent className="w-[200px] overflow-y-scroll max-h-[200px]" align="start">
+              {cityList.map((item: any) => (
+                <DropdownMenuItem
+                  key={item.id}
+                  onClick={() => {
+                    const selectedCity = cityList.find(
+                      (cityItem) => cityItem.name === item.name
+                    );
+                    setCity(selectedCity?.name || "");
+                    setCityId(selectedCity?.id || 0);
+                    field.onChange(selectedCity?.name || ""); // Update field value
+                  }}
+                  className="cursor-pointer"
+                >
+                  {item.name}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         )}

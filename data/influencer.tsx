@@ -31,7 +31,8 @@ export interface Influencer {
     whatsapp_invited?: boolean;
     community_invited?: boolean;
     invite_count: number;
-    status: string;
+    tnc_consent?: boolean;
+    status: "Active" | "Pending Approval" | "Blacklisted" | "Cancelled";
 }
 
 export const dummyInfluencerData: Influencer[] = [
@@ -39,8 +40,8 @@ export const dummyInfluencerData: Influencer[] = [
         influencer_id: "eb626727-ea74-4de7-87ab-db79039c5042",
         full_name: "Emily Carter",
         preferred_name: "Emmy",
-        contact_number: "123-456-7890",
-        alt_contact_number: "123-456-7891",
+        contact_number: "+11234567890",
+        alt_contact_number: "+11234567891",
         email_address: "emmy.carter@example.com",
         address: {
             id: 1,
@@ -75,14 +76,15 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: false,
         community_invited: true,
         invite_count: 3,
-        status: "Active"
+        tnc_consent: true,
+        status: "Active",
     },
     {
         influencer_id: "1ba79f5d-e465-4287-85fd-c39b19dfcee1",
         full_name: "Daniel Kim",
         preferred_name: "Danny",
-        contact_number: "234-567-8901",
-        alt_contact_number: "234-567-8902",
+        contact_number: "+12345678901",
+        alt_contact_number: "+12345678902",
         email_address: "danny.kim@example.com",
         address: {
             id: 2,
@@ -108,14 +110,15 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: true,
         community_invited: false,
         invite_count: 1,
-        status: "Active"
+        tnc_consent: true,
+        status: "Active",
     },
     {
         influencer_id: "9d7c1722-18e7-4c99-94ed-a22f41f34e04",
         full_name: "Sophia Martinez",
         preferred_name: "Soph",
-        contact_number: "345-678-9012",
-        alt_contact_number: "345-678-9013",
+        contact_number: "+441234567890",
+        alt_contact_number: "+441234567891",
         email_address: "soph.martinez@example.com",
         address: {
             id: 3,
@@ -150,14 +153,15 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: true,
         community_invited: true,
         invite_count: 5,
-        status: "Active"
+        tnc_consent: true,
+        status: "Active",
     },
     {
         influencer_id: "c4ee145b-2781-4070-a00d-2862e19c2a4a",
         full_name: "Aarav Patel",
         preferred_name: "Aarav",
-        contact_number: "456-789-0123",
-        alt_contact_number: "456-789-0124",
+        contact_number: "+914567890123",
+        alt_contact_number: "+914567890124",
         email_address: "aarav.patel@example.com",
         address: {
             id: 4,
@@ -183,14 +187,15 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: false,
         community_invited: false,
         invite_count: 2,
-        status: "Active"
+        tnc_consent: true,
+        status: "Active",
     },
     {
         influencer_id: "e8b7a78e-34e6-45b7-8bc4-c58fd88cc84a",
         full_name: "Hana Tanaka",
         preferred_name: "Hana",
-        contact_number: "567-890-1234",
-        alt_contact_number: "567-890-1235",
+        contact_number: "+815678901234",
+        alt_contact_number: "+815678901235",
         email_address: "hana.tanaka@example.com",
         address: {
             id: 5,
@@ -225,6 +230,7 @@ export const dummyInfluencerData: Influencer[] = [
         whatsapp_invited: true,
         community_invited: true,
         invite_count: 4,
-        status: "Active"
+        tnc_consent: true,
+        status: "Active",
     },
 ];

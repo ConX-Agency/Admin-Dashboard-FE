@@ -11,14 +11,15 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { useEffect, useState } from "react";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { PlusIcon } from "lucide-react";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { ChevronDown, PlusIcon } from "lucide-react";
 import { AddressDropdowns, CountryInput } from "../ui/addressDropdown";
 import { Country } from "@/data/shared";
 import { GetCountries } from "react-country-state-city";
 import { toast } from "@/hooks/use-toast";
-import { useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import { ddPlatformFocusValues, ddSocialMediaPlatformsValues, ddStatusValues } from "@/data/dropdown-values";
 
 export const UpdateInfluencerModal = ({
     influencerData,
@@ -34,6 +35,7 @@ export const UpdateInfluencerModal = ({
     const [originalPlatforms, setOriginalPlatforms] = useState<SocialMediaPlatform[]>(influencerData?.platforms || []);
     const [isPlatformsModified, setIsPlatformsModified] = useState(false);
     const [countriesList, setCountriesList] = useState<Country[]>([]);
+    const [status, setStatus] = useState<Influencer["status"]>("Active");
 
     const {
         control,
@@ -41,6 +43,7 @@ export const UpdateInfluencerModal = ({
         register,
         setValue,
         getValues,
+        clearErrors,
         formState: { errors },
         trigger
     } = useForm({
@@ -76,6 +79,7 @@ export const UpdateInfluencerModal = ({
 
     // Important to set Influencer's initial data.
     useEffect(() => {
+        clearErrors();
         if (influencerData) {
             setValue("full_name", influencerData.full_name || "");
             setValue("preferred_name", influencerData.preferred_name || "");
@@ -87,7 +91,7 @@ export const UpdateInfluencerModal = ({
             setValue("city", influencerData.address?.city || "");
             setValue("address", influencerData.address?.address || "");
             setValue("postcode", influencerData.address?.postcode || "");
-            setValue("status", influencerData.status || "");
+            setStatus(influencerData.status);
             setValue("platforms", influencerData.platforms || []); // Explicitly set platforms
             replace(influencerData.platforms || []);
         }
@@ -169,7 +173,25 @@ export const UpdateInfluencerModal = ({
         }
     };
 
+    const handleSocMedValidation = () => {
+        if (platformFields.length === 0) {
+            toast({
+                title: "Validation Error",
+                description: "Please provide at least one Social Media Platform.",
+                variant: "destructive",
+                duration: 3000,
+            });
+            return false;
+        }
+
+        return true;
+    }
+
     const onSubmit = async (data: any) => {
+        // Stop Form Submission when Validation Fails.
+        const isValid = handleSocMedValidation();
+        if (!isValid) return;
+
         const updatedInfluencer: Influencer = {
             influencer_id: influencerData?.influencer_id || crypto.randomUUID(),
             full_name: data.full_name,
@@ -193,7 +215,7 @@ export const UpdateInfluencerModal = ({
                 0
             ),
             invite_count: 0,
-            status: data.status,
+            status: status,
         };
 
         handleUpdate(updatedInfluencer);
@@ -214,9 +236,9 @@ export const UpdateInfluencerModal = ({
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="grid grid-cols-4 gap-4">
+                    <div className="grid xxxs:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         <Input
-                            className={`col-span-1 ${errors.full_name ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.full_name ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("full_name", {
                                 required: { value: true, message: "Full Name is required." }
@@ -224,7 +246,7 @@ export const UpdateInfluencerModal = ({
                             placeholder="Full Name"
                         />
                         <Input
-                            className={`col-span-1 ${errors.preferred_name ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.preferred_name ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("preferred_name", {
                                 required: { value: true, message: "Preferred Name is required." }
@@ -232,21 +254,49 @@ export const UpdateInfluencerModal = ({
                             placeholder="Preferred Name"
                         />
                         <Input
-                            className={`col-span-1 ${errors.contact_number ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.contact_number ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("contact_number", {
-                                required: { value: true, message: "Contact Number is required." }
+                                required: { 
+                                    value: true, 
+                                    message: "Contact Number is required." 
+                                },                                
+                                pattern: {
+                                    value: /^\+\d{1,4}\d{7,15}$/,
+                                    message: "Contact Number must include country code and be digits only.",
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: "Contact Number must be at least 8 digits.",
+                                },
+                                maxLength: {
+                                    value: 19, // + (1-4 country code) + (7-15 phone number)
+                                    message: "Contact Number must not exceed 19 digits.",
+                                },
                             })}
-                            placeholder="Contact Number"
+                            placeholder="Contact Number (+1234567890)"
                         />
                         <Input
-                            className={`col-span-1 ${errors.alt_contact_number ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.alt_contact_number ? 'border-red-500' : ''}`}
                             type="text"
-                            {...register("alt_contact_number")}
-                            placeholder="Alternative Contact Number"
+                            {...register("alt_contact_number", {
+                                pattern: {
+                                    value: /^\+\d{1,4}\d{7,15}$/,
+                                    message: "Alternative Contact Number must include country code and be digits only.",
+                                },
+                                minLength: {
+                                    value: 8,
+                                    message: "Alternative Contact Number must be at least 8 digits.",
+                                },
+                                maxLength: {
+                                    value: 19, // + (1-4 country code) + (7-15 phone number)
+                                    message: "Alternative Contact Number must not exceed 19 digits.",
+                                },
+                            })}
+                            placeholder="Alt Contact Number (+1234567890)"
                         />
                         <Input
-                            className={`col-span-1 ${errors.email_address ? 'border-red-500' : ''}`}
+                            className={`col-span-2 ${errors.email_address ? 'border-red-500' : ''}`}
                             type="email"
                             {...register("email_address", {
                                 required: { value: true, message: "Email Address is required." }
@@ -260,7 +310,7 @@ export const UpdateInfluencerModal = ({
                                 trigger();
                             }}
                             countryMessage="Country is required."
-                            countryClassname={`${errors.country ? 'border-red-500' : ''}`}
+                            countryClassname={`xxxs:col-span-1 md:col-span-2 ${errors.country ? 'border-red-500' : ''}`}
                             countryInputName="country"
                             state={getValues("state")}
                             setState={(value) => {
@@ -268,7 +318,7 @@ export const UpdateInfluencerModal = ({
                                 trigger();
                             }}
                             stateMessage="State is required."
-                            stateClassname={`${errors.state ? 'border-red-500' : ''}`}
+                            stateClassname={`xxxs:col-span-1 md:col-span-2 ${errors.state ? 'border-red-500' : ''}`}
                             stateInputName="state"
                             city={getValues("city")}
                             setCity={(value) => {
@@ -276,32 +326,60 @@ export const UpdateInfluencerModal = ({
                                 trigger();
                             }}
                             cityMessage="City is required."
-                            cityClassname={`${errors.city ? 'border-red-500' : ''}`}
+                            cityClassname={`xxxs:col-span-1 md:col-span-2 ${errors.city ? 'border-red-500' : ''}`}
                             cityInputName="city"
                             control={control}
                         />
                         <Input
-                            className={`col-span-1 ${errors.postcode ? 'border-red-500' : ''}`}
+                            className={`xxxs:col-span-1 lg:col-span-2 ${errors.postcode ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("postcode", {
-                                required: { value: true, message: "Postcode is required." }
+                                required: {
+                                    value: true,
+                                    message: `Postcode is required.`
+                                },
+                                minLength: {
+                                    value: 4,
+                                    message: `Postcode must be at least 4 numbers.`,
+                                },
+                                maxLength: {
+                                    value: 6,
+                                    message: `Postcode must be no more than 6 numbers.`,
+                                },
+                                pattern: {
+                                    value: /^\d+$/,
+                                    message: `Postcode must contain numbers only.`,
+                                },
                             })}
                             placeholder="Postcode"
                         />
                         <Input
-                            className={`col-span-2 ${errors.address ? 'border-red-500' : ''}`}
+                            className={`xxxs:col-span-2 md:col-span-3 lg:col-span-4 ${errors.address ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("address", {
                                 required: { value: true, message: "Address is required." }
                             })}
                             placeholder="Address"
                         />
-                        <Input
-                            className={`col-span-1 ${errors.status ? 'border-red-500' : ''}`}
-                            type="text"
-                            {...register("status")}
-                            placeholder="Status"
-                        />
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="col-span-1 px-3 border justify-between w-full">
+                                    {capitalizeFirstLetter(status)}
+                                    <ChevronDown className="h-5 w-5 ml-2" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-full" align="start">
+                                {ddStatusValues.map((option) => (
+                                    <DropdownMenuItem
+                                        key={option}
+                                        onClick={() => setStatus(option as Influencer["status"])}
+                                        className="cursor-pointer"
+                                    >
+                                        {capitalizeFirstLetter(option)}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                     <Separator className="my-4" />
                     <div className="flex flex-col w-full gap-4">
@@ -313,7 +391,7 @@ export const UpdateInfluencerModal = ({
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    {["instagram", "tiktok", "youtube", "RED"].map((type) => (
+                                    {ddSocialMediaPlatformsValues.map((type) => (
                                         <DropdownMenuCheckboxItem
                                             key={type}
                                             checked={isPlatformSelected(type as SocialMediaPlatform["platform_name"])}
@@ -328,7 +406,7 @@ export const UpdateInfluencerModal = ({
                         {platformFields.map((platform, index) => (
                             <div key={platform.id} className="mb-2">
                                 <p className="capitalize ml-1 text-lg font-semibold">{platform.platform_name}</p>
-                                <div className="grid grid-cols-4 gap-4">
+                                <div className="grid xxxs:grid-cols-2 lg:grid-cols-4 gap-4">
                                     {/* Social Media URL */}
                                     <Input
                                         className={`col-span-2 ${errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
@@ -339,7 +417,11 @@ export const UpdateInfluencerModal = ({
                                             required: {
                                                 value: true,
                                                 message: `${capitalizeFirstLetter(platform.platform_name)}'s Social Media URL is required.`,
-                                            }
+                                            },
+                                            pattern: {
+                                                value: /^(https?:\/\/)?(www\.)?(youtube\.com|tiktok\.com|xiaohongshu\.com|instagram\.com)(\/.*)?$/,
+                                                message: `${capitalizeFirstLetter(platform.platform_name)}'s Social Media URL must be from YouTube, TikTok, XiaoHongShu, or Instagram.`,
+                                            },
                                         })}
                                     />
 
@@ -351,7 +433,7 @@ export const UpdateInfluencerModal = ({
                                             trigger();
                                         }}
                                         countriesList={countriesList}
-                                        className={`col-span-1 ${errors.platforms?.[index]?.audience_focus_country ? 'border-red-500' : ''}`}
+                                        className={`xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.audience_focus_country ? 'border-red-500' : ''}`}
                                         placeholder="Audience Focus Country"
                                         setCountryId={() => { }}
                                         input_name={`platforms.${index}.audience_focus_country`}
@@ -360,22 +442,45 @@ export const UpdateInfluencerModal = ({
                                     />
 
                                     {/* Platform Focus */}
-                                    <Input
-                                        className={`col-span-1 ${errors.platforms?.[index]?.platform_focus ? 'border-red-500' : ''
-                                            }`}
-                                        type="text"
-                                        placeholder="Platform Focus"
-                                        {...register(`platforms.${index}.platform_focus`, {
-                                            required: {
-                                                value: true,
-                                                message: `${capitalizeFirstLetter(platform.platform_name)}'s Platform Focus is required.`
-                                            },
-                                        })}
+                                    <Controller
+                                        name={`platforms.${index}.platform_focus`}
+                                        control={control}
+                                        rules={{
+                                            required: { value: true, message: `${capitalizeFirstLetter(platform.platform_name)}'s Platform Focus is required.` },
+                                        }}
+                                        render={({ field }) => (
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        {...field} // Spread the Controller field here
+                                                        variant="outline"
+                                                        className="xxxs:col-span-2 sm:col-span-1 justify-between"
+                                                    >
+                                                        <span>{field.value || "Select Platform Focus"}</span>
+                                                        <ChevronDown className="h-5 w-5 ml-2" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="start">
+                                                    {ddPlatformFocusValues.map((option) => (
+                                                        <DropdownMenuItem
+                                                            key={option}
+                                                            onClick={() => 
+                                                                setValue(`platforms.${index}.platform_focus`, 
+                                                                option as SocialMediaPlatform["platform_focus"], 
+                                                                { shouldValidate: true })}
+                                                            className="cursor-pointer"
+                                                        >
+                                                            {capitalizeFirstLetter(option)}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        )}
                                     />
 
                                     {/* Follower Count */}
                                     <Input
-                                        className={`col-span-1 hidden ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
+                                        className={`xxxs:col-span-2 sm:col-span-1 hidden ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
                                             }`}
                                         type="number"
                                         placeholder="Follower Count"
@@ -392,12 +497,15 @@ export const UpdateInfluencerModal = ({
                         ))}
                     </div>
                     <DialogFooter className="mt-5">
-                        <Button type="button" onClick={closeUpdateModal} className="bg-gray-400 hover:bg-red-600">
-                            Cancel
-                        </Button>
-                        <Button type="submit" onClick={handleValidation}>
-                            Save Changes
-                        </Button>
+                        <div className="flex xxxs:flex-col sm:flex-row gap-2 mt-4">
+                            <Button type="button" onClick={closeUpdateModal}
+                                className="lg:bg-neutral-400 xxxs:bg-red-600 hover:bg-red-600 hover:text-white transition-all duration-300 flex-shrink-0">
+                                Cancel
+                            </Button>
+                            <Button type="submit" onClick={handleValidation}>
+                                Save
+                            </Button>
+                        </div>
                     </DialogFooter>
                 </form>
             </DialogContent>

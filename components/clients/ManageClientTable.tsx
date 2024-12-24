@@ -320,8 +320,8 @@ export function ManageClientTable() {
 
     return (
         <div className="w-full">
-            <div className="flex items-center justify-between py-4 xxxs:flex-wrap md:flex-nowrap gap-2">
-                <div className="flex items-start gap-2  flex-wrap">
+            <div className="flex items-center justify-between py-4 flex-wrap gap-2">
+                <div className="flex items-start gap-2 flex-wrap">
                     <Input
                         placeholder="Search by Company Name"
                         onChange={(e) => handleSearch(e.target.value)}
