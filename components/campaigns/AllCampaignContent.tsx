@@ -231,7 +231,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
   }
 
   return (
-    <div className="grid xxxs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xxl:grid-cols-3 gap-3 h-full">
+    <div className="grid xxxs:grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xxl:grid-cols-3 gap-3">
       {campaigns.length === 0 ? ( // Check if campaigns array is empty
         <div className="col-span-full flex items-center justify-center w-full h-full flex-col text-center">
           <IconMoodEmpty className='mb-2 w-[256px] h-[256px]'/>

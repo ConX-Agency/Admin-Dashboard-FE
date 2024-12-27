@@ -109,14 +109,16 @@ export const profileLinks = [
       <IconMoodPlus className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
     ),
     label: "Sign Up",
-    shortcut: "⇧⌘S"
+    shortcut: "⇧⌘S",
+
   },
   {
     icon: (
       <IconLogin className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
     ),
     label: "Login",
-    shortcut: "⇧⌘G"
+    shortcut: "⇧⌘G",
+    href: "/auth/login"
   },
   {
     icon: (

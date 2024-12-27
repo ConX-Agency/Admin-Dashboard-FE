@@ -32,7 +32,7 @@ export const CountryInput = ({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className={`flex justify-between items-center p-3 w-full ${className}`}
+              className={`flex justify-between items-center p-3 w-full bg-white dark:bg-neutral-950 ${className}`}
             >
               <span>{country || placeholder}</span>
               <ChevronDown className="h-5 w-5 ml-2" />
@@ -89,7 +89,7 @@ const StateInput = ({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className={`flex justify-between items-center p-3 w-full ${className}`}
+              className={`flex justify-between items-center p-3 w-full bg-white dark:bg-neutral-950 ${className}`}
               disabled={isDisabled}
             >
               <span>{state || "State"}</span>
@@ -148,7 +148,7 @@ const CityInput = ({
               <Button
                 {...field} // Spread the Controller field here
                 variant="outline"
-                className={`flex justify-between items-center p-3 w-full ${className}`}
+                className={`flex justify-between items-center p-3 w-full bg-white dark:bg-neutral-950 ${className}`}
                 disabled={isDisabled}
               >
                 <span>{city || "City"}</span>

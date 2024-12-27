@@ -72,11 +72,13 @@ const ProfileMenu = () => {
         <DropdownMenuContent className="w-56" align="end">
           {profileLinks.map((link, linkIdx) => (
             <div key={linkIdx}>
-              <DropdownMenuItem>
-                {link.icon}
-                <span>{link.label}</span>
-                <DropdownMenuShortcut>{link.shortcut}</DropdownMenuShortcut>
-              </DropdownMenuItem>
+              <a href={link.href}>
+                <DropdownMenuItem>
+                  {link.icon}
+                  <span>{link.label}</span>
+                  <DropdownMenuShortcut>{link.shortcut}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </a>
             </div>
           ))}
         </DropdownMenuContent>
@@ -168,13 +170,12 @@ const NotificationPanel = () => {
                                             bg-neutral-200 text-xs font-semibold`}
                     >
                       <span
-                        className={`${
-                          notifi.badgeColor === "red"
+                        className={`${notifi.badgeColor === "red"
                             ? "text-red-600"
                             : notifi.badgeColor === "blue"
-                            ? "text-blue-500"
-                            : "text-neutral-600"
-                        }`}
+                              ? "text-blue-500"
+                              : "text-neutral-600"
+                          }`}
                       >
                         {notifi.badge}
                       </span>

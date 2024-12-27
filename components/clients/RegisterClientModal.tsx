@@ -1,6 +1,6 @@
 import { Client, clientAddress } from "@/data/clients";
-import { SetStateAction, useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
@@ -8,7 +8,7 @@ import { AddressDropdowns } from "../ui/addressDropdown"; // Updated from Addres
 import { toast } from "@/hooks/use-toast";
 import { useFieldArray, useForm } from "react-hook-form";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { ddIndustryValues, ddStatusValues } from "@/data/dropdown-values";
+import { ddIndustryValues } from "@/data/dropdown-values";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
