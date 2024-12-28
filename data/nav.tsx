@@ -46,13 +46,6 @@ export const CampaignsLink = [
 
 export const ClientsLink = [
   {
-    label: "Add Clients",
-    href: "/clients/add-clients",
-    icon: (
-      <IconUserPlus className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
-    ),
-  },
-  {
     label: "Manage Clients",
     href: "/clients/manage-clients",
     icon: (
@@ -62,13 +55,6 @@ export const ClientsLink = [
 ];
 
 export const InfluencersLink = [
-  {
-    label: "Add Influencers",
-    href: "/influencers/add-influencers",
-    icon: (
-      <IconWorldPlus className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
-    ),
-  },
   {
     label: "Manage Influencers",
     href: "/influencers/manage-influencers",

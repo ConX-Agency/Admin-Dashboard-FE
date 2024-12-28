@@ -1,8 +1,9 @@
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import React from 'react'
 
 const Report = () => {
   return (
-    <div>Report test</div>
+    <ProtectedRoute>Report test</ProtectedRoute>
   )
 }
 

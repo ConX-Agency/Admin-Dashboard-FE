@@ -275,7 +275,14 @@ export const RegisterInfluencerModal = ({
                             className={`col-span-2 ${errors.email_address ? 'border-red-500' : ''}`}
                             type="email"
                             {...register("email_address", {
-                                required: { value: true, message: "Email Address is required." }
+                                required: { 
+                                    value: true, 
+                                    message: "Email Address is required." 
+                                },
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: "Value provided does not match email format."
+                                }
                             })}
                             placeholder="Email Address"
                         />

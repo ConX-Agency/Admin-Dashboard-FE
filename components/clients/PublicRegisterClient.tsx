@@ -144,7 +144,14 @@ export const PublicRegisterClient = () => {
                             placeholder="Company Email Address"
                             className={`col-span-2 ${errors.company_email ? 'border-red-500' : ''}`}
                             {...register("company_email", {
-                                required: { value: true, message: "Company Email Address is required." }
+                                required: { 
+                                    value: true, 
+                                    message: "Company Email Address is required." 
+                                },
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: "Value provided does not match email format."
+                                }
                             })}
                         />
                         <Input
@@ -183,7 +190,14 @@ export const PublicRegisterClient = () => {
                             placeholder="PIC Email Address"
                             className={`col-span-2 ${errors.person_in_charge_email ? 'border-red-500' : ''}`}
                             {...register("person_in_charge_email", {
-                                required: { value: true, message: "Person in Charge's Email is required." }
+                                required: { 
+                                    value: true, 
+                                    message: "Person-In-Charge's Email Address is required." 
+                                },
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: "Value provided does not match email format."
+                                }
                             })}
                         />
                         <Input
@@ -356,7 +370,7 @@ export const PublicRegisterClient = () => {
                     </div>
                     <div className="flex xxxs:flex-col sm:flex-row gap-2 mt-4 justify-end">
                         <Button type="submit" onClick={handleValidation}
-                            className="w-[250px] h-[50px] text-xl font-bold"
+                            className="w-[250px] h-[50px] text-xl"
                             variant="outline">
                             Register
                         </Button>

@@ -5,18 +5,15 @@ import Search from "@/components/layout/Search";
 import { NotificationPanel, ProfileMenu } from "@/components/layout/UserActions";
 import { ThemeChanger } from "../themer/ThemeChanger";
 import { LogoIcon } from "./Nav";
+import { useAuth } from "@/context/AuthContext";
 
 export const NavHeader = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showNavItems, setShowNavItems] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
-    // Check if session-token and isLoggedIn exist in localStorage
-    const sessionToken = localStorage.getItem('session-token')
-    const isLoggedIn = localStorage.getItem('isLoggedIn')
-
-    // If the user is not authenticated and on the public-client-registration page, hide both navbar and header
-    if (!sessionToken || isLoggedIn !== 'true') {
+    if (!user) {
       setShowNavItems(false)
     } else {
       setShowNavItems(true)

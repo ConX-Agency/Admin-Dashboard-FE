@@ -1,8 +1,9 @@
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import React from 'react'
 
 const HelpCenter = () => {
   return (
-    <div>Help Center test</div>
+    <ProtectedRoute>Help Center test</ProtectedRoute>
   )
 }
 
