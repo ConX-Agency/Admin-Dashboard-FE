@@ -50,6 +50,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Issues Faced
 1. [Chart Issues](https://github.com/shadcn-ui/ui/issues/4231)
 2. 
+3. [Simple Error 404 Implementation](https://dev.to/shabink making-a-custom-404-page-in-nextjs-2ajg)
 
 ## Graphics Resources Used
 1. https://tabler.io/icons

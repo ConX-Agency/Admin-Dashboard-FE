@@ -14,7 +14,7 @@ export function LoginForm({
     ...props
 }: React.ComponentPropsWithoutRef<"div">) {
     return (
-        <div className={ cn("flex flex-col justify-center items-center w-full", className)} {...props}>
+        <div className={cn("flex flex-col justify-center items-center w-full", className)} {...props}>
             <Card className="xxxs:min-w-[300px] xs:min-w-[450px] sm:min-w-[500px] flex-grow">
                 <CardHeader>
                     <CardTitle className="text-2xl">Login</CardTitle>
