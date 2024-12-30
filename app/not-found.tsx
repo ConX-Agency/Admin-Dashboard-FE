@@ -11,18 +11,18 @@ export default function NotFound() {
         <>
             <div className="flex h-full flex-col items-center justify-center z-[999]">
                 <div className="flex flex-row items-center">
-                    <h1 className='xxxs:text-[200px] md:text-[225px]'>4</h1>
+                    <h1 className='xxxs:text-[125px] sm:text-[150px] md:text-[225px]'>4</h1>
                     <Image
                         src={`${basePath}/images/logo/logo.png`}
                         width={100}
                         height={100}
                         alt="404"
-                        className='rounded-full flex-shrink-0 xxxs:h-40 xxxs:w-40 md:h-44 md:w-44 dark:invert'
+                        className='rounded-full flex-shrink-0 xxxs:h-24 xxxs:w-24 sm:w-32 sm:h-32 md:h-44 md:w-44 dark:invert'
                     />
-                    <h1 className='xxxs:text-[200px] md:text-[225px] ml-3'>4</h1>
+                    <h1 className='xxxs:text-[125px] sm:text-[150px] md:text-[225px] ml-3'>4</h1>
                 </div>
                 <div className='flex flex-wrap flex-col items-center justify-center'>
-                    <span className='text-center text-xl text-wrap'>
+                    <span className='text-center xxxs:text-md md:text-xl text-wrap'>
                         This page didn't get enough engagement to stick around. Try heading back to the dashboard or starting a new campaign.
                     </span>
                     <Link href="/">

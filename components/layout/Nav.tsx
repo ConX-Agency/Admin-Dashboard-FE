@@ -40,7 +40,7 @@ export function Nav() {
     } else {
       setShowNav(true);
     }
-  }, []);
+  }, [user]);
 
   // Check if the link's href matches the current path
   const checkActiveLink = (linkHref: string) => {

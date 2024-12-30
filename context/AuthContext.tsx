@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('session_token');
+    const token = localStorage.getItem('token');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (token && isLoggedIn) {
       setUser({ name: 'User' }); // Set user details
@@ -31,8 +31,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const login = (token: string) => {
     localStorage.setItem('token', token);
+    localStorage.setItem('isLoggedIn', 'true');
     setUser({ name: 'User' }); // Set user details
-    router.push('/dashboard'); // Redirect after login
+    router.push('/'); // Redirect after login
   };
 
   const logout = () => {

@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext";
 import {
   IconLayoutDashboard,
   IconWorldPlus,
@@ -13,7 +14,6 @@ import {
   IconLogin,
   IconUser,
   IconLogout,
-  IconWorldStar,
 } from "@tabler/icons-react";
 
 //Navigation Links
@@ -94,24 +94,17 @@ export const profileLinks = [
     icon: (
       <IconMoodPlus className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
     ),
-    label: "Sign Up",
+    label: "Admin Sign Up",
     shortcut: "⇧⌘S",
-
-  },
-  {
-    icon: (
-      <IconLogin className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
-    ),
-    label: "Login",
-    shortcut: "⇧⌘G",
-    href: "/auth/login"
+    href: "/"
   },
   {
     icon: (
       <IconUser className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
     ),
     label: "Profile",
-    shortcut: "⇧⌘P"
+    shortcut: "⇧⌘P",
+    href: "/"
   },
   {
     icon: (

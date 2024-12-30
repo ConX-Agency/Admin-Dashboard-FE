@@ -18,7 +18,7 @@ export const NavHeader = () => {
     } else {
       setShowNavItems(true)
     }
-  }, [])
+  }, [user])
 
   return (
     <div
@@ -33,16 +33,11 @@ export const NavHeader = () => {
           </span>
         </div>
       }
-      {/* Search Command */}
-      {showNavItems &&
-        <div className="xxxs:hidden lg:flex">
-          <Search open={isSearchOpen} onOpenChange={setIsSearchOpen} />
-        </div>
-      }
+
       {/* Notification & User Icon */}
       <div className="flex flex-row h-[35px] items-center xxxs:gap-0 md:gap-2">
         {showNavItems &&
-          <div className="xxxs:flex lg:hidden">
+          <div className="flex">
             <Search open={isSearchOpen} onOpenChange={setIsSearchOpen} />
           </div>
         }
