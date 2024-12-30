@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    router.push('/signin');
+    router.push('/auth/login');
   };
 
   return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;

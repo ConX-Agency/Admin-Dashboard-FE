@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
 import React, {
     useState,
     useEffect,
@@ -34,35 +35,27 @@ export const StarsBackground: React.FC<StarBackgroundProps> = ({
     className,
 }) => {
     const [stars, setStars] = useState<StarProps[]>([]);
-    const canvasRef: RefObject<HTMLCanvasElement> =
-        useRef<HTMLCanvasElement>(null);
+    const canvasRef: RefObject<HTMLCanvasElement> = useRef<HTMLCanvasElement>(null);
+    const { theme } = useTheme();
 
     const generateStars = useCallback(
         (width: number, height: number): StarProps[] => {
             const area = width * height;
             const numStars = Math.floor(area * starDensity);
             return Array.from({ length: numStars }, () => {
-                const shouldTwinkle =
-                    allStarsTwinkle || Math.random() < twinkleProbability;
+                const shouldTwinkle = allStarsTwinkle || Math.random() < twinkleProbability;
                 return {
                     x: Math.random() * width,
                     y: Math.random() * height,
                     radius: Math.random() * 0.05 + 0.5,
                     opacity: Math.random() * 0.5 + 0.5,
                     twinkleSpeed: shouldTwinkle
-                        ? minTwinkleSpeed +
-                        Math.random() * (maxTwinkleSpeed - minTwinkleSpeed)
+                        ? minTwinkleSpeed + Math.random() * (maxTwinkleSpeed - minTwinkleSpeed)
                         : null,
                 };
             });
         },
-        [
-            starDensity,
-            allStarsTwinkle,
-            twinkleProbability,
-            minTwinkleSpeed,
-            maxTwinkleSpeed,
-        ]
+        [starDensity, allStarsTwinkle, twinkleProbability, minTwinkleSpeed, maxTwinkleSpeed]
     );
 
     useEffect(() => {
@@ -91,14 +84,7 @@ export const StarsBackground: React.FC<StarBackgroundProps> = ({
                 resizeObserver.unobserve(canvasRef.current);
             }
         };
-    }, [
-        starDensity,
-        allStarsTwinkle,
-        twinkleProbability,
-        minTwinkleSpeed,
-        maxTwinkleSpeed,
-        generateStars,
-    ]);
+    }, [starDensity, allStarsTwinkle, twinkleProbability, minTwinkleSpeed, maxTwinkleSpeed, generateStars]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -114,7 +100,9 @@ export const StarsBackground: React.FC<StarBackgroundProps> = ({
             stars.forEach((star) => {
                 ctx.beginPath();
                 ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fillStyle = theme === "light" 
+                    ? `rgba(0, 0, 0, ${star.opacity})` 
+                    : `rgba(255, 255, 255, ${star.opacity})`;
                 ctx.fill();
 
                 if (star.twinkleSpeed !== null) {
@@ -132,7 +120,29 @@ export const StarsBackground: React.FC<StarBackgroundProps> = ({
         return () => {
             cancelAnimationFrame(animationFrameId);
         };
-    }, [stars]);
+    }, [stars, theme]);
+
+    useEffect(() => {
+        const handleThemeChange = () => {
+            if (canvasRef.current) {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext("2d");
+                if (!ctx) return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                stars.forEach((star) => {
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = theme === "light" 
+                        ? `rgba(0, 0, 0, ${star.opacity})` 
+                        : `rgba(255, 255, 255, ${star.opacity})`;
+                    ctx.fill();
+                });
+            }
+        };
+
+        handleThemeChange();
+    }, [theme, stars]);
 
     return (
         <canvas

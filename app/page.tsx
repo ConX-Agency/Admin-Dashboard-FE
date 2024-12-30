@@ -1,5 +1,6 @@
 "use client"
 
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { SalesAnalyticsChart, CampaignsChart } from "@/components/dashboard/Charts";
 import { RecentCompletedCampaigns, RecentOrders, StatsCard, TopInfluencers } from "@/components/dashboard/DashboardContent";
 import { Separator } from "@/components/ui/separator";
@@ -7,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
   return (
-    <>
+    <ProtectedRoute>
       <div className="flex flex-row justify-between flex-wrap xxxs:gap-2">
         <h1 className="text-3xl font-semibold items-center">Dashboard</h1>
       </div>
@@ -33,6 +34,6 @@ export default function Home() {
           <TopInfluencers />
         </div>
       </div>
-    </>
+    </ProtectedRoute>
   );
 }
