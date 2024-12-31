@@ -16,7 +16,7 @@ const page = () => {
             // Redirect to dashboard if both exist
             router.push('/')
         }
-    }, [router])
+    }, [])
 
     return (
         <LoginForm />
