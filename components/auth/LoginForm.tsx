@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,8 +14,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   const { login, user } = useAuth();
 
   useEffect(() => {
-    if (user)
+    if (user) {
       router.push('/'); // Redirect after login
+    }
   }, [user])
 
   const handleLogin = async (e: React.FormEvent) => {
