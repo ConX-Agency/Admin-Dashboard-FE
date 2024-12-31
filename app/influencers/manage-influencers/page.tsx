@@ -1,5 +1,3 @@
-"use client"
-
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import ManageInfluencerContent from "@/components/influencers/ManageInfluencerContent";
 import { Separator } from "@/components/ui/separator";

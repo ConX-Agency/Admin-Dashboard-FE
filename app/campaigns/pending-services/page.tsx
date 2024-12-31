@@ -1,5 +1,3 @@
-"use client"
-
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import PendingServicesContent from '@/components/campaigns/PendingServicesContent'
 import { Separator } from '@/components/ui/separator'

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { AceTabs } from "../ui/aceTabs";
 import { IconBubbleFilled, IconBuildingStore, IconCalendarMonth, IconClock, IconCopyMinusFilled, IconMapPinFilled, IconMaximize, IconPlus, IconSpeakerphone, IconTicket, IconWorldBolt, IconWorldStar } from "@tabler/icons-react";

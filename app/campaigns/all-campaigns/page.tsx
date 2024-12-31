@@ -1,5 +1,3 @@
-"use client"
-
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { AllCampaignContent } from "@/components/campaigns/AllCampaignContent";
 import { Separator } from "@/components/ui/separator";

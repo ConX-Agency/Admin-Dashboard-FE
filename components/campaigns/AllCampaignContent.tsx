@@ -1,3 +1,5 @@
+"use client"
+
 import { Campaign, CampaignCardsProps, dummyCampaignsData, dummyCountries, FiltersProps, IconWithToolTipProps, status, types } from "@/data/campaign";
 import { Calendar as LucideCalendar, ChevronDown, Clock, Filter, FilterX, Globe, MapPinned } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
