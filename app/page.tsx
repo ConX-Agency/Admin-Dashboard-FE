@@ -1,10 +1,7 @@
-"use client"
-
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { SalesAnalyticsChart, CampaignsChart } from "@/components/dashboard/Charts";
 import { RecentCompletedCampaigns, RecentOrders, StatsCard, TopInfluencers } from "@/components/dashboard/DashboardContent";
 import { Separator } from "@/components/ui/separator";
-
 
 export default function Home() {
   return (
