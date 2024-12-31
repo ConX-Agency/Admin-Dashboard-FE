@@ -15,7 +15,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       if (user) {
         router.push('/');
       }
-    }, [user]);
+    }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
