@@ -1,3 +1,5 @@
+"use client"
+
 import { Influencer, SocialMediaPlatform } from "@/data/influencer";
 import {
     Dialog,
