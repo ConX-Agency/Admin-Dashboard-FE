@@ -1,3 +1,5 @@
+"use client"
+
 import { Client, clientAddress } from "@/data/clients";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";

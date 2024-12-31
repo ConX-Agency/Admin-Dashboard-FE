@@ -1,3 +1,5 @@
+"use client"
+
 import { dummyDashboardCardData, dummyLastCompletedData, dummyTopInfluencerData } from "@/data/dashboard";
 import { IconArrowDownRight, IconArrowUpRight } from "@tabler/icons-react";
 import Image from "next/image";

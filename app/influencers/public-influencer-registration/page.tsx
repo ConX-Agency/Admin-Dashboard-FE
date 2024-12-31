@@ -1,5 +1,3 @@
-"use client"
-
 import { PublicRegisterInfluencer } from '@/components/influencers/PublicRegisterInfluencer'
 import React from 'react'
 
