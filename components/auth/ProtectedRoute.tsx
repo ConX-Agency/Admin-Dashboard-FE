@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }: any) => {
         if (!user) {
             router.push('/auth/login'); // Redirect to login if not authenticated
         }
-    }, [user, router]);
+    }, [user]);
 
     if (!user) {
         return null; // Optionally, show a loading spinner here

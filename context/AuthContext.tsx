@@ -33,7 +33,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.setItem('token', token);
     localStorage.setItem('isLoggedIn', 'true');
     setUser({ name: 'User' }); // Set user details
-    router.push('/'); // Redirect after login
   };
 
   const logout = () => {
