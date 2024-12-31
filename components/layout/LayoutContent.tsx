@@ -2,7 +2,6 @@
 "use client";  // Ensures this component runs on the client side
 
 import { AuthProvider } from "@/context/AuthContext";  // Adjust the import path
-import { useAuth } from "@/context/AuthContext";
 import { Nav } from "./Nav";
 import { NavHeader } from "./NavHeader";
 import { Toaster } from "../ui/toaster";
