@@ -11,11 +11,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   const router = useRouter();
   const { login, user } = useAuth();
 
-    useEffect(() => {
-      if (user) {
-        router.push('/');
-      }
-    }, [user]);
+  useEffect(() => {
+    if (user)
+      router.push('/'); // Redirect after login
+  }, [user])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
