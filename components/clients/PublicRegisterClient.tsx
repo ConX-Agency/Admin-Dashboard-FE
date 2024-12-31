@@ -1,24 +1,19 @@
 import { Client, clientAddress } from "@/data/clients";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { useEffect, useState } from "react";
-import { AddressDropdowns } from "../ui/addressDropdown";
+import { AddressDropdowns } from "../ui/addressDropdown"; // Updated from AddressDropdown to AddressDropdowns
 import { toast } from "@/hooks/use-toast";
 import { useFieldArray, useForm } from "react-hook-form";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { ddIndustryValues } from "@/data/dropdown-values";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
-import { ddIndustryValues, ddStatusValues } from "@/data/dropdown-values";
+import { Checkbox } from "../ui/checkbox";
 
-export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, updateModalVisibility }: {
-    clientData: Client | null;
-    closeUpdateModal: () => void;
-    handleUpdate: (data: Client) => void;
-    updateModalVisibility: boolean;
-}) => {
-    const [status, setStatus] = useState<Client["status"]>("Active");
+export const PublicRegisterClient = () => {
     const [industry, setIndustry] = useState<Client["industry"]>("Food & Beverage");
     const {
         control,
@@ -28,7 +23,8 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
         getValues,
         formState: { errors },
         trigger,
-        reset
+        clearErrors,
+        reset,
     } = useForm<Client>({
         mode: "onSubmit",
         defaultValues: {
@@ -43,29 +39,29 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
             addresses: [
                 { address: "", city: "", postcode: "", state: "", country: "" } as clientAddress,
             ],
+            tnc_consent: false,
+            status: "Active"
         },
     });
 
-    const { fields, append, remove, replace } = useFieldArray({
+    const { fields, append, remove } = useFieldArray({
         control,
         name: "addresses",
     });
 
+    // Reset and Set values on initialization.
     useEffect(() => {
-        if (clientData) {
-            setValue("company_name", clientData.company_name || "");
-            setValue("person_in_charge_name", clientData.person_in_charge_name || "");
-            setValue("person_in_charge_email", clientData.person_in_charge_email || "");
-            setValue("company_email", clientData.company_email || "");
-            setValue("contact_number", clientData.contact_number || "");
-            setValue("alt_contact_number", clientData.alt_contact_number || "");
-            setValue("industry", clientData.industry || "");
-            setValue("cuisine_type", clientData.cuisine_type || "");
-            setStatus(clientData.status);
-            setValue("addresses", clientData.addresses || []);
-            replace(clientData.addresses || []);
-        }
-    }, [clientData, setValue, updateModalVisibility]);
+        clearErrors();
+        reset();
+    }, []);
+
+    // Clear session cookies when component is destroyed.
+    useEffect(() => {
+        return () => {
+            sessionStorage.clear(); // Clear session storage on unmount
+            console.log("Session cookies cleared on component unmount");
+        };
+    }, []); // Empty dependency array ensures cleanup runs on unmount.
 
     const addAddress = () => {
         append({ address: "", city: "", postcode: "", state: "", country: "" } as clientAddress);
@@ -103,13 +99,16 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
         }
     };
 
+    const handleRegister = async (data: Client) => {
+
+    }
+
     const onSubmit = async (data: Client) => {
 
         const client_id = crypto.randomUUID();
         const formattedClient = {
             ...data,
             client_id,
-            status,
             addresses: data.addresses.map((address: clientAddress) => ({
                 ...address,
                 client_id,
@@ -117,23 +116,20 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
             })),
         };
 
-        handleUpdate(formattedClient);
-        closeUpdateModal();
+        handleRegister(formattedClient);
         reset();
     };
 
     return (
-        <Dialog open={updateModalVisibility}>
-            <DialogContent className="xxxs:max-w-[300px] xxs:max-w-[340px] xs:max-w-[461px] sm:max-w-[556px] 
-                    md:max-w-[738px] lg:max-w-[962px] xl:max-w-[1170px] max-h-[550px] overflow-y-scroll"
-                onEscapeKeyDown={closeUpdateModal} modalTopRightClose={closeUpdateModal}>
-                <DialogHeader>
-                    <DialogTitle>Editing {clientData?.company_name} Profile</DialogTitle>
-                    <DialogDescription>
-                        Make changes to the profile here. Click save changes when you're done.
-                    </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit(onSubmit)}>
+        <>
+            <div className="flex items-center justify-start flex-col min-h-full h-[100vh - 40px] w-full px-4">
+                <div className="text-left w-full mb-4">
+                    <h1 className="xxxs:text-xl sm:text-2xl md:text-4xl font-bold mb-1">Client Registration Form</h1>
+                    <h2 className="xxxs:text-xs sm:text-sm leading-10">
+                        This is a client registration form, please fill it up and click on the "Register" button to proceed.
+                    </h2>
+                </div>
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full">
                     <div className="grid xxxs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 items-center gap-4 mb-4">
                         <Input
                             type="text"
@@ -148,7 +144,14 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             placeholder="Company Email Address"
                             className={`col-span-2 ${errors.company_email ? 'border-red-500' : ''}`}
                             {...register("company_email", {
-                                required: { value: true, message: "Company Email Address is required." }
+                                required: { 
+                                    value: true, 
+                                    message: "Company Email Address is required." 
+                                },
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: "Value provided does not match email format."
+                                }
                             })}
                         />
                         <Input
@@ -156,9 +159,9 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             placeholder="Contact Number (+1234567890)"
                             className={`col-span-2 ${errors.contact_number ? 'border-red-500' : ''}`}
                             {...register("contact_number", {
-                                required: { 
-                                    value: true, 
-                                    message: "Contact Number is required." 
+                                required: {
+                                    value: true,
+                                    message: "Contact Number is required."
                                 },
                                 pattern: {
                                     value: /^\+\d{1,4}\d{7,15}$/,
@@ -187,7 +190,14 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             placeholder="PIC Email Address"
                             className={`col-span-2 ${errors.person_in_charge_email ? 'border-red-500' : ''}`}
                             {...register("person_in_charge_email", {
-                                required: { value: true, message: "Person in Charge's Email is required." }
+                                required: { 
+                                    value: true, 
+                                    message: "Person-In-Charge's Email Address is required." 
+                                },
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: "Value provided does not match email format."
+                                }
                             })}
                         />
                         <Input
@@ -210,24 +220,25 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             })}
                         />
                         <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
-                                        {capitalizeFirstLetter(industry)}
-                                        <ChevronDown className="h-5 w-5 ml-2" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-full" align="start">
-                                    {ddIndustryValues.map((option) => (
-                                        <DropdownMenuItem
-                                            key={option}
-                                            onClick={() => setIndustry(option as Client["industry"])}
-                                            className="cursor-pointer"
-                                        >
-                                            {capitalizeFirstLetter(option)}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full
+                                    bg-white dark:bg-neutral-950">
+                                    {capitalizeFirstLetter(industry)}
+                                    <ChevronDown className="h-5 w-5 ml-2" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-full" align="start">
+                                {ddIndustryValues.map((option) => (
+                                    <DropdownMenuItem
+                                        key={option}
+                                        onClick={() => setIndustry(option as Client["industry"])}
+                                        className="cursor-pointer"
+                                    >
+                                        {capitalizeFirstLetter(option)}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                         <Input
                             type="text"
                             placeholder="Cuisine Type (Italian, Thai, Malaysian)"
@@ -236,25 +247,6 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                 required: { value: true, message: "Cuisine Type is required." }
                             })}
                         />
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
-                                    {capitalizeFirstLetter(status)}
-                                    <ChevronDown className="h-5 w-5 ml-2" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-[266px] max-w-full" align="start">
-                                {ddStatusValues.map((option) => (
-                                    <DropdownMenuItem
-                                        key={option}
-                                        onClick={() => setStatus(option as Client["status"])}
-                                        className="cursor-pointer"
-                                    >
-                                        {capitalizeFirstLetter(option)}
-                                    </DropdownMenuItem>
-                                ))}
-                            </DropdownMenuContent>
-                        </DropdownMenu>
                     </div>
                     <Separator className="my-2 mb-0" />
                     <div className="flex flex-col w-full gap-4">
@@ -334,7 +326,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                                 },
                                             }
                                         )}
-                                        className={`col-span-2 ${errors.addresses?.[index]?.postcode ? 'border-red-500' : ''}`}
+                                        className={`xxxs:col-span-2 col-span-1 ${errors.addresses?.[index]?.postcode ? 'border-red-500' : ''}`}
                                     />
                                     <Input
                                         type="text"
@@ -348,25 +340,43 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                                 }
                                             }
                                         )}
-                                        className={`col-span-4 ${errors.addresses?.[index]?.address ? 'border-red-500' : ''}`}
+                                        className={`xxxs:col-span-4 col-span-3 ${errors.addresses?.[index]?.address ? 'border-red-500' : ''}`}
                                     />
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <DialogFooter>
-                        <div className="flex xxxs:flex-col sm:flex-row gap-2 mt-4">
-                            <Button type="button" onClick={closeUpdateModal}
-                                className="lg:bg-neutral-400 xxxs:bg-red-600 hover:bg-red-600 hover:text-white transition-all duration-300 flex-shrink-0">
-                                Cancel
-                            </Button>
-                            <Button type="submit" onClick={handleValidation}>
-                                Save
-                            </Button>
-                        </div>
-                    </DialogFooter>
+                    <Separator className="my-4" />
+                    <div className="flex items-center space-x-2 justify-start">
+                        <Checkbox
+                            className={`${errors.tnc_consent ? 'border-red-500' : ''}`}
+                            onCheckedChange={(checked: boolean) => {
+                                setValue("tnc_consent", checked);
+                            }}
+                            {...register("tnc_consent", {
+                                required: {
+                                    value: true,
+                                    message: "You must agree to the terms and conditions."
+                                },
+                            })}
+                        />
+                        <label
+                            htmlFor="terms"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                            By submitting this form, I acknowledge and agree that my information will be processed in accordance with ConX Agency's Terms & Conditions.
+                            <span className="text-red-600 text-sm">*</span>
+                        </label>
+                    </div>
+                    <div className="flex xxxs:flex-col sm:flex-row gap-2 mt-4 justify-end">
+                        <Button type="submit" onClick={handleValidation}
+                            className="w-[250px] h-[50px] text-xl"
+                            variant="outline">
+                            Register
+                        </Button>
+                    </div>
                 </form>
-            </DialogContent>
-        </Dialog>
+            </div>
+        </>
     );
 };

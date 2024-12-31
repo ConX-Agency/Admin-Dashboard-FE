@@ -28,15 +28,7 @@ import { capitalizeFirstLetter } from "@/lib/utils";
 import { ddPlatformFocusValues, ddSocialMediaPlatformsValues } from "@/data/dropdown-values";
 import { Checkbox } from "../ui/checkbox";
 
-export const RegisterInfluencerModal = ({
-    closeRegisterModal,
-    handleRegister,
-    registerModalVisibility,
-}: {
-    closeRegisterModal: () => void;
-    handleRegister: (data: Influencer) => void;
-    registerModalVisibility: boolean;
-}) => {
+export const PublicRegisterInfluencer = () => {
     const initialPlatforms: SocialMediaPlatform[] = [];
 
     const [countriesList, setCountriesList] = useState<Country[]>([]);
@@ -91,11 +83,9 @@ export const RegisterInfluencerModal = ({
 
     // Reset platforms when modal visibility changes to closed
     useEffect(() => {
-        if (!registerModalVisibility) {
-            clearErrors();
-            reset();
-        }
-    }, [registerModalVisibility, setValue]);
+        clearErrors();
+        reset(); 
+    }, [setValue]);
 
     const handleTogglePlatform = (type: SocialMediaPlatform["platform_name"]) => {
         const existingIndex = platformFields.findIndex(
@@ -161,6 +151,10 @@ export const RegisterInfluencerModal = ({
         return true;
     }
 
+    const handleRegister = async (data: any) => {
+
+    }
+
     const onSubmit = async (data: any) => {
         // Stop Form Submission when Validation Fails.
         const isValid = handleSocMedValidation();
@@ -195,24 +189,18 @@ export const RegisterInfluencerModal = ({
 
         handleRegister(newInfluencer);
         reset();
-        closeRegisterModal();
     };
 
     return (
-        <Dialog open={registerModalVisibility}>
-            <DialogContent
-                className="xxxs:max-w-[300px] xxs:max-w-[340px] xs:max-w-[461px] sm:max-w-[556px] 
-                    md:max-w-[738px] lg:max-w-[962px] xl:max-w-[1170px] max-h-[550px] overflow-y-scroll"
-                onEscapeKeyDown={closeRegisterModal} modalTopRightClose={closeRegisterModal}
-            >
-                <DialogHeader>
-                    <DialogTitle>Register New Influencer</DialogTitle>
-                    <DialogDescription>
-                        Fill in the details below to add a new influencer.
-                    </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="grid xxxs:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="flex items-center justify-start flex-col min-h-full h-[100vh - 40px] w-full px-4">
+                <div className="text-left w-full mb-4">
+                    <h1 className="xxxs:text-xl sm:text-2xl md:text-4xl font-bold mb-1">Influencer Registration Form</h1>
+                    <h2 className="xxxs:text-xs sm:text-sm leading-10">
+                        This is a influencer registration form, please fill it up and click on the "Register" button to proceed.
+                    </h2>
+                </div>
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+                    <div className="grid xxxs:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-4">
                         <Input
                             className={`col-span-2 ${errors.full_name ? 'border-red-500' : ''}`}
                             type="text"
@@ -504,17 +492,12 @@ export const RegisterInfluencerModal = ({
                     </div>
                     <DialogFooter className="mt-5">
                         <div className="flex xxxs:flex-col sm:flex-row gap-2">
-                            <Button type="button" onClick={closeRegisterModal}
-                                className="lg:bg-neutral-400 xxxs:bg-red-600 hover:bg-red-600 hover:text-white transition-all duration-300 flex-shrink-0">
-                                Cancel
-                            </Button>
                             <Button type="submit" onClick={handleValidation}>
                                 Save
                             </Button>
                         </div>
                     </DialogFooter>
                 </form>
-            </DialogContent>
-        </Dialog>
+            </div>
     );
 };

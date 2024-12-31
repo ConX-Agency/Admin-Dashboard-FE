@@ -1,10 +1,10 @@
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import React from 'react'
 
-const HelpCenter = () => {
+const page = () => {
   return (
-    <ProtectedRoute>Help Center test</ProtectedRoute>
+    <ProtectedRoute>page</ProtectedRoute>
   )
 }
 
-export default HelpCenter
+export default page

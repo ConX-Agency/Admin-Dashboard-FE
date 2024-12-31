@@ -1,5 +1,6 @@
 "use client";
 
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { CampaignDetailsContent } from "@/components/campaigns/CampaignDetailsContent";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -12,7 +13,7 @@ const CampaignDetailsWrapper = () => {
   const name = searchParams.get('name');
 
   return (
-    <>
+    <ProtectedRoute>
       {name ? (
         <>
           <div className="flex flex-row justify-between flex-wrap xxxs:gap-2">
@@ -32,7 +33,7 @@ const CampaignDetailsWrapper = () => {
       ) : (
         <div className="text-gray-500">No campaign details available.</div>
       )}
-    </>
+    </ProtectedRoute>
   );
 };
 

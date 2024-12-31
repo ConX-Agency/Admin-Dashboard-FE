@@ -4,11 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   IconBell,
   IconChecks,
-  IconLogin,
-  IconLogout,
-  IconMoodPlus,
   IconSettings,
-  IconUser,
 } from "@tabler/icons-react";
 import {
   DropdownMenu,
@@ -21,44 +17,21 @@ import { AnimatePresence, motion } from "framer-motion";
 import { dummyNotificationData, profileLinks } from "@/data/nav";
 import { Separator } from "../ui/separator";
 import Image from "next/image";
+import { useAuth } from "@/context/AuthContext";
 
 const ProfileMenu = () => {
   const [userPfp, setUserPfp] = useState("");
   const [userPfpFallback, setUserPfpFallback] = useState("?");
+  const { logout, user } = useAuth();
 
   useEffect(() => {
     setUserPfp("https://github.com/shadcn.png");
     setUserPfpFallback("RS");
-
-    // const handleKeyDown = (e: KeyboardEvent) => {
-    //   // Check for Shift + Command + S (Sign Up)
-    //   if (e.shiftKey && e.metaKey && e.key === "S") {
-    //     e.preventDefault();
-    //     alert("Sign Up triggered");
-    //   }
-    //   // Check for Shift + Command + G (Login)
-    //   if (e.shiftKey && e.metaKey && e.key === "G") {
-    //     e.preventDefault();
-    //     alert("Login triggered");
-    //   }
-    //   // Check for Shift + Command + P (Profile)
-    //   if (e.shiftKey && e.metaKey && e.key === "P") {
-    //     e.preventDefault();
-    //     alert("Profile triggered");
-    //   }
-    //   // Check for Shift + Command + L (Logout)
-    //   if (e.shiftKey && e.metaKey && e.key === "L") {
-    //     e.preventDefault();
-    //     alert("Logout triggered");
-    //   }
-    // };
-
-    // document.addEventListener("keydown", handleKeyDown);
-
-    // return () => { //Unmounting
-    //   document.removeEventListener("keydown", handleKeyDown);
-    // };
   }, []);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <div>
@@ -70,15 +43,18 @@ const ProfileMenu = () => {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end">
-          {profileLinks.map((link, linkIdx) => (
-            <div key={linkIdx}>
-              <DropdownMenuItem>
-                {link.icon}
-                <span>{link.label}</span>
-                <DropdownMenuShortcut>{link.shortcut}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </div>
-          ))}
+          {profileLinks
+            .map((link, linkIdx) => (
+              <div key={linkIdx}>
+                <a href={link.href}>
+                  <DropdownMenuItem onClick={link.label === "Logout" ? handleLogout : undefined}>
+                    {link.icon}
+                    <span>{link.label}</span>
+                    <DropdownMenuShortcut>{link.shortcut}</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </a>
+              </div>
+            ))}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -128,7 +104,7 @@ const NotificationPanel = () => {
             </AnimatePresence>
             <IconBell
               className={`text-black dark:text-white h-5 w-5 flex-shrink-0 transition-all duration-300 
-                            ${isOpen ? "fill-black dark:fill-white" : ""}`}
+                ${isOpen ? "fill-black dark:fill-white" : ""}`}
             />
           </Button>
         </DropdownMenuTrigger>
@@ -168,13 +144,12 @@ const NotificationPanel = () => {
                                             bg-neutral-200 text-xs font-semibold`}
                     >
                       <span
-                        className={`${
-                          notifi.badgeColor === "red"
+                        className={`${notifi.badgeColor === "red"
                             ? "text-red-600"
                             : notifi.badgeColor === "blue"
-                            ? "text-blue-500"
-                            : "text-neutral-600"
-                        }`}
+                              ? "text-blue-500"
+                              : "text-neutral-600"
+                          }`}
                       >
                         {notifi.badge}
                       </span>

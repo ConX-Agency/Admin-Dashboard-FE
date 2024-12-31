@@ -1,6 +1,6 @@
 import { Client, clientAddress } from "@/data/clients";
-import { SetStateAction, useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
@@ -8,7 +8,7 @@ import { AddressDropdowns } from "../ui/addressDropdown"; // Updated from Addres
 import { toast } from "@/hooks/use-toast";
 import { useFieldArray, useForm } from "react-hook-form";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { ddIndustryValues, ddStatusValues } from "@/data/dropdown-values";
+import { ddIndustryValues } from "@/data/dropdown-values";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
@@ -141,7 +141,14 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                 placeholder="Company Email Address"
                                 className={`col-span-2 ${errors.company_email ? 'border-red-500' : ''}`}
                                 {...register("company_email", {
-                                    required: { value: true, message: "Company Email Address is required." }
+                                    required: { 
+                                        value: true, 
+                                        message: "Company's Email Address is required." 
+                                    },
+                                    pattern: {
+                                        value: /\S+@\S+\.\S+/,
+                                        message: "Value provided does not match email format."
+                                    }
                                 })}
                             />
                             <Input
@@ -180,7 +187,14 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                 placeholder="PIC Email Address"
                                 className={`col-span-2 ${errors.person_in_charge_email ? 'border-red-500' : ''}`}
                                 {...register("person_in_charge_email", {
-                                    required: { value: true, message: "Person in Charge's Email is required." }
+                                    required: { 
+                                        value: true, 
+                                        message: "Person-In-Charge's Email Address is required." 
+                                    },
+                                    pattern: {
+                                        value: /\S+@\S+\.\S+/,
+                                        message: "Value provided does not match email format."
+                                    }
                                 })}
                             />
                             <Input

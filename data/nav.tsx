@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext";
 import {
   IconLayoutDashboard,
   IconWorldPlus,
@@ -13,7 +14,6 @@ import {
   IconLogin,
   IconUser,
   IconLogout,
-  IconWorldStar,
 } from "@tabler/icons-react";
 
 //Navigation Links
@@ -46,13 +46,6 @@ export const CampaignsLink = [
 
 export const ClientsLink = [
   {
-    label: "Add Clients",
-    href: "/clients/add-clients",
-    icon: (
-      <IconUserPlus className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
-    ),
-  },
-  {
     label: "Manage Clients",
     href: "/clients/manage-clients",
     icon: (
@@ -62,13 +55,6 @@ export const ClientsLink = [
 ];
 
 export const InfluencersLink = [
-  {
-    label: "Add Influencers",
-    href: "/influencers/add-influencers",
-    icon: (
-      <IconWorldPlus className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
-    ),
-  },
   {
     label: "Manage Influencers",
     href: "/influencers/manage-influencers",
@@ -108,22 +94,17 @@ export const profileLinks = [
     icon: (
       <IconMoodPlus className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
     ),
-    label: "Sign Up",
-    shortcut: "⇧⌘S"
-  },
-  {
-    icon: (
-      <IconLogin className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
-    ),
-    label: "Login",
-    shortcut: "⇧⌘G"
+    label: "Admin Sign Up",
+    shortcut: "⇧⌘S",
+    href: "/"
   },
   {
     icon: (
       <IconUser className="text-black dark:text-white mr-2 h-4 w-4 flex-shrink-0" />
     ),
     label: "Profile",
-    shortcut: "⇧⌘P"
+    shortcut: "⇧⌘P",
+    href: "/"
   },
   {
     icon: (
