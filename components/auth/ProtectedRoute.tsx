@@ -1,29 +1,29 @@
-"use client"
+'use client';
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useEffect } from 'react';
 
 const ProtectedRoute = ({ children }: any) => {
-    const { token } = useAuth();
-    const router = useRouter();
+  const { user } = useAuth();
+  const router = useRouter();
 
-    useEffect(() => {
-        if (!token) {
-            const ls_token = localStorage.getItem('token');
-            const isLoggedIn = localStorage.getItem('isLoggedIn');
-            
-            if (!ls_token || !isLoggedIn) {
-                router.push('/auth/login'); // Redirect to login if not authenticated
-            }
-        }
-    }, [token]);
+  useEffect(() => {
+    if (!user) {
+      const token = localStorage.getItem('token');
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
 
-    if (!token) {
-        return null; // Optionally, show a loading spinner here
+      if (!token || !isLoggedIn) {
+        router.push('/auth/login');
+      }
     }
+  }, [user]);
 
-    return children;
+  if (!user) {
+    return null; // Optionally, show a loading spinner here
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;
