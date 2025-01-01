@@ -25,7 +25,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const token = localStorage.getItem('token');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     if (token && isLoggedIn) {
-      setToken(token)
       router.push('/');
     }
   }, []);
