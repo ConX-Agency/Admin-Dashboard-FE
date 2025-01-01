@@ -22,7 +22,7 @@ import { useAuth } from "@/context/AuthContext";
 const ProfileMenu = () => {
   const [userPfp, setUserPfp] = useState("");
   const [userPfpFallback, setUserPfpFallback] = useState("?");
-  const { logout, user } = useAuth();
+  const { logout, token } = useAuth();
 
   useEffect(() => {
     setUserPfp("https://github.com/shadcn.png");

@@ -5,20 +5,17 @@ import { useAuth } from '@/context/AuthContext';
 import { useEffect } from 'react';
 
 const ProtectedRoute = ({ children }: any) => {
-    const { user } = useAuth();
+    const { token } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        if (!token || !isLoggedIn) {
-        // if (!user) {
+        if (!token) {
             router.push('/auth/login'); // Redirect to login if not authenticated
         }
-    }, [user]);
+    }, [token, router]);
 
-    if (!user) {
-        return null; // Optionally, show a loading spinner here
+    if (!token) {
+        router.push('/auth/login');
     }
 
     return children;

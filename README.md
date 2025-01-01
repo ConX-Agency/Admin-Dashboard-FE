@@ -50,7 +50,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## Website Resources Used
 1. [Chart Issues](https://github.com/shadcn-ui/ui/issues/4231)
 2. [ProtectedRoutes](https://medium.com/@ramon-pereira/protected-routes-with-react-js-and-next-js-571a104d8cf6)
-3. [Simple Error 404 Implementation](https://dev.to/shabink/making-a-custom-404-page-in-nextjs-2ajg)
+3. [Simple Error 404 Implementation](https://www.youtube.com/watch?v=PbFH_VE1Iks&ab_channel=NetNinja)
 4. [Command Item not Clickable](https://github.com/shadcn-ui/ui/issues/2944#issuecomment-1986062418)
 
 ## Graphics Resources Used
