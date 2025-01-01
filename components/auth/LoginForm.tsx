@@ -11,13 +11,13 @@ import { useAuth } from '@/context/AuthContext';
 import { useEffect } from 'react';
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const router = useRouter();
-  const { login, user } = useAuth();
+  const { login, token } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    if (token) {
       router.push('/'); // Redirect after login
     }
-  }, [user])
+  }, [token])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
