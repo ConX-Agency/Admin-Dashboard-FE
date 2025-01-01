@@ -14,9 +14,13 @@ const ProtectedRoute = ({ children }: any) => {
             const isLoggedIn = localStorage.getItem('isLoggedIn');
 
             if (!ls_token || !isLoggedIn)
-            router.push('/auth/login'); // Redirect to login if not authenticated
+                router.push('/auth/login'); // Redirect to login if not authenticated
         }
-    }, [token, router]);
+    }, [token]);
+
+    if (!token) {
+        router.push('/auth/login');
+    }
 
     return children;
 };
