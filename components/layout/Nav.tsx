@@ -32,15 +32,15 @@ export function Nav() {
     { title: 'Help & Settings', links: SettingsLink },
   ];
   const [showNav, setShowNav] = useState(false);
-  const { user } = useAuth();
+  const { token } = useAuth();
 
   useEffect(() => {
-    if (!user) {
+    if (!token) {
       setShowNav(false);
     } else {
       setShowNav(true);
     }
-  }, [user]);
+  }, [token]);
 
   // Check if the link's href matches the current path
   const checkActiveLink = (linkHref: string) => {
