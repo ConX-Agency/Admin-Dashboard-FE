@@ -10,13 +10,13 @@ const ProtectedRoute = ({ children }: any) => {
 
     useEffect(() => {
         if (!token) {
+            const ls_token = localStorage.getItem('token');
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+            if (!ls_token || !isLoggedIn)
             router.push('/auth/login'); // Redirect to login if not authenticated
         }
     }, [token, router]);
-
-    if (!token) {
-        router.push('/auth/login');
-    }
 
     return children;
 };
