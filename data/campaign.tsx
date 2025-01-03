@@ -1,3 +1,4 @@
+import { Client, clientAddress } from "./clients";
 import { Influencer } from "./influencer";
 
 export interface Services {
@@ -19,26 +20,26 @@ export interface Offering {
 export type packageType = "Bronze Tier" | "Silver Tier" | "Gold Tier";
 
 export interface Campaign {
-  id: string;
+  campaign_id: string;
   campaign_name: string;
   campaign_description: string;
   campaign_key_messages: string;
   campaign_image: string;
   campaign_max_influencer: number;
   campaign_min_influencer: number;
-  organizer: string;
-  location: string;
-  industry_type: string;
-  tags: string[];
-  offering: Offering;
-  influencers: Influencer[];
-  services: Services[];
-  dateRange: {
+  campaign_organizer: Client['client_id'];
+  campaign_locations: clientAddress[];
+  campaign_industry: string;
+  campaign_tags: string[];
+  campaign_offering: Offering;
+  campaign_influencers: Influencer[];
+  campaign_services: Services[];
+  campaign_dateRange: {
     from: string,
     to: string
   };
-  package: packageType;
-  status: "Active" | "Cancelled" | "Completed"; // Enum of possible statuses.
+  campaign_package: packageType;
+  campaign_status: "Active" | "Cancelled" | "Completed"; // Enum of possible statuses.
 }
 
 export interface IconWithToolTipProps {
@@ -54,7 +55,7 @@ export interface CampaignCardsProps {
   campaigns: Campaign[];
 }
 
-export interface DateRange {
+export interface campaign_dateRange {
   from: Date | undefined;
   to?: Date | undefined;
 }
@@ -77,30 +78,30 @@ export const monthRanges: { [key: string]: { from: Date; to: Date } } = {
 
 export const dummyCampaignsData: Campaign[] = [
   {
-    id: "m5gr84i9",
+    campaign_id: "m5gr84i9",
     campaign_name: "80th South Korean Independence Day",
-    campaign_description: ` In celebration of South Korea's 80th Independence Day, SKT T1 Cafe & Arena invites fans and influencers to join a 
+    campaign_description: ` In celebration of South Korea's 80th Independence Day, SKT T1 Cafe & Arena invites fans and campaign_influencers to join a 
       vibrant cultural event in Busan, honoring the history and heritage of South Korea. This special occasion brings 
       together the thrill of esports with a tribute to national pride, featuring appearances by the two-time World Champion, 
       ZOFGK. Attendees will be treated to exclusive themed food and beverages, including the Limited Edition ZOFGK Coffee Art and 
-      Merch, while influencers are offered a 10,000₩ food credit to share their experiences. With a festive atmosphere set 
-      against the scenic backdrop of Busan, the event promises memorable moments for fans and influencers alike, fostering a deeper 
+      Merch, while campaign_influencers are offered a 10,000₩ food credit to share their experiences. With a festive atmosphere set 
+      against the scenic backdrop of Busan, the event promises memorable moments for fans and campaign_influencers alike, fostering a deeper 
       ppreciation of South Korean culture and unity.`,
     campaign_key_messages: "Celebrate South Korea's 80th Independece Day with the 2x Worlds Champion, ZOFGK!",
     campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     campaign_min_influencer: 5,
     campaign_max_influencer: 10,
-    organizer: "SKT T1 Cafe & Arena",
-    location: "Busan, South Korea",
-    industry_type: "Food & Beverage",
-    tags: ["Cafe", "Independence Day", "Event", "South Korean Culture"],
-    offering: {
+    campaign_organizer: "SKT T1 Cafe & Arena",
+    campaign_locations: ["Busan, South Korea"],
+    campaign_industry: "Food & Beverage",
+    campaign_tags: ["Cafe", "Independence Day", "Event", "South Korean Culture"],
+    campaign_offering: {
       offering_account_type: "Food Credit",
       offering_description: "10000₩ Food Credit",
       featured_food: "Limited Edition ZOFGK Coffee Art and Merch",
       maximum_pax: 2
     },
-    influencers: [
+    campaign_influencers: [
       {
         influencer_id: "eb626727-ea74-4de7-87ab-db79039c5042",
         full_name: "Emily Carter",
@@ -144,7 +145,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
     ],
-    services: [
+    campaign_services: [
       {
         id: 'm5gr84l9',
         platform: "Instagram",
@@ -186,32 +187,32 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       }
     ],
-    dateRange: {
+    campaign_dateRange: {
       from: "14/10/2024",
       to: "14/11/2024",
     },
-    package: "Bronze Tier",
-    status: "Active",
+    campaign_package: "Bronze Tier",
+    campaign_status: "Active",
   },
   {
-    id: "3u1reuv4",
+    campaign_id: "3u1reuv4",
     campaign_name: "One Piece Summer Fiesta",
     campaign_description: "A collaboration with One Piece to celebrate the summers.",
     campaign_key_messages: "Time to chill out during the summers with One Piece!",
     campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     campaign_min_influencer: 5,
     campaign_max_influencer: 10,
-    organizer: "Honey Toast Cafe Akihabara",
-    location: "Tokyo, Japan",
-    industry_type: "Food & Beverage",
-    tags: ["Cafe", "Summer", "Event", "Celebration"],
-    offering: {
+    campaign_organizer: "Honey Toast Cafe Akihabara",
+    campaign_locations: "Tokyo, Japan",
+    campaign_industry: "Food & Beverage",
+    campaign_tags: ["Cafe", "Summer", "Event", "Celebration"],
+    campaign_offering: {
       offering_account_type: "Food Credit",
       offering_description: "1000¥ Food Credit",
       featured_food: "Limited Edition One Piece Honey Toast Set",
       maximum_pax: 2
     },
-    influencers: [
+    campaign_influencers: [
       {
         influencer_id: "1ba79f5d-e465-4287-85fd-c39b19dfcee1",
         full_name: "Daniel Kim",
@@ -288,7 +289,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
     ],
-    services: [
+    campaign_services: [
       {
         id: 'm5gr84i4',
         platform: "Instagram",
@@ -330,32 +331,32 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       }
     ],
-    dateRange: {
+    campaign_dateRange: {
       from: "15/10/2024",
       to: "15/11/2024",
     },
-    package: "Bronze Tier",
-    status: "Cancelled",
+    campaign_package: "Bronze Tier",
+    campaign_status: "Cancelled",
   },
   {
-    id: "derv1ws0",
+    campaign_id: "derv1ws0",
     campaign_name: "Children's Day",
     campaign_description: "To allow parents to celebrate children's day with their children.",
     campaign_key_messages: "Eat as much as you want for Children's Day!",
     campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     campaign_min_influencer: 5,
     campaign_max_influencer: 10,
-    organizer: "St. Elmo Steak House",
-    location: "Indiana, United States",
-    industry_type: "Food & Beverage",
-    tags: ["Restaurant", "Children's Day", "Family", "Event"],
-    offering: {
+    campaign_organizer: "St. Elmo Steak House",
+    campaign_locations: "Indiana, United States",
+    campaign_industry: "Food & Beverage",
+    campaign_tags: ["Restaurant", "Children's Day", "Family", "Event"],
+    campaign_offering: {
       offering_account_type: "Food Credit",
       offering_description: "RM5 Food Credit",
       featured_food: "Children's Day Specials Beef Steak",
       maximum_pax: 5
     },
-    influencers: [
+    campaign_influencers: [
       {
         influencer_id: "9d7c1722-18e7-4c99-94ed-a22f41f34e04",
         full_name: "Sophia Martinez",
@@ -399,7 +400,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
     ],
-    services: [
+    campaign_services: [
       {
         id: 'm5gr8499',
         platform: "Instagram",
@@ -441,32 +442,32 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       }
     ],
-    dateRange: {
+    campaign_dateRange: {
       from: "16/10/2024",
       to: "16/11/2024",
     },
-    package: "Gold Tier",
-    status: "Active",
+    campaign_package: "Gold Tier",
+    campaign_status: "Active",
   },
   {
-    id: "5kma53ae",
+    campaign_id: "5kma53ae",
     campaign_name: "Go Green",
     campaign_description: "Have some real food for once and enjoy the green scenery!",
     campaign_key_messages: "Have some real food for once and enjoy the green scenery!",
     campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     campaign_min_influencer: 5,
     campaign_max_influencer: 10,
-    organizer: "Real Food",
-    location: "Kuala Lumpur, Malaysia",
-    industry_type: "Food & Beverage",
-    tags: ["Restaurant", "Sustainability", "Health", "Eco-Friendly"],
-    offering: {
+    campaign_organizer: "Real Food",
+    campaign_locations: "Kuala Lumpur, Malaysia",
+    campaign_industry: "Food & Beverage",
+    campaign_tags: ["Restaurant", "Sustainability", "Health", "Eco-Friendly"],
+    campaign_offering: {
       offering_account_type: "Food Credit",
       offering_description: "RM10 Food Credit",
       featured_food: "Japanese-Malaysian Fusion Salmon & Chicken Fresh Salad",
       maximum_pax: 1
     },
-    influencers: [
+    campaign_influencers: [
       {
         influencer_id: "c4ee145b-2781-4070-a00d-2862e19c2a4a",
         full_name: "Aarav Patel",
@@ -501,7 +502,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
     ],
-    services: [
+    campaign_services: [
       {
         id: 'm5gr8449',
         platform: "Instagram",
@@ -543,32 +544,32 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       }
     ],
-    dateRange: {
+    campaign_dateRange: {
       from: "17/10/2024",
       to: "17/11/2024",
     },
-    package: "Gold Tier",
-    status: "Active",
+    campaign_package: "Gold Tier",
+    campaign_status: "Active",
   },
   {
-    id: "bhqecj4p",
+    campaign_id: "bhqecj4p",
     campaign_name: "PWD Awareness",
     campaign_description: "A campaign to promote awareness for Person with Disabilities (PWD) and their capabilities to contribute to society",
     campaign_key_messages: "Fill yourself up with our delicious pie while also contributing to social issues, a win-win!",
     campaign_image: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     campaign_min_influencer: 5,
     campaign_max_influencer: 10,
-    organizer: "Stand Pie Me Cafe",
-    location: "Petaling Jaya, Malaysia",
-    industry_type: "Food & Beverage",
-    tags: ["Cafe", "Awareness", "Disability", "Social Impact"],
-    offering: {
+    campaign_organizer: "Stand Pie Me Cafe",
+    campaign_locations: "Petaling Jaya, Malaysia",
+    campaign_industry: "Food & Beverage",
+    campaign_tags: ["Cafe", "Awareness", "Disability", "Social Impact"],
+    campaign_offering: {
       offering_account_type: "Food Credit",
       offering_description: "RM3 Food Credit",
       featured_food: "",
       maximum_pax: 1
     },
-    influencers: [
+    campaign_influencers: [
       {
         influencer_id: "e8b7a78e-34e6-45b7-8bc4-c58fd88cc84a",
         full_name: "Hana Tanaka",
@@ -612,7 +613,7 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Active"
       },
     ],
-    services: [
+    campaign_services: [
       {
         id: 'm5gr8399',
         platform: "Instagram",
@@ -654,12 +655,12 @@ export const dummyCampaignsData: Campaign[] = [
         status: "Completed"
       }
     ],
-    dateRange: {
+    campaign_dateRange: {
       from: "18/10/2024",
       to: "18/11/2024",
     },
-    package: "Silver Tier",
-    status: "Completed",
+    campaign_package: "Silver Tier",
+    campaign_status: "Completed",
   },
 ];
 

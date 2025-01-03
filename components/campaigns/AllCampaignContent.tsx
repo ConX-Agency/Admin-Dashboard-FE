@@ -60,17 +60,17 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
     const { status, type, location, dateRange } = multiFilter;
 
     const filteredData = dummyCampaignsData.filter((campaign) => {
-      let matchesStatus = status === "All" || campaign.status === status;
-      let matchesType = type === "All" || campaign.tags.includes(type);
+      let matchesStatus = status === "All" || campaign.campaign_status === status;
+      let matchesType = type === "All" || campaign.campaign_tags.includes(type);
       let matchesLocation =
         location === "All" ||
-        campaign.location.toLowerCase().includes(location.toLowerCase());
+        campaign.campaign_locations[0].state.toLowerCase().includes(location.toLowerCase());
       let matchesDateRange = true;
 
       // Apply date range filter
       if (dateRange.from && dateRange.to) {
-        const campaignStartDate = parseDate(campaign.dateRange.from);
-        const campaignEndDate = parseDate(campaign.dateRange.to);
+        const campaignStartDate = parseDate(campaign.campaign_dateRange.from);
+        const campaignEndDate = parseDate(campaign.campaign_dateRange.to);
 
         const selectedStartDate = dateRange.from;
         const selectedEndDate = dateRange.to;
@@ -246,7 +246,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
             className="shadow-md rounded-md cursor-pointer group bg-neutral-50 hover:bg-neutral-200/25 dark:bg-neutral-800 
             dark:hover:bg-neutral-700 transition-all duration-300 relative max-h-[300px] z-[1] after:content-[''] overflow-hidden
             after:absolute after:top-0 after:left-0 after:bg-neutral-950/70 after:h-full after:w-full after:rounded-md after:z-[-1]"
-            key={data.id}
+            key={data.campaign_id}
           >
             <Image src={data.campaign_image} width={200} height={100} alt="bg.jpg" 
               className="absolute top-0 left-0 z-[-1] object-cover w-full h-full rounded-md group-hover:scale-125 duration-500
@@ -261,7 +261,7 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
                 {data.campaign_name}
               </span>
               <div className="w-full">
-                <span className="text-[12px] text-neutral-300/75">{data.organizer}</span>
+                <span className="text-[12px] text-neutral-300/75">{data.campaign_organizer}</span>
               </div>
             </div>
             {/* Tags */}
@@ -275,14 +275,14 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
               <div
                 className={cn(
                   "rounded-3xl px-2 py-[2px] text-black dark:text-white text-[13px] text-nowrap font-bold tracking-[0.5px]",
-                  data.status === "Active" && "bg-yellow-400 dark:bg-yellow-600",
-                  data.status === "Cancelled" && "bg-red-400 dark:bg-red-500",
-                  data.status === "Completed" && "bg-green-400 dark:bg-green-500"
+                  data.campaign_status === "Active" && "bg-yellow-400 dark:bg-yellow-600",
+                  data.campaign_status === "Cancelled" && "bg-red-400 dark:bg-red-500",
+                  data.campaign_status === "Completed" && "bg-green-400 dark:bg-green-500"
                 )}
               >
-                {data.status}
+                {data.campaign_status}
               </div>
-              {data.tags.map((tag, tagIdx) => (
+              {data.campaign_tags.map((tag, tagIdx) => (
                 <div
                   className="rounded-3xl px-2 py-[2px] bg-neutral-300 text-black dark:bg-neutral-600 dark:text-white
                   text-[13px] text-nowrap"
@@ -299,25 +299,25 @@ const CampaignCards: React.FC<CampaignCardsProps> = ({ campaigns }) => {
                   Due Date
                 </span>
                 <span className="text-[14px] text-neutral-950 dark:text-neutral-50">
-                  {data.dateRange.to}
+                  {data.campaign_dateRange.to}
                 </span>
               </div>
               <div className="flex flex-row flex-nowrap gap-2 justify-end items-center">
                 <IconWithTooltip
                   IconComponent={MapPinned}
-                  popoverText={data.location}
+                  popoverText={data.campaign_locations[0].state}
                 />
                 <IconWithTooltip
                   IconComponent={LucideCalendar}
-                  popoverText={`${data.dateRange.from} - ${data.dateRange.to}`}
+                  popoverText={`${data.campaign_dateRange.from} - ${data.campaign_dateRange.to}`}
                 />
                 <IconWithTooltip
                   IconComponent={Globe}
-                  popoverText={`${data.influencers.length} Active Influencer(s)`}
+                  popoverText={`${data.campaign_influencers.length} Active Influencer(s)`}
                 />
                 <IconWithTooltip
                   IconComponent={Clock}
-                  popoverText={`${data.services.length} Activities Left`}
+                  popoverText={`${data.campaign_services.length} Activities Left`}
                 />
               </div>
             </div>

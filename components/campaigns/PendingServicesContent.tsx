@@ -10,6 +10,7 @@ import { IconCircleCheckFilled, IconClockHour2Filled, IconCircleXFilled, IconSea
 import { Filter, FilterX, PencilIcon, PencilOffIcon, SaveIcon } from 'lucide-react';
 import { AnimatedIconButton, Button } from '../ui/button';
 import { FilterDropdown } from '../ui/filterDropdown';
+import { useRouter } from 'next/navigation';
 
 const PendingServicesContent = () => {
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
@@ -202,6 +203,8 @@ const PendingServicesAccordion: React.FC<
   isEditable, 
   onStatusToggle 
 }) => {
+  const router = useRouter();
+
   return (
     <div>
       <Accordion type="single" collapsible>
@@ -215,11 +218,12 @@ const PendingServicesAccordion: React.FC<
           campaigns.map(campaign => (
             <AccordionItem key={campaign.id} value={`item-${campaign.id}`}>
               <AccordionTrigger>
-                <span className='font-bold xxxs:text-[13px] xs:text-[16px] flex gap-1 items-center group text-neutral-950 hover:text-neutral-950/50 
-                  dark:text-neutral-100 dark:hover:text-neutral-100/50 transition-all duration-200'>
+                <a className='font-bold xxxs:text-[13px] xs:text-[16px] flex gap-1 items-center group text-neutral-950 hover:text-neutral-950/50 
+                  dark:text-neutral-100 dark:hover:text-neutral-100/50 transition-all duration-200' 
+                    onClick={() => router.push(`/campaigns/campaign-details?name=${campaign.campaign_name}`)}>
                   {campaign.campaign_name}
                   <IconArrowUpRight className='h-full w-auto rotate-0 group-hover:rotate-45 duration-200 transition-all' />
-                </span>
+                </a>
               </AccordionTrigger>
               <AccordionContent>
               {Array.from(new Set(campaign.services.map(service => service.platform))).map(platform => {

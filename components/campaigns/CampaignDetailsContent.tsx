@@ -124,17 +124,17 @@ const CampaignDetails = ({ name }: { name: string }) => {
           <DetailsItem
             icon={detailsIcons.Organizer.icon}
             label="Organizer"
-            value={`${FilteredCampaign[0].organizer} (${FilteredCampaign[0].location})`}
+            value={`${FilteredCampaign[0].campaign_organizer} (${FilteredCampaign[0].campaign_locations[0]})`}
           />
           <DetailsItem
             icon={detailsIcons.Location.icon}
             label="Location"
-            value={FilteredCampaign[0].industry_type}
+            value={FilteredCampaign[0].campaign_industry}
           />
           <DetailsItem
             icon={detailsIcons.DateRange}
             label="Campaign Date"
-            value={`${FilteredCampaign[0].dateRange.from} - ${FilteredCampaign[0].dateRange.to}`}
+            value={`${FilteredCampaign[0].campaign_dateRange.from} - ${FilteredCampaign[0].campaign_dateRange.to}`}
           />
           <DetailsItem
             icon={detailsIcons.InfluencerLimit}
