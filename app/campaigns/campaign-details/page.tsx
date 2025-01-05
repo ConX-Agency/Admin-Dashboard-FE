@@ -1,8 +1,13 @@
-import CampaignDetails from "@/components/campaigns/CampaignDetailsContainer";
-import React from "react";
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import CampaignDetails from '@/components/campaigns/CampaignDetailsContainer';
+import React from 'react';
 
 const page = () => {
-  return <CampaignDetails />
+  return (
+    <ProtectedRoute>
+      <CampaignDetails />
+    </ProtectedRoute>
+  )
 };
 
 export default page;

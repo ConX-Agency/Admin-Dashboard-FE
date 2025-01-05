@@ -13,7 +13,7 @@ const CampaignDetailsWrapper = () => {
     const name = searchParams.get('name');
 
     return (
-        <ProtectedRoute>
+        <>
             {name ? (
                 <>
                     <div className="flex flex-row justify-between flex-wrap xxxs:gap-2">
@@ -33,7 +33,7 @@ const CampaignDetailsWrapper = () => {
             ) : (
                 <div className="text-gray-500">No campaign details available.</div>
             )}
-        </ProtectedRoute>
+        </>
     );
 };
 

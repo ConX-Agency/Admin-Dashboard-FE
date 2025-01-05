@@ -5,6 +5,7 @@ import { clientAddress } from '@/data/clients';
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form';
+import { Input } from '../ui/input';
 
 const PublicRegisterCampaign = () => {
 
@@ -57,7 +58,14 @@ const PublicRegisterCampaign = () => {
         </h2>
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-
+        <Input
+            type="text"
+            placeholder="Company Name"
+            className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.campaign_name ? 'border-red-500' : ''}`}
+            {...register("campaign_name", {
+                required: { value: true, message: "Company Name is required." }
+            })}
+        />
       </form>
     </div>
   )
