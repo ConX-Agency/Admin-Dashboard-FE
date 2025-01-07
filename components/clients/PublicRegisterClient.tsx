@@ -2,7 +2,6 @@
 
 import { Client, clientAddress } from "@/data/clients";
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { ActionButton, Button } from "../ui/button";
 import { Separator } from "../ui/separator";
@@ -42,6 +41,9 @@ export const PublicRegisterClient = () => {
                 { address: "", city: "", postcode: "", state: "", country: "" } as clientAddress,
             ],
             tnc_consent: false,
+            is_non_monetary: false,
+            discount: 0,
+            ways_to_use: "",
             status: "Active"
         },
     });
@@ -126,7 +128,7 @@ export const PublicRegisterClient = () => {
         <>
             <div className="flex items-center justify-start flex-col min-h-full h-[100vh - 40px] w-full px-4">
                 <div className="text-left w-full mb-4">
-                    <h1 className="xxxs:text-xl sm:text-2xl md:text-4xl font-bold mb-1">Client Registration Form</h1>
+                    <h1 className="xxxs:text-2xl sm:text-3xl md:text-4xl font-bold mb-1">Client Registration Form</h1>
                     <h2 className="xxxs:text-xs sm:text-sm leading-10">
                         This is a client registration form, please fill it up and click on the "Register" button to proceed.
                     </h2>

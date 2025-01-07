@@ -32,6 +32,10 @@ export interface Influencer {
     community_invited?: boolean;
     invite_count: number;
     tnc_consent?: boolean;
+    multiple_countries?: boolean;
+    additional_country: boolean;
+    is_membership: boolean;
+    rate: string;
     status: "Active" | "Pending Approval" | "Blacklisted" | "Cancelled";
 }
 
@@ -77,6 +81,10 @@ export const dummyInfluencerData: Influencer[] = [
         community_invited: true,
         invite_count: 3,
         tnc_consent: true,
+        multiple_countries: false,
+        additional_country: false,
+        is_membership: false,
+        rate: "0",
         status: "Active",
     },
     {
@@ -111,6 +119,10 @@ export const dummyInfluencerData: Influencer[] = [
         community_invited: false,
         invite_count: 1,
         tnc_consent: true,
+        multiple_countries: false,
+        additional_country: false,
+        is_membership: false,
+        rate: "0",
         status: "Active",
     },
     {
@@ -154,6 +166,10 @@ export const dummyInfluencerData: Influencer[] = [
         community_invited: true,
         invite_count: 5,
         tnc_consent: true,
+        multiple_countries: false,
+        additional_country: false,
+        is_membership: false,
+        rate: "0",
         status: "Active",
     },
     {
@@ -188,6 +204,10 @@ export const dummyInfluencerData: Influencer[] = [
         community_invited: false,
         invite_count: 2,
         tnc_consent: true,
+        multiple_countries: false,
+        additional_country: false,
+        is_membership: false,
+        rate: "0",
         status: "Active",
     },
     {
@@ -231,6 +251,10 @@ export const dummyInfluencerData: Influencer[] = [
         community_invited: true,
         invite_count: 4,
         tnc_consent: true,
+        multiple_countries: false,
+        additional_country: false,
+        is_membership: false,
+        rate: "0",
         status: "Active",
     },
 ];
