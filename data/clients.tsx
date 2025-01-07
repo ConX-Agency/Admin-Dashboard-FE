@@ -1,7 +1,7 @@
 export interface clientAddress {
     client_location_id: string;
     client_id: string;
-    country: string; 
+    country: string;
     state: string;
     city: string;
     postcode: string;
@@ -20,6 +20,9 @@ export interface Client {
     cuisine_type: string;
     addresses: clientAddress[];
     tnc_consent?: boolean,
+    is_non_monetary: boolean,
+    discount?: number;
+    ways_to_use?: string;
     status: "Active" | "Pending Approval" | "Blacklisted" | "Cancelled";
 }
 
@@ -45,6 +48,9 @@ export const dummyClientData: Client[] = [
         cuisine_type: "Chinese",
         contact_number: "+60123456789",
         alt_contact_number: "+60129876543",
+        is_non_monetary: false,
+        discount: 0,
+        ways_to_use: "idk",
         tnc_consent: true,
         status: "Active"
     },
@@ -69,6 +75,9 @@ export const dummyClientData: Client[] = [
         cuisine_type: "Greek",
         contact_number: "+302101234567",
         alt_contact_number: "+302107654321",
+        is_non_monetary: false,
+        discount: 0,
+        ways_to_use: "idk",
         tnc_consent: true,
         status: "Active"
     },
@@ -93,6 +102,9 @@ export const dummyClientData: Client[] = [
         cuisine_type: "Indian",
         contact_number: "+912223456789",
         alt_contact_number: "+912298765432",
+        is_non_monetary: false,
+        discount: 0,
+        ways_to_use: "idk",
         tnc_consent: true,
         status: "Active"
     },
@@ -117,6 +129,9 @@ export const dummyClientData: Client[] = [
         cuisine_type: "Italian",
         contact_number: "+390612345678",
         alt_contact_number: "+390698765432",
+        is_non_monetary: false,
+        discount: 0,
+        ways_to_use: "idk",
         tnc_consent: true,
         status: "Active"
     },
@@ -141,6 +156,9 @@ export const dummyClientData: Client[] = [
         cuisine_type: "Japanese",
         contact_number: "+81312345678",
         alt_contact_number: "+81387654321",
+        is_non_monetary: false,
+        discount: 0,
+        ways_to_use: "idk",
         tnc_consent: true,
         status: "Active"
     },

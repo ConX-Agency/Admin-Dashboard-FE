@@ -20,6 +20,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
 }) => {
     const [status, setStatus] = useState<Client["status"]>("Active");
     const [industry, setIndustry] = useState<Client["industry"]>("Food & Beverage");
+    const [monetary, setMonetary] = useState<boolean>(false);
     const {
         control,
         handleSubmit,
@@ -31,19 +32,6 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
         reset
     } = useForm<Client>({
         mode: "onSubmit",
-        defaultValues: {
-            company_name: "",
-            company_email: "",
-            contact_number: "",
-            alt_contact_number: "",
-            person_in_charge_name: "",
-            person_in_charge_email: "",
-            industry: "",
-            cuisine_type: "",
-            addresses: [
-                { address: "", city: "", postcode: "", state: "", country: "" } as clientAddress,
-            ],
-        },
     });
 
     const { fields, append, remove, replace } = useFieldArray({
@@ -62,6 +50,9 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
             setValue("industry", clientData.industry || "");
             setValue("cuisine_type", clientData.cuisine_type || "");
             setStatus(clientData.status);
+            setMonetary(clientData.is_non_monetary);
+            setValue("discount", clientData.discount);
+            setValue("ways_to_use", clientData.ways_to_use);
             setValue("addresses", clientData.addresses || []);
             replace(clientData.addresses || []);
         }
@@ -109,7 +100,9 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
         const formattedClient = {
             ...data,
             client_id,
-            status,
+            status: status,
+            industry: industry,
+            is_non_monetary: monetary,
             addresses: data.addresses.map((address: clientAddress) => ({
                 ...address,
                 client_id,
@@ -135,6 +128,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid xxxs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 items-center gap-4 mb-4">
+                        {/* Company Name */}
                         <Input
                             type="text"
                             placeholder="Company Name"
@@ -143,6 +137,8 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                 required: { value: true, message: "Company Name is required." }
                             })}
                         />
+
+                        {/* Company Email Address */}
                         <Input
                             type="email"
                             placeholder="Company Email Address"
@@ -151,14 +147,16 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                 required: { value: true, message: "Company Email Address is required." }
                             })}
                         />
+
+                        {/* Contact Number */}
                         <Input
                             type="text"
                             placeholder="Contact Number (+1234567890)"
                             className={`col-span-2 ${errors.contact_number ? 'border-red-500' : ''}`}
                             {...register("contact_number", {
-                                required: { 
-                                    value: true, 
-                                    message: "Contact Number is required." 
+                                required: {
+                                    value: true,
+                                    message: "Contact Number is required."
                                 },
                                 pattern: {
                                     value: /^\+\d{1,4}\d{7,15}$/,
@@ -174,6 +172,8 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                 },
                             })}
                         />
+
+                        {/* PIC Name */}
                         <Input
                             type="text"
                             placeholder="Person-In-Charge (PIC) Name"
@@ -182,6 +182,8 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                 required: { value: true, message: "Person in Charge's Name is required." }
                             })}
                         />
+
+                        {/* PIC Email Address */}
                         <Input
                             type="email"
                             placeholder="PIC Email Address"
@@ -190,6 +192,8 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                 required: { value: true, message: "Person in Charge's Email is required." }
                             })}
                         />
+
+                        {/* Alt Contact Number */}
                         <Input
                             type="text"
                             placeholder="Alt Contact Number (+1234567890)"
@@ -209,25 +213,29 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                 },
                             })}
                         />
+
+                        {/* Industry */}
                         <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
-                                        {capitalizeFirstLetter(industry)}
-                                        <ChevronDown className="h-5 w-5 ml-2" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-full" align="start">
-                                    {ddIndustryValues.map((option) => (
-                                        <DropdownMenuItem
-                                            key={option}
-                                            onClick={() => setIndustry(option as Client["industry"])}
-                                            className="cursor-pointer"
-                                        >
-                                            {capitalizeFirstLetter(option)}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
+                                    {capitalizeFirstLetter(industry)}
+                                    <ChevronDown className="h-5 w-5 ml-2" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-full" align="start">
+                                {ddIndustryValues.map((option) => (
+                                    <DropdownMenuItem
+                                        key={option}
+                                        onClick={() => setIndustry(option as Client["industry"])}
+                                        className="cursor-pointer"
+                                    >
+                                        {capitalizeFirstLetter(option)}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        {/* Cuisine Type */}
                         <Input
                             type="text"
                             placeholder="Cuisine Type (Italian, Thai, Malaysian)"
@@ -236,6 +244,70 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                 required: { value: true, message: "Cuisine Type is required." }
                             })}
                         />
+
+                        {/* Is Non-Monetary */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
+                                    {monetary ? "Non-Monetary" : "Monetary"}
+                                    <ChevronDown className="h-5 w-5 ml-2" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-[266px] max-w-full" align="start">
+                                <DropdownMenuItem
+                                    onClick={() => setMonetary(false)}
+                                    className="cursor-pointer"
+                                >
+                                    Monetary
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() => setMonetary(true)}
+                                    className="cursor-pointer"
+                                >
+                                    Non-Monetary
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+                        {/* Discount */}
+                        <Input
+                            type="text"
+                            placeholder="Discount (0-100)"
+                            className={`col-span-2 ${errors.discount ? 'border-red-500' : ''}`}
+                            {...register("discount", {
+                                required: { 
+                                    value: true, 
+                                    message: "Discount is required." 
+                                },
+                                pattern: {
+                                    value: /^\d+$/,
+                                    message: "Discount must contain numbers only."
+                                },
+                                min: {
+                                    value: 0,
+                                    message: "Discount must be at least 0."
+                                },
+                                max: {
+                                    value: 100,
+                                    message: "Discount must not exceed 100."
+                                }
+                            })}
+                        />
+
+                        {/* Ways to Use */}
+                        <Input
+                            type="text"
+                            placeholder="Ways to Use"
+                            className={`col-span-2 ${errors.ways_to_use ? 'border-red-500' : ''}`}
+                            {...register("ways_to_use", {
+                                required: { 
+                                    value: true, 
+                                    message: "Ways to Use is required." 
+                                }
+                            })}
+                        />
+
+                        {/* Status */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">

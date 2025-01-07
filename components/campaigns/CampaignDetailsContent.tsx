@@ -124,12 +124,12 @@ const CampaignDetails = ({ name }: { name: string }) => {
           <DetailsItem
             icon={detailsIcons.Organizer.icon}
             label="Organizer"
-            value={`${FilteredCampaign[0].organizer} (${FilteredCampaign[0].location})`}
+            value={`${FilteredCampaign[0].company_name}`}
           />
           <DetailsItem
             icon={detailsIcons.Location.icon}
             label="Location"
-            value={FilteredCampaign[0].industry_type}
+            value={FilteredCampaign[0].campaign_address}
           />
           <DetailsItem
             icon={detailsIcons.DateRange}
@@ -138,8 +138,8 @@ const CampaignDetails = ({ name }: { name: string }) => {
           />
           <DetailsItem
             icon={detailsIcons.InfluencerLimit}
-            label="Influencer Limit"
-            value={`${FilteredCampaign[0].campaign_min_influencer} - ${FilteredCampaign[0].campaign_max_influencer} influencers`}
+            label="Max Booking Pax"
+            value={`${FilteredCampaign[0].max_pax} influencers`}
           />
         </div>
         <div className="flex flex-col xxxs:w-full lg:w-[60%] gap-2 flex-grow">
@@ -163,7 +163,7 @@ const CampaignDetails = ({ name }: { name: string }) => {
           dark:text-white font-light overflow-hidden leading-[1.3] transition-all duration-300 ease-in-out
           ${isExpanded ? "max-h-full" : "xxxs:max-h-[120px] xxxs:line-clamp-6 text-ellipsis"}`}
           >
-            {FilteredCampaign[0].campaign_description}
+            {FilteredCampaign[0].key_message}
           </div>
         </div>
       </div>

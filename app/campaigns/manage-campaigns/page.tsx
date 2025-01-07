@@ -1,19 +1,19 @@
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { AllCampaignContent } from "@/components/campaigns/AllCampaignContent";
+import ManageCampaignContent from "@/components/campaigns/ManageCampaignContent";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
 
-const AllCampaigns = () => {
+const ManageAllCampaigns = () => {
 
   return (
     <ProtectedRoute>
       <div className="flex flex-row justify-between flex-wrap xxxs:gap-2">
-        <h1 className="text-3xl font-semibold items-center">All Campaigns</h1>
+        <h1 className="text-3xl font-semibold items-center">Manage All Campaigns</h1>
       </div>
       <Separator className="mt-0 mb-0" />
-      <AllCampaignContent />
+      <ManageCampaignContent />
     </ProtectedRoute>
   );
 };
 
-export default AllCampaigns;
+export default ManageAllCampaigns;

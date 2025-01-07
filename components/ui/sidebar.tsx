@@ -90,7 +90,7 @@ export const DesktopSidebar = ({
       <motion.div
         className={cn(
           `min-h-screen px-4 py-4 w-[240px] md:flex-col bg-neutral-50 dark:bg-neutral-900 border-r-[1px] 
-          border-r-neutral-200 dark:border-r-neutral-700 flex-shrink-0`, // Set fixed width for sidebar
+          border-r-neutral-200 dark:border-r-neutral-700 flex-shrink-0 z-[999]`, // Set fixed width for sidebar
           className
         )}
         {...props}

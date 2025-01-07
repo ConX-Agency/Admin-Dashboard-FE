@@ -8,7 +8,7 @@ import { AddressDropdowns } from "../ui/addressDropdown"; // Updated from Addres
 import { toast } from "@/hooks/use-toast";
 import { useFieldArray, useForm } from "react-hook-form";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { ddIndustryValues } from "@/data/dropdown-values";
+import { ddIndustryValues, ddStatusValues } from "@/data/dropdown-values";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
@@ -20,6 +20,8 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
         registerModalVisibility: boolean;
     }) => {
     const [industry, setIndustry] = useState<Client["industry"]>("Food & Beverage");
+    const [status, setStatus] = useState<Client["status"]>("Active");
+    const [monetary, setMonetary] = useState<boolean>(true);
     const {
         control,
         handleSubmit,
@@ -43,6 +45,9 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
             addresses: [
                 { address: "", city: "", postcode: "", state: "", country: "" } as clientAddress,
             ],
+            is_non_monetary: false,
+            discount: 0,
+            ways_to_use: "",
             tnc_consent: false,
             status: "Active"
         },
@@ -97,11 +102,13 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
     };
 
     const onSubmit = async (data: Client) => {
-        
+
         const client_id = crypto.randomUUID();
         const formattedClient = {
             ...data,
             client_id,
+            status,
+            industry,
             addresses: data.addresses.map((address: clientAddress) => ({
                 ...address,
                 client_id,
@@ -128,6 +135,7 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                     </DialogHeader>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid xxxs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 items-center gap-4 mb-4">
+                            {/* Company Name */}
                             <Input
                                 type="text"
                                 placeholder="Company Name"
@@ -136,14 +144,16 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     required: { value: true, message: "Company Name is required." }
                                 })}
                             />
+
+                            {/* Company Email Address */}
                             <Input
                                 type="email"
                                 placeholder="Company Email Address"
                                 className={`col-span-2 ${errors.company_email ? 'border-red-500' : ''}`}
                                 {...register("company_email", {
-                                    required: { 
-                                        value: true, 
-                                        message: "Company's Email Address is required." 
+                                    required: {
+                                        value: true,
+                                        message: "Company's Email Address is required."
                                     },
                                     pattern: {
                                         value: /\S+@\S+\.\S+/,
@@ -151,14 +161,16 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     }
                                 })}
                             />
+
+                            {/* Contact Number */}
                             <Input
                                 type="text"
                                 placeholder="Contact Number (+1234567890)"
                                 className={`col-span-2 ${errors.contact_number ? 'border-red-500' : ''}`}
                                 {...register("contact_number", {
-                                    required: { 
-                                        value: true, 
-                                        message: "Contact Number is required." 
+                                    required: {
+                                        value: true,
+                                        message: "Contact Number is required."
                                     },
                                     pattern: {
                                         value: /^\+\d{1,4}\d{7,15}$/,
@@ -174,6 +186,8 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     },
                                 })}
                             />
+
+                            {/* PIC Name */}
                             <Input
                                 type="text"
                                 placeholder="Person-In-Charge (PIC) Name"
@@ -182,14 +196,16 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     required: { value: true, message: "Person in Charge's Name is required." }
                                 })}
                             />
+
+                            {/* PIC Email Address */}
                             <Input
                                 type="email"
                                 placeholder="PIC Email Address"
                                 className={`col-span-2 ${errors.person_in_charge_email ? 'border-red-500' : ''}`}
                                 {...register("person_in_charge_email", {
-                                    required: { 
-                                        value: true, 
-                                        message: "Person-In-Charge's Email Address is required." 
+                                    required: {
+                                        value: true,
+                                        message: "Person-In-Charge's Email Address is required."
                                     },
                                     pattern: {
                                         value: /\S+@\S+\.\S+/,
@@ -197,6 +213,8 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     }
                                 })}
                             />
+
+                            {/* Alt Contact Number */}
                             <Input
                                 type="text"
                                 placeholder="Alt Contact Number (+1234567890)"
@@ -216,6 +234,8 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     },
                                 })}
                             />
+
+                            {/* Industry */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
@@ -235,6 +255,8 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     ))}
                                 </DropdownMenuContent>
                             </DropdownMenu>
+
+                            {/* Cuisine Type */}
                             <Input
                                 type="text"
                                 placeholder="Cuisine Type (Italian, Thai, Malaysian)"
@@ -243,6 +265,89 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                                     required: { value: true, message: "Cuisine Type is required." }
                                 })}
                             />
+
+                            {/* Is Non Monetary */}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
+                                        {monetary ? "Non-Monetary" : "Monetary"}
+                                        <ChevronDown className="h-5 w-5 ml-2" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-[190px] max-w-full" align="start">
+                                    <DropdownMenuItem
+                                        onClick={() => setMonetary(false)}
+                                        className="cursor-pointer"
+                                    >
+                                        Monetary
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => setMonetary(true)}
+                                        className="cursor-pointer"
+                                    >
+                                        Non-Monetary
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+
+                            {/* Discount */}
+                            <Input
+                                type="text"
+                                placeholder="Discount (0-100)"
+                                className={`col-span-2 ${errors.discount ? 'border-red-500' : ''}`}
+                                {...register("discount", {
+                                    required: {
+                                        value: true,
+                                        message: "Discount is required."
+                                    },
+                                    pattern: {
+                                        value: /^\d+$/,
+                                        message: "Discount must contain numbers only."
+                                    },
+                                    min: {
+                                        value: 0,
+                                        message: "Discount must be at least 0."
+                                    },
+                                    max: {
+                                        value: 100,
+                                        message: "Discount must not exceed 100."
+                                    }
+                                })}
+                            />
+
+                            {/* Ways to Use */}
+                            <Input
+                                type="text"
+                                placeholder="Ways to Use"
+                                className={`col-span-2 ${errors.ways_to_use ? 'border-red-500' : ''}`}
+                                {...register("ways_to_use", {
+                                    required: {
+                                        value: true,
+                                        message: "Ways to Use is required."
+                                    }
+                                })}
+                            />
+
+                            {/* Status */}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full">
+                                        {capitalizeFirstLetter(status)}
+                                        <ChevronDown className="h-5 w-5 ml-2" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-[266px] max-w-full" align="start">
+                                    {ddStatusValues.map((option) => (
+                                        <DropdownMenuItem
+                                            key={option}
+                                            onClick={() => setStatus(option as Client["status"])}
+                                            className="cursor-pointer"
+                                        >
+                                            {capitalizeFirstLetter(option)}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </div>
                         <Separator className="my-2 mb-0" />
                         <div className="flex flex-col w-full gap-4">
@@ -343,25 +448,25 @@ export const RegisterClientModal = ({ closeRegisterModal, handleRegister, regist
                             ))}
                         </div>
                         <Separator className="my-4" />
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    className={`${errors.tnc_consent ? 'border-red-500' : ''}`}
-                                    onCheckedChange={(checked: boolean) => {
-                                        setValue("tnc_consent", checked);
-                                    }}
-                                    {...register("tnc_consent", { 
-                                        required: {
-                                            value: true, 
-                                            message: "You must agree to the terms and conditions."
-                                        },
-                                    })} 
-                                />
-                                <label
-                                    htmlFor="terms"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                >
-                                    By submitting this form, I acknowledge and agree that my information will be processed in accordance with ConX Agency's Terms & Conditions.
-                                    <span className="text-red-600 text-xl">*</span>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                className={`${errors.tnc_consent ? 'border-red-500' : ''}`}
+                                onCheckedChange={(checked: boolean) => {
+                                    setValue("tnc_consent", checked);
+                                }}
+                                {...register("tnc_consent", {
+                                    required: {
+                                        value: true,
+                                        message: "You must agree to the terms and conditions."
+                                    },
+                                })}
+                            />
+                            <label
+                                htmlFor="terms"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                                By submitting this form, I acknowledge and agree that my information will be processed in accordance with ConX Agency's Terms & Conditions.
+                                <span className="text-red-600 text-xl">*</span>
                             </label>
                         </div>
                         <DialogFooter>
