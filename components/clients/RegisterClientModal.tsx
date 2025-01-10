@@ -159,7 +159,7 @@ export const RegisterClientModal = ({
           body: client,
         },
       );
-      //Throwing error if response contains error
+      //Handling errors from api response
       const data = await response.json();
       if (data.message != null) {
         throw new Error(data.message);
