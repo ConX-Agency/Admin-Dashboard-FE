@@ -21,8 +21,8 @@ export interface Client {
     addresses: clientAddress[];
     tnc_consent?: boolean,
     is_non_monetary: boolean,
-    discount?: number;
-    ways_to_use?: string;
+    discount: number;
+    ways_to_use: string;
     status: "Active" | "Pending Approval" | "Blacklisted" | "Cancelled";
 }
 
