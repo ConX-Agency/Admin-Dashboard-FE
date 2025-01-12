@@ -134,8 +134,8 @@ export const UpdateInfluencerModal = ({
         } else {
             // Add a new platform
             append({
-                account_id: crypto.randomUUID(),
-                influencer_id: influencerData?.influencer_id || "",
+                // account_id: crypto.randomUUID(),
+                // influencer_id: influencerData?.influencer_id || "",
                 social_media_url: "",
                 platform_name: type,
                 audience_focus_country: "",
