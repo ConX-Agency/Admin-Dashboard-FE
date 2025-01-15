@@ -12,7 +12,6 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown } from "lucide-react"
-
 import { ActionButton, Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -31,7 +30,7 @@ import {
 } from "@/components/ui/table"
 import { Checkbox } from "../ui/checkbox"
 import { dummyInfluencerData, Influencer } from "@/data/influencer"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Input } from "../ui/input"
 import { UpdateInfluencerModal } from "./UpdateInfluencerModal"
 import { RegisterInfluencerModal } from "./RegisterInfluencerModal"
@@ -283,8 +282,8 @@ export function ManageInfluencerTable() {
     //Action Buttons' Logics
     const handleSearch = (value: string) => {
         table.setColumnFilters((prev) => [
-            ...prev.filter((filter) => filter.id !== "company_name"),
-            { id: "company_name", value },
+            ...prev.filter((filter) => filter.id !== "full_name"),
+            { id: "full_name", value },
         ]);
     };
 
@@ -306,11 +305,11 @@ export function ManageInfluencerTable() {
         } else {
             // Extract and log client_id from each selected row
             const influencerIds = selectedRows.map((row) => row.original.influencer_id);
-            const influecnerNames = selectedRows.map((row) => row.original.full_name);
+            const influencerNames = selectedRows.map((row) => row.original.full_name);
             var concatenatedNames = "";
 
-            if (influecnerNames.length > 1) {
-                concatenatedNames = influecnerNames.join(", ");
+            if (influencerNames.length > 1) {
+                concatenatedNames = influencerNames.join(", ");
             }
 
             //To add delete API here.
@@ -354,15 +353,65 @@ export function ManageInfluencerTable() {
         }
     }
 
-    const handleRegister = (data: Influencer) => {
-        console.log(data);
+    const handleRegister = async (data: Influencer, acct: any) => {
+        const token = localStorage.getItem('token');
 
-        //To add Register API here.
+        const influencer = new FormData();
+        influencer.append('full_name', data.full_name);
+        influencer.append('preferred_name', data.preferred_name);
+        influencer.append('contact_number', data.contact_number);
+        influencer.append('alt_contact_number', data.alt_contact_number);
+        influencer.append('email_address', data.email_address);
+        influencer.append('country', data.address.country);
+        influencer.append('state', data.address.state);
+        influencer.append('city', data.address.city);
+        influencer.append('postcode', data.address.postcode);
+        influencer.append('address', data.address.address);
+        influencer.append('whatsapp_consent', data.whatsapp_consent.toString());
+        influencer.append('whatsapp_invited', data.whatsapp_invited?.toString()! || 'FALSE');
+        influencer.append('community_invited', data.community_invited?.toString()! || 'FALSE');
+        //No field for invite_count
+        influencer.append('invite_count', '100');
+        influencer.append('rate', data.rate);
+        influencer.append('status', data.status);
+        influencer.append('accounts', JSON.stringify(acct));
+        influencer.append('is_membership', data.is_membership?.toString()! || 'FALSE');
 
-        if (data) {
+        try {
+            const response = await fetch(
+                'https://backend-development-3158.up.railway.app/api/v1/influencers',
+                {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Replace with your actual token
+                    },
+                    body: influencer,
+                },
+            );
+            const data = await response.json();
+            if (data.message != null) {
+                toast({
+                    title: 'Registration API Failure!',
+                    description: 'An error occurred with the Client Registeration API.',
+                    variant: 'destructive',
+                    duration: 3000,
+                });
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            console.error('An error occurred: ', error);
+            toast({
+                title: 'Register Failed!',
+                description: 'An error occurred while registering influencer.',
+                variant: 'destructive',
+                duration: 3000,
+            });
+        }
+
+        if (data && acct) {
             toast({
                 title: "Registeration is Successful",
-                description: `Successfully registered new client, ${data.full_name}.`,
+                description: `Successfully registered new influencer, ${data.full_name}.`,
                 duration: 3000
             });
         }

@@ -44,7 +44,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         // Login failed
         toast({
           title: 'Login Failed',
-          description: data.message || 'Invalid login credentials',
+          description: 'Invalid Login Credentials',
           variant: 'destructive',
           duration: 3000,
         });
@@ -52,7 +52,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         // Login success
         toast({
           title: 'Successful Login',
-          description: 'Welcome Back, ConX Admin!',
+          description: `Welcome Back, Admin @${username}`,
           variant: 'default',
           duration: 3000,
         });

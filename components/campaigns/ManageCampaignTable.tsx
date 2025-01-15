@@ -151,12 +151,12 @@ export function ManageCampaignTable() {
             ),
         },
         {
-            accessorKey: "campaign_status",
+            accessorKey: "status",
             meta: "Campaign Status",
             header: "Campaign Status",
             cell: ({ row }) => (
                 <div className="transition-all duration-300 hover:text-black/75 dark:hover:text-white/75">
-                    {row.getValue("campaign_status")}
+                    {row.getValue("status")}
                 </div>
             ),
         },
@@ -197,8 +197,8 @@ export function ManageCampaignTable() {
     //Action Buttons' Logics
     const handleSearch = (value: string) => {
         table.setColumnFilters((prev) => [
-            ...prev.filter((filter) => filter.id !== "company_name"),
-            { id: "company_name", value },
+            ...prev.filter((filter) => filter.id !== "campaign_name"),
+            { id: "campaign_name", value },
         ]);
     };
 
@@ -229,7 +229,7 @@ export function ManageCampaignTable() {
                     />
                     <FilterDropdown
                         label="Subscription Tier"
-                        items={["All", "Active" , "Pending Approval" , "Blacklisted" , "Deactivated"]}
+                        items={["All", "Active" , "Completed" , "Pending Approval" , "Cancelled"]}
                         value={statusFilter || "All"}
                         onValueChange={handleStatusFilter}
                         minWidth="min-w-[121px]"

@@ -37,7 +37,7 @@ export interface Campaign {
   current_bookings: number;
   slot_status: "Filled" | "Pending";
   is_result: "Pending" | "Completed";
-  campaign_status: "Active" | "Cancelled" | "Completed";
+  status: "Active" | "Cancelled" | "Completed";
 }
 
 export const dummyCampaignsData: Campaign[] = [
@@ -66,7 +66,7 @@ export const dummyCampaignsData: Campaign[] = [
     current_bookings: 30,
     slot_status: "Pending",
     is_result: "Pending",
-    campaign_status: "Active",
+    status: "Active",
   },
   {
     campaign_id: "C002",
@@ -93,7 +93,7 @@ export const dummyCampaignsData: Campaign[] = [
     current_bookings: 20,
     slot_status: "Filled",
     is_result: "Pending",
-    campaign_status: "Active",
+    status: "Active",
   },
   {
     campaign_id: "C003",
@@ -120,7 +120,7 @@ export const dummyCampaignsData: Campaign[] = [
     current_bookings: 30,
     slot_status: "Filled",
     is_result: "Completed",
-    campaign_status: "Completed",
+    status: "Completed",
   },
   {
     campaign_id: "C004",
@@ -147,7 +147,7 @@ export const dummyCampaignsData: Campaign[] = [
     current_bookings: 45,
     slot_status: "Pending",
     is_result: "Pending",
-    campaign_status: "Active",
+    status: "Active",
   },
   {
     campaign_id: "C005",
@@ -174,7 +174,7 @@ export const dummyCampaignsData: Campaign[] = [
     current_bookings: 25,
     slot_status: "Pending",
     is_result: "Pending",
-    campaign_status: "Active",
+    status: "Active",
   },
 ];
 
