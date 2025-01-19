@@ -134,11 +134,11 @@ export const UpdateInfluencerModal = ({
         } else {
             // Add a new platform
             append({
-                account_id: crypto.randomUUID(),
-                influencer_id: influencerData?.influencer_id || "",
+                // account_id: crypto.randomUUID(),
+                // influencer_id: influencerData?.influencer_id || "",
                 social_media_url: "",
                 platform_name: type,
-                audience_focus_country: "",
+                account_type: "Food Influencer",
                 platform_focus: "UGC",
                 follower_count: 0,
             });
@@ -202,6 +202,7 @@ export const UpdateInfluencerModal = ({
             contact_number: data.contact_number,
             alt_contact_number: data.alt_contact_number,
             email_address: data.email_address,
+            industry: data.industry,
             whatsapp_consent: false,
             whatsapp_invited: false,
             community_invited: false,
@@ -222,6 +223,7 @@ export const UpdateInfluencerModal = ({
                 0
             ),
             invite_count: 0,
+            category: data.category,
             status: status,
         };
 
@@ -498,21 +500,7 @@ export const UpdateInfluencerModal = ({
                                         })}
                                     />
 
-                                    {/* Audience Focus Country */}
-                                    <CountryInput
-                                        country={getValues(`platforms.${index}.audience_focus_country`)}
-                                        setCountry={(value: string) => {
-                                            setValue(`platforms.${index}.audience_focus_country`, value, { shouldValidate: true });
-                                            trigger();
-                                        }}
-                                        countriesList={countriesList}
-                                        className={`xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.audience_focus_country ? 'border-red-500' : ''}`}
-                                        placeholder="Audience Focus Country"
-                                        setCountryId={() => { }}
-                                        input_name={`platforms.${index}.audience_focus_country`}
-                                        message={`${capitalizeFirstLetter(platform.platform_name)}'s Audience Focus Country is required.`}
-                                        control={control}
-                                    />
+                                    {/* Account Type */}
 
                                     {/* Platform Focus */}
                                     <Controller

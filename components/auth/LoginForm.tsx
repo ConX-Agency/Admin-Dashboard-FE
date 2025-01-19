@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -11,33 +11,59 @@ import { useAuth } from '@/context/AuthContext';
 import { useEffect } from 'react';
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const router = useRouter();
-  const { login, user } = useAuth();
+  const { login, token } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    if (token) {
       router.push('/'); // Redirect after login
     }
-  }, [user])
+  }, [token]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const form = e.target as HTMLFormElement;
-    const email = form.email.value;
+    const username = form.username.value;
     const password = form.password.value;
+    const formdata = new FormData();
+    formdata.append('username', username);
+    formdata.append('password', password);
 
-    if (email === 'conxadmin@gmail.com' && password === 'conxadmin') {
-      toast({
-        title: 'Successful Login',
-        description: 'Welcome Back, ConX Admin!',
-        variant: 'default',
-        duration: 3000,
-      });
+    try {
+      const response = await fetch(
+        'https://backend-development-3158.up.railway.app/api/v1/users/admin/login',
+        {
+          method: 'POST',
+          body: formdata,
+        },
+      );
 
-      login('conx_admin');
-    } else {
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Login failed
+        toast({
+          title: 'Login Failed',
+          description: data.message || 'Invalid login credentials',
+          variant: 'destructive',
+          duration: 3000,
+        });
+      } else {
+        // Login success
+        toast({
+          title: 'Successful Login',
+          description: 'Welcome Back, ConX Admin!',
+          variant: 'default',
+          duration: 3000,
+        });
+        //Save token to local storage
+        login(data.token);
+      }
+    } catch (error) {
+      // Handle network or unexpected errors
       toast({
-        title: 'Invalid Login Credentials',
-        description: 'Wrong Username or Password!',
+        title: 'Login Failed',
+        description: 'An error occurred while logging in.',
         variant: 'destructive',
         duration: 3000,
       });
@@ -49,40 +75,48 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       <Card className="sm:min-w</div>-[500px] flex-grow xxxs:min-w-[300px] xs:min-w-[450px]">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>Enter your email below to login to your account</CardDescription>
+          <CardDescription>Enter your username below to login to your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="m@example.com" required />
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="Please enter your username"
+                  required
+                />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
+                  {/* Admin forgot password */}
+                  {/* <a
                     href="#"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </a> */}
                 </div>
                 <Input id="password" type="password" required />
               </div>
               <Button className="w-full" type="submit">
                 Login
               </Button>
-              <Button variant="outline" className="w-full">
+              {/* Admin unable to login with email */}
+              {/* <Button variant="outline" className="w-full">
                 Login with Google
-              </Button>
+              </Button> */}
             </div>
-            <div className="mt-4 text-center text-sm">
+            {/* Admin unable to signup in login page */}
+            {/* <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{' '}
               <a href="#" className="underline underline-offset-4">
                 Sign up
               </a>
-            </div>
+            </div> */}
           </form>
         </CardContent>
       </Card>

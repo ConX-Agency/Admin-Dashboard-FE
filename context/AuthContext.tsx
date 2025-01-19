@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 
 // Define the shape of the AuthContext
 interface AuthContextType {
-  user: { name: string } | null;
+  token: string | null;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -18,30 +18,31 @@ interface AuthProviderProps {
 
 // AuthProvider component
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<{ name: string } | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const ls_token = localStorage.getItem('token');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    if (token && isLoggedIn) {
-      setUser({ name: 'User' }); // Set user details
+    if (ls_token && isLoggedIn) {
+      setToken(ls_token); // Set user details
     }
   }, []);
 
-  const login = (token: string) => {
-    localStorage.setItem('token', token);
+  const login = (token_param: string) => {
+    localStorage.setItem('token', token_param);
     localStorage.setItem('isLoggedIn', 'true');
-    setUser({ name: 'User' }); // Set user details
+    setToken(token_param); // Set user details
   };
 
   const logout = () => {
     localStorage.removeItem('token');
-    setUser(null);
+    localStorage.setItem('isLoggedIn', 'false');
+    setToken(null);
     router.push('/auth/login');
   };
 
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ token, login, logout }}>{children}</AuthContext.Provider>;
 };
 
 // Custom hook to use the AuthContext

@@ -17,12 +17,12 @@ export interface Client {
     contact_number: string;
     alt_contact_number: string;
     industry: string;
-    cuisine_type: string;
+    category: string; //previously cuisine type.
     addresses: clientAddress[];
     tnc_consent?: boolean,
     is_non_monetary: boolean,
-    discount?: number;
-    ways_to_use?: string;
+    discount: number;
+    ways_to_use: string;
     status: "Active" | "Pending Approval" | "Blacklisted" | "Cancelled";
 }
 
@@ -45,7 +45,7 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "John Doe",
         person_in_charge_email: "john.doe@tastytreats.com",
         industry: "Food & Beverage",
-        cuisine_type: "Chinese",
+        category: "Chinese",
         contact_number: "+60123456789",
         alt_contact_number: "+60129876543",
         is_non_monetary: false,
@@ -72,7 +72,7 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "Maria Papadopoulos",
         person_in_charge_email: "maria@souvlakihaven.com",
         industry: "Food & Beverage",
-        cuisine_type: "Greek",
+        category: "Greek",
         contact_number: "+302101234567",
         alt_contact_number: "+302107654321",
         is_non_monetary: false,
@@ -99,7 +99,7 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "Rajesh Kapoor",
         person_in_charge_email: "rajesh@currydelight.com",
         industry: "Food & Beverage",
-        cuisine_type: "Indian",
+        category: "Indian",
         contact_number: "+912223456789",
         alt_contact_number: "+912298765432",
         is_non_monetary: false,
@@ -126,7 +126,7 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "Giovanni Rossi",
         person_in_charge_email: "giovanni@pizzaparadise.com",
         industry: "Food & Beverage",
-        cuisine_type: "Italian",
+        category: "Italian",
         contact_number: "+390612345678",
         alt_contact_number: "+390698765432",
         is_non_monetary: false,
@@ -153,7 +153,7 @@ export const dummyClientData: Client[] = [
         person_in_charge_name: "Haruto Tanaka",
         person_in_charge_email: "haruto@sushiworld.com",
         industry: "Food & Beverage",
-        cuisine_type: "Japanese",
+        category: "Japanese",
         contact_number: "+81312345678",
         alt_contact_number: "+81387654321",
         is_non_monetary: false,

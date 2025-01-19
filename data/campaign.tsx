@@ -16,28 +16,84 @@ export interface Campaign {
   campaign_id: string;
   client_id: string;
   campaign_name: string;
-  company_name: string;
   food_offering: string;
-  campaign_address: string;
   key_message: string;
-  package: packageType;
   total_nano_influencers: number;
   total_micro_influencers: number;
-  total_photographers: number;
-  total_content_creators: number;
-  feedback: string;
+  total_photographer: number;
+  total_content_creator: number;
   max_pax: number;
-  booking_availabilty: string;
-  availability_public_holiday: string;
   dateRange: {
     from: string,
     to: string
   };
   isHalal: boolean;
-  current_bookings: number;
   slot_status: "Filled" | "Pending";
-  is_result: "Pending" | "Completed";
-  campaign_status: "Active" | "Cancelled" | "Completed";
+  status: "Pending Result" | "Inactive" | "Completed";
+}
+
+export interface InfluencerCampaign {
+  influencer_campaign_id: string;
+  campaign_id: string;
+  influencer_id: string;
+  full_name: string;
+  pax_no: number;
+  type: "Food Influencer" | "Photographer";
+  is_due_date: string;
+  photography_share_drive_link: string;
+  review_Link: string;
+  review_view_count: number;
+  is_completed: boolean;
+  campaign_feedback: string;
+}
+
+export interface CampaignBookingSlot {
+  campaing_booking_slot_id: string;
+  campaign_booking_availability_id: string;
+  influencer_campaign_id: string;
+  booking_slot_date: string;
+  booking_slot_start_time: string;
+  booking_slot_end_time: string;
+  status: "Pending" | "Completed" | "Cancelled";
+}
+
+export interface InfluencerCampaignPostings {
+  influencer_campaign_posting_id: string;
+  influencer_campaign_id: string;
+  account_id: string;
+  post_url: string;
+  is_run_ads: "Yes" | "No" | "Review";
+  is_boost: boolean;
+  total_boosting_duration: number;
+  current_boosting_duration: number;
+  before_view: number;
+  before_likes: number;
+  before_comments: number;
+  before_saved: number;
+  before_shares: number;
+  current_view: number;
+  current_likes: number;
+  current_comments: number;
+  current_saved: number;
+  current_shares: number;
+  last_modified_time: string;
+}
+
+export interface CampaignBookingAvailability {
+  campaign_booking_availability_id: string;
+  campaign_id: string;
+  booking_availability_day: string;
+  booking_availability_date: string;
+  booking_availability_start_time: string;
+  booking_availability_end_time: string;
+  is_repeating: boolean;
+  is_public_holiday: boolean;
+}
+
+export interface CampaignLocations {
+  campaign_location_id: string;
+  campaign_id: string;
+  clients_location_id: string;
 }
 
 export const dummyCampaignsData: Campaign[] = [
@@ -45,136 +101,96 @@ export const dummyCampaignsData: Campaign[] = [
     campaign_id: "C001",
     client_id: "CL001",
     campaign_name: "Summer Food Fest",
-    company_name: "Happy Bites Co.",
     food_offering: "Summer Specials",
-    campaign_address: "123 Food Street, Kuala Lumpur",
     key_message: "Savor the taste of summer!",
-    package: "Gold Tier",
     total_nano_influencers: 5,
     total_micro_influencers: 3,
-    total_photographers: 2,
-    total_content_creators: 1,
-    feedback: "Great response from customers!",
+    total_photographer: 2,
+    total_content_creator: 1,
     max_pax: 50,
-    booking_availabilty: "Available",
-    availability_public_holiday: "Yes",
     dateRange: {
       from: "01/01/2024",
       to: "31/01/2024",
     },
     isHalal: true,
-    current_bookings: 30,
     slot_status: "Pending",
-    is_result: "Pending",
-    campaign_status: "Active",
+    status: "Pending Result",
   },
   {
     campaign_id: "C002",
     client_id: "CL002",
     campaign_name: "Vegan Delight Campaign",
-    company_name: "Green Plate Inc.",
     food_offering: "Vegan Delicacies",
-    campaign_address: "456 Healthy Lane, Penang",
     key_message: "Go green, stay healthy!",
-    package: "Bronze Tier",
     total_nano_influencers: 10,
     total_micro_influencers: 4,
-    total_photographers: 1,
-    total_content_creators: 2,
-    feedback: "Positive feedback from influencers.",
+    total_photographer: 1,
+    total_content_creator: 2,
     max_pax: 40,
-    booking_availabilty: "Available",
-    availability_public_holiday: "No",
     dateRange: {
       from: "15/02/2024",
       to: "15/03/2024",
     },
     isHalal: true,
-    current_bookings: 20,
     slot_status: "Filled",
-    is_result: "Pending",
-    campaign_status: "Active",
+    status: "Pending Result",
   },
   {
     campaign_id: "C003",
     client_id: "CL003",
     campaign_name: "Sweet Treats Launch",
-    company_name: "Sugar Bliss Bakery",
     food_offering: "Desserts and Pastries",
-    campaign_address: "789 Dessert Avenue, Johor",
     key_message: "Indulge in sweetness!",
-    package: "Silver Tier",
     total_nano_influencers: 3,
     total_micro_influencers: 2,
-    total_photographers: 1,
-    total_content_creators: 1,
-    feedback: "Campaign delayed due to technical issues.",
+    total_photographer: 1,
+    total_content_creator: 1,
     max_pax: 30,
-    booking_availabilty: "Unavailable",
-    availability_public_holiday: "Yes",
     dateRange: {
       from: "01/03/2024",
       to: "30/03/2024",
     },
     isHalal: true,
-    current_bookings: 30,
     slot_status: "Filled",
-    is_result: "Completed",
-    campaign_status: "Completed",
+    status: "Completed",
   },
   {
     campaign_id: "C004",
     client_id: "CL004",
     campaign_name: "Spicy Feast Fiesta",
-    company_name: "Hot & Spicy Corner",
     food_offering: "Spicy Food",
-    campaign_address: "321 Chili Street, Malacca",
     key_message: "Turn up the heat!",
-    package: "Gold Tier",
     total_nano_influencers: 7,
     total_micro_influencers: 5,
-    total_photographers: 2,
-    total_content_creators: 2,
-    feedback: "Engagement has been excellent.",
+    total_photographer: 2,
+    total_content_creator: 2,
     max_pax: 60,
-    booking_availabilty: "Available",
-    availability_public_holiday: "Yes",
     dateRange: {
       from: "10/04/2024",
       to: "30/04/2024",
     },
     isHalal: true,
-    current_bookings: 45,
     slot_status: "Pending",
-    is_result: "Pending",
-    campaign_status: "Active",
+    status: "Pending Result",
   },
   {
     campaign_id: "C005",
     client_id: "CL005",
     campaign_name: "Family Meal Specials",
-    company_name: "Dine Together",
     food_offering: "Family Combos",
-    campaign_address: "222 Unity Boulevard, Sabah",
     key_message: "Food brings us closer.",
-    package: "Silver Tier",
     total_nano_influencers: 6,
     total_micro_influencers: 4,
-    total_photographers: 1,
-    total_content_creators: 3,
-    feedback: "Awaiting feedback from influencers.",
+    total_photographer: 1,
+    total_content_creator: 3,
     max_pax: 70,
-    booking_availabilty: "Available",
-    availability_public_holiday: "No",
     dateRange: {
       from: "05/05/2024",
       to: "20/05/2024",
     },
     isHalal: true,
-    current_bookings: 25,
     slot_status: "Pending",
-    is_result: "Pending",
-    campaign_status: "Active",
+    status: "Pending Result",
   },
 ];
 

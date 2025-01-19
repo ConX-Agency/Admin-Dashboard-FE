@@ -10,15 +10,15 @@ import { useAuth } from "@/context/AuthContext";
 export const NavHeader = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showNavItems, setShowNavItems] = useState(false);
-  const { user } = useAuth();
+  const { token } = useAuth();
 
   useEffect(() => {
-    if (!user) {
+    if (!token) {
       setShowNavItems(false)
     } else {
       setShowNavItems(true)
     }
-  }, [user])
+  }, [token])
 
   return (
     <div
