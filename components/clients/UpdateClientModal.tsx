@@ -48,7 +48,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
             setValue("contact_number", clientData.contact_number || "");
             setValue("alt_contact_number", clientData.alt_contact_number || "");
             setValue("industry", clientData.industry || "");
-            setValue("cuisine_type", clientData.cuisine_type || "");
+            setValue("category", clientData.category || "");
             setStatus(clientData.status);
             setMonetary(clientData.is_non_monetary);
             setValue("discount", clientData.discount);
@@ -238,10 +238,10 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                         {/* Cuisine Type */}
                         <Input
                             type="text"
-                            placeholder="Cuisine Type (Italian, Thai, Malaysian)"
-                            className={`col-span-2 ${errors.cuisine_type ? 'border-red-500' : ''}`}
-                            {...register("cuisine_type", {
-                                required: { value: true, message: "Cuisine Type is required." }
+                            placeholder="Category (Italian, Thai, Malaysian)"
+                            className={`col-span-2 ${errors.category ? 'border-red-500' : ''}`}
+                            {...register("category", {
+                                required: { value: true, message: "Category is required." }
                             })}
                         />
 

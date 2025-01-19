@@ -104,8 +104,8 @@ export const PublicRegisterInfluencer = () => {
         // influencer_id: crypto.randomUUID(),
         social_media_url: '',
         platform_name: type,
-        audience_focus_country: '',
         platform_focus: 'UGC',
+        account_type: 'Food Influencer',
         follower_count: 0,
       });
     }
@@ -170,6 +170,7 @@ export const PublicRegisterInfluencer = () => {
       whatsapp_consent: false,
       whatsapp_invited: false,
       community_invited: false,
+      industry: 'Food & Beverage',
       address: {
         address: data.address,
         city: data.city,
@@ -183,11 +184,11 @@ export const PublicRegisterInfluencer = () => {
         0,
       ),
       invite_count: 0,
-      tnc_consent: data.tnc_consent,
       multiple_countries: false,
       additional_country: false,
       is_membership: false,
       rate: '0',
+      category: 'Undecided',
       status: 'Pending Approval',
     };
 
@@ -406,23 +407,7 @@ export const PublicRegisterInfluencer = () => {
                   })}
                 />
 
-                {/* Audience Focus Country */}
-                <CountryInput
-                  country={getValues(`platforms.${index}.audience_focus_country`)}
-                  setCountry={(value: string) => {
-                    setValue(`platforms.${index}.audience_focus_country`, value, {
-                      shouldValidate: true,
-                    });
-                    trigger();
-                  }}
-                  countriesList={countriesList}
-                  className={`xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.audience_focus_country ? 'border-red-500' : ''}`}
-                  placeholder="Audience Focus Country"
-                  setCountryId={() => {}}
-                  input_name={`platforms.${index}.audience_focus_country`}
-                  message={`${capitalizeFirstLetter(platform.platform_name)}'s Audience Focus Country is required.`}
-                  control={control}
-                />
+                {/* Account Type */}
 
                 {/* Platform Focus */}
                 <Controller

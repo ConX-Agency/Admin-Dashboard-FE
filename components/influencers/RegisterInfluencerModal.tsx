@@ -65,6 +65,7 @@ export const RegisterInfluencerModal = ({
       contact_number: '',
       alt_contact_number: '',
       email_address: '',
+      industry: 'Food & Beverage',
       whatsapp_consent: false,
       whatsapp_invited: false,
       community_invited: false,
@@ -126,7 +127,7 @@ export const RegisterInfluencerModal = ({
         // influencer_id: crypto.randomUUID(),
         social_media_url: '',
         platform_name: type,
-        audience_focus_country: '',
+        account_type: 'Food Influencer',
         platform_focus: 'UGC',
         follower_count: 0,
       });
@@ -184,20 +185,20 @@ export const RegisterInfluencerModal = ({
       ({
         social_media_url,
         platform_name,
-        audience_focus_country,
+        account_type,
         platform_focus,
         follower_count,
       }: {
         influencer_id: number;
         social_media_url: string;
         platform_name: 'instagram' | 'tiktok' | 'youtube' | 'RED';
-        audience_focus_country: string;
+        account_type: 'Food Influencer' | "Photographer";
         platform_focus: 'UGC' | 'Food' | 'Lifestyle';
         follower_count: number;
       }): SocialMediaPlatform => ({
         social_media_url,
         platform_name,
-        audience_focus_country,
+        account_type,
         platform_focus,
         follower_count,
       }),
@@ -234,6 +235,7 @@ export const RegisterInfluencerModal = ({
       whatsapp_consent: false,
       whatsapp_invited: false,
       community_invited: false,
+      industry: data.industry,
       address: {
         address: data.address,
         city: data.city,
@@ -250,8 +252,8 @@ export const RegisterInfluencerModal = ({
         (total: number, platform: SocialMediaPlatform) => total + platform.follower_count,
         0,
       ),
+      category: 'Undecided',
       invite_count: 0,
-      tnc_consent: data.tnc_consent,
       status: data.status,
     };
 
@@ -564,23 +566,7 @@ export const RegisterInfluencerModal = ({
                     })}
                   />
 
-                  {/* Audience Focus Country */}
-                  <CountryInput
-                    country={getValues(`platforms.${index}.audience_focus_country`)}
-                    setCountry={(value: string) => {
-                      setValue(`platforms.${index}.audience_focus_country`, value, {
-                        shouldValidate: true,
-                      });
-                      trigger();
-                    }}
-                    countriesList={countriesList}
-                    className={`xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.audience_focus_country ? 'border-red-500' : ''}`}
-                    placeholder="Audience Focus Country"
-                    setCountryId={() => {}}
-                    input_name={`platforms.${index}.audience_focus_country`}
-                    message={`${capitalizeFirstLetter(platform.platform_name)}'s Audience Focus Country is required.`}
-                    control={control}
-                  />
+                  {/* Account Type */}
 
                   {/* Platform Focus */}
                   <Controller

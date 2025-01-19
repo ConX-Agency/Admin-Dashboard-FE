@@ -56,7 +56,7 @@ export const RegisterClientModal = ({
       person_in_charge_name: '',
       person_in_charge_email: '',
       industry: '',
-      cuisine_type: '',
+      category: '',
       addresses: [{ address: '', city: '', postcode: '', state: '', country: '' } as clientAddress],
       is_non_monetary: false,
       discount: 0,
@@ -138,7 +138,7 @@ export const RegisterClientModal = ({
     client.append('alt_contact_number', data.alt_contact_number);
     //Need to be modify while there added new value for industry field
     client.append('industry', 'Food & Beverage');
-    client.append('cuisine_type', data.cuisine_type);
+    client.append('cuisine_type', data.category);
     //Need to be modify while there added new value for category field
     client.append('category', 'not sure yet');
     client.append('is_non_monetary', data.is_non_monetary.toString());
@@ -320,10 +320,10 @@ export const RegisterClientModal = ({
               {/* Cuisine Type */}
               <Input
                 type="text"
-                placeholder="Cuisine Type (Italian, Thai, Malaysian)"
-                className={`col-span-2 ${errors.cuisine_type ? 'border-red-500' : ''}`}
-                {...register('cuisine_type', {
-                  required: { value: true, message: 'Cuisine Type is required.' },
+                placeholder="Category (Italian, Thai, Malaysian)"
+                className={`col-span-2 ${errors.category ? 'border-red-500' : ''}`}
+                {...register('category', {
+                  required: { value: true, message: 'Category is required.' },
                 })}
               />
 
