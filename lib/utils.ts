@@ -69,3 +69,15 @@ export function handleApiError(error: unknown) {
     });
   }
 }
+
+export function formatInfluencerCategory(follower_count: number): string {
+  if (follower_count < 10_000) {
+    return "Nano";
+  } else if (follower_count < 100_000) {
+    return "Micro";
+  } else if (follower_count < 1_000_000) {
+    return "Macro";
+  } else {
+    return "Undecided";
+  }
+}

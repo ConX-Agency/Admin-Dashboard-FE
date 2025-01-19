@@ -8,6 +8,8 @@ export interface influencerAddress {
 }
 
 export interface SocialMediaPlatform {
+  account_id?: string;
+  influencer_id?: string;
   social_media_url: string;
   platform_name: 'instagram' | 'tiktok' | 'youtube' | 'RED';
   account_type: "Food Influencer" | "Photographer";
@@ -33,9 +35,8 @@ export interface Influencer {
   community_invited?: boolean;
   invite_count: number;
   is_membership: boolean;
-  tnc_consent?: boolean;
   rate: string;
-  category: "Micro" | "Nano";
+  category: "Undecided" | "Micro" | "Nano" | "Macro";
   status: 'Active' | 'Pending Approval' | 'Blacklisted' | 'Cancelled';
 }
 
@@ -76,7 +77,6 @@ export const dummyInfluencerData: Influencer[] = [
     whatsapp_invited: false,
     community_invited: true,
     invite_count: 3,
-    tnc_consent: true,
     multiple_countries: false,
     additional_country: false,
     is_membership: false,
@@ -114,7 +114,6 @@ export const dummyInfluencerData: Influencer[] = [
     whatsapp_invited: true,
     community_invited: false,
     invite_count: 1,
-    tnc_consent: true,
     multiple_countries: false,
     additional_country: false,
     is_membership: false,
@@ -159,7 +158,6 @@ export const dummyInfluencerData: Influencer[] = [
     whatsapp_invited: true,
     community_invited: true,
     invite_count: 5,
-    tnc_consent: true,
     multiple_countries: false,
     additional_country: false,
     is_membership: false,
@@ -197,7 +195,6 @@ export const dummyInfluencerData: Influencer[] = [
     whatsapp_invited: false,
     community_invited: false,
     invite_count: 2,
-    tnc_consent: true,
     multiple_countries: false,
     additional_country: false,
     is_membership: false,
@@ -242,7 +239,6 @@ export const dummyInfluencerData: Influencer[] = [
     whatsapp_invited: true,
     community_invited: true,
     invite_count: 4,
-    tnc_consent: true,
     multiple_countries: false,
     additional_country: false,
     is_membership: false,
