@@ -95,8 +95,8 @@ export function ManageClientTable() {
             ),
         },
         {
-            accessorKey: "cuisine_type",
-            meta: "Cuisine Type",
+            accessorKey: "category",
+            meta: "Category",
             header: ({ column }) => {
                 return (
                     <Button
@@ -104,13 +104,13 @@ export function ManageClientTable() {
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                         className="pl-0 font-semibold"
                     >
-                        Cuisine Type
+                        Category
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                 )
             },
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("cuisine_type")}</div>
+                <div className="capitalize">{row.getValue("category")}</div>
             ),
         },
         {
