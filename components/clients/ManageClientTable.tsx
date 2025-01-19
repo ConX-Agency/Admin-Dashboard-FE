@@ -98,8 +98,8 @@ export function ManageClientTable() {
             ),
         },
         {
-            accessorKey: "cuisine_type",
-            meta: "Cuisine Type",
+            accessorKey: "category",
+            meta: "Category",
             header: ({ column }) => {
                 return (
                     <Button
@@ -107,13 +107,13 @@ export function ManageClientTable() {
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                         className="pl-0 font-semibold"
                     >
-                        Cuisine Type
+                        Category
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                 )
             },
             cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("cuisine_type")}</div>
+                <div className="capitalize">{row.getValue("category")}</div>
             ),
         },
         {
@@ -309,7 +309,7 @@ export function ManageClientTable() {
         client.append('alt_contact_number', data.alt_contact_number);
         //Need to be modify while there added new value for industry field
         client.append('industry', 'Food & Beverage');
-        client.append('cuisine_type', data.cuisine_type);
+        // client.append('cuisine_type', data.cuisine_type);
         //Need to be modify while there added new value for category field
         client.append('category', 'not sure yet');
         client.append('is_non_monetary', data.is_non_monetary.toString());

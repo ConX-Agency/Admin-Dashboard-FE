@@ -36,7 +36,7 @@ export const PublicRegisterClient = () => {
             person_in_charge_name: "",
             person_in_charge_email: "",
             industry: "",
-            cuisine_type: "",
+            category: "",
             addresses: [
                 { address: "", city: "", postcode: "", state: "", country: "" } as clientAddress,
             ],
@@ -245,10 +245,10 @@ export const PublicRegisterClient = () => {
                         </DropdownMenu>
                         <Input
                             type="text"
-                            placeholder="Cuisine Type (Italian, Thai, Malaysian)"
-                            className={`col-span-2 ${errors.cuisine_type ? 'border-red-500' : ''}`}
-                            {...register("cuisine_type", {
-                                required: { value: true, message: "Cuisine Type is required." }
+                            placeholder="Category (Italian, Thai, Malaysian)"
+                            className={`col-span-2 ${errors.category ? 'border-red-500' : ''}`}
+                            {...register("category", {
+                                required: { value: true, message: "Category is required." }
                             })}
                         />
                     </div>
