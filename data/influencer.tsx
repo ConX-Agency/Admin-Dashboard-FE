@@ -8,11 +8,9 @@ export interface influencerAddress {
 }
 
 export interface SocialMediaPlatform {
-  //account_id: string;
-  //influencer_id: number;
   social_media_url: string;
   platform_name: 'instagram' | 'tiktok' | 'youtube' | 'RED';
-  audience_focus_country: string;
+  account_type: "Food Influencer" | "Photographer";
   platform_focus: 'UGC' | 'Food' | 'Lifestyle';
   follower_count: number;
 }
@@ -27,15 +25,17 @@ export interface Influencer {
   address: influencerAddress;
   platforms: SocialMediaPlatform[];
   total_follower_count: number;
+  multiple_countries?: boolean;
+  additional_country: boolean;
+  industry: string;
   whatsapp_consent: boolean;
   whatsapp_invited?: boolean;
   community_invited?: boolean;
   invite_count: number;
-  tnc_consent?: boolean;
-  multiple_countries?: boolean;
-  additional_country: boolean;
   is_membership: boolean;
+  tnc_consent?: boolean;
   rate: string;
+  category: "Micro" | "Nano";
   status: 'Active' | 'Pending Approval' | 'Blacklisted' | 'Cancelled';
 }
 
@@ -57,20 +57,16 @@ export const dummyInfluencerData: Influencer[] = [
     },
     platforms: [
       {
-        //account_id: 'insta_emily123',
-        //influencer_id: 123,
         social_media_url: 'https://instagram.com/emily123',
         platform_name: 'instagram',
-        audience_focus_country: 'United States',
+        account_type: 'Food Influencer',
         platform_focus: 'Lifestyle',
         follower_count: 250000,
       },
       {
-        //account_id: 'tiktok_emily123',
-        //influencer_id: 123,
         social_media_url: 'https://tiktok.com/@emily123',
         platform_name: 'tiktok',
-        audience_focus_country: 'United States',
+        account_type: 'Food Influencer',
         platform_focus: 'UGC',
         follower_count: 500000,
       },
@@ -85,7 +81,9 @@ export const dummyInfluencerData: Influencer[] = [
     additional_country: false,
     is_membership: false,
     rate: '0',
+    category: 'Micro',
     status: 'Active',
+    industry: 'Food',
   },
   {
     influencer_id: '1ba79f5d-e465-4287-85fd-c39b19dfcee1',
@@ -104,11 +102,9 @@ export const dummyInfluencerData: Influencer[] = [
     },
     platforms: [
       {
-        //account_id: 'yt_dannykim',
-        //influencer_id: 123,
         social_media_url: 'https://youtube.com/dannykim',
         platform_name: 'youtube',
-        audience_focus_country: 'Canada',
+        account_type: 'Photographer',
         platform_focus: 'UGC',
         follower_count: 120000,
       },
@@ -123,7 +119,9 @@ export const dummyInfluencerData: Influencer[] = [
     additional_country: false,
     is_membership: false,
     rate: '0',
+    category: 'Nano',
     status: 'Active',
+    industry: 'Photography',
   },
   {
     influencer_id: '9d7c1722-18e7-4c99-94ed-a22f41f34e04',
@@ -142,20 +140,16 @@ export const dummyInfluencerData: Influencer[] = [
     },
     platforms: [
       {
-        //account_id: 'insta_sophmart',
-        //influencer_id: 123,
         social_media_url: 'https://instagram.com/sophmart',
         platform_name: 'instagram',
-        audience_focus_country: 'United Kingdom',
+        account_type: 'Food Influencer',
         platform_focus: 'Food',
         follower_count: 95000,
       },
       {
-        //account_id: 'red_sophmart',
-        //influencer_id: 123,
         social_media_url: 'https://red.com/sophmart',
         platform_name: 'RED',
-        audience_focus_country: 'China',
+        account_type: 'Food Influencer',
         platform_focus: 'Food',
         follower_count: 80000,
       },
@@ -170,7 +164,9 @@ export const dummyInfluencerData: Influencer[] = [
     additional_country: false,
     is_membership: false,
     rate: '0',
+    category: 'Nano',
     status: 'Active',
+    industry: 'Food',
   },
   {
     influencer_id: 'c4ee145b-2781-4070-a00d-2862e19c2a4a',
@@ -189,11 +185,9 @@ export const dummyInfluencerData: Influencer[] = [
     },
     platforms: [
       {
-        //account_id: 'tiktok_aaravp',
-        //influencer_id: 123,
         social_media_url: 'https://tiktok.com/@aaravp',
         platform_name: 'tiktok',
-        audience_focus_country: 'India',
+        account_type: 'Food Influencer',
         platform_focus: 'UGC',
         follower_count: 300000,
       },
@@ -208,7 +202,9 @@ export const dummyInfluencerData: Influencer[] = [
     additional_country: false,
     is_membership: false,
     rate: '0',
+    category: 'Micro',
     status: 'Active',
+    industry: 'Food',
   },
   {
     influencer_id: 'e8b7a78e-34e6-45b7-8bc4-c58fd88cc84a',
@@ -227,20 +223,16 @@ export const dummyInfluencerData: Influencer[] = [
     },
     platforms: [
       {
-        //account_id: 'yt_hanatanaka',
-        //influencer_id: 123,
         social_media_url: 'https://youtube.com/hanatanaka',
         platform_name: 'youtube',
-        audience_focus_country: 'Japan',
+        account_type: 'Photographer',
         platform_focus: 'Lifestyle',
         follower_count: 150000,
       },
       {
-        //account_id: 'insta_hanatanaka',
-        //influencer_id: 123,
         social_media_url: 'https://instagram.com/hanatanaka',
         platform_name: 'instagram',
-        audience_focus_country: 'Japan',
+        account_type: 'Food Influencer',
         platform_focus: 'Food',
         follower_count: 45000,
       },
@@ -255,6 +247,8 @@ export const dummyInfluencerData: Influencer[] = [
     additional_country: false,
     is_membership: false,
     rate: '0',
+    category: 'Micro',
     status: 'Active',
+    industry: 'Photography',
   },
 ];
