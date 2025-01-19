@@ -1,3 +1,5 @@
+import { ApiError } from "@/data/error";
+import { toast } from "@/hooks/use-toast";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -40,9 +42,9 @@ export function formatURL(input: string): string {
 
 export function formatFollowerCount(count: number): string {
   if (count >= 1_000_000) {
-      return (count / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    return (count / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
   } else if (count >= 1_000) {
-      return (count / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+    return (count / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
   }
   return count.toString();
 }
@@ -54,4 +56,16 @@ export function getFollowerCount(platforms: string[]) {
 export function capitalizeFirstLetter(str: string): string {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function handleApiError(error: unknown) {
+  if (error instanceof ApiError) {
+    const { status, message } = error;
+    toast({
+      title: 'An error has occured!',
+      description: `Status: ${status}; Message: ${message}`,
+      variant: 'destructive',
+      duration: 3000,
+    });
+  }
 }

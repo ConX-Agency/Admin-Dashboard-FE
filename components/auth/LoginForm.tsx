@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn, handleApiError } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 import { toast } from '@/hooks/use-toast';
 import { useConx } from '@/context/ConxContext';
 import { useEffect } from 'react';
+import { ApiError } from '@/data/error';
+
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const router = useRouter();
   const { login, token } = useConx();
@@ -29,23 +31,27 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     formdata.append('username', username);
     formdata.append('password', password);
 
-    const isLoggedIn = await login(formdata);
-    if (isLoggedIn) {
-      // Login success
-      toast({
-        title: 'Successful Login',
-        description: `Welcome Back, Admin @${username}`,
-        variant: 'default',
-        duration: 3000,
-      });
-    } else {
-      // Login failed
-      toast({
-        title: 'Login Failed',
-        description: 'Invalid Login Credentials',
-        variant: 'destructive',
-        duration: 3000,
-      });
+    try {
+      const isLoggedIn = await login(formdata);
+      if (isLoggedIn) {
+        // Login success
+        toast({
+          title: 'Successful Login',
+          description: `Welcome Back, Admin @${username}`,
+          variant: 'default',
+          duration: 3000,
+        });
+      } else {
+        // Login failed
+        toast({
+          title: 'Login Failed',
+          description: 'Invalid Login Credentials',
+          variant: 'destructive',
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      handleApiError(error);
     }
   };
 

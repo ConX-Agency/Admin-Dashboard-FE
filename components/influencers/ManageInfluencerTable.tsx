@@ -36,10 +36,11 @@ import { UpdateInfluencerModal } from "./UpdateInfluencerModal"
 import { RegisterInfluencerModal } from "./RegisterInfluencerModal"
 import { useToast } from "@/hooks/use-toast"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { formatFollowerCount } from "@/lib/utils"
+import { formatFollowerCount, handleApiError } from "@/lib/utils"
 import Image from 'next/image'
 import { FilterDropdown } from "../ui/filterDropdown"
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react"
+import { useConx } from "@/context/ConxContext"
 
 export function ManageInfluencerTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -51,6 +52,7 @@ export function ManageInfluencerTable() {
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [influencerData, setInfluencerData] = useState<Influencer | null>(null);
     const { toast } = useToast();
+    const { addInfluencer } = useConx();
     const [statusFilter, setStatusFilter] = useState<string>("");
     const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
 
@@ -378,42 +380,23 @@ export function ManageInfluencerTable() {
         influencer.append('is_membership', data.is_membership?.toString()! || 'FALSE');
 
         try {
-            const response = await fetch(
-                'https://backend-development-3158.up.railway.app/api/v1/influencers',
-                {
-                    method: 'POST',
-                    headers: {
-                        Authorization: `Bearer ${token}`, // Replace with your actual token
-                    },
-                    body: influencer,
-                },
-            );
-            const data = await response.json();
-            if (data.message != null) {
+            const res = await addInfluencer(influencer);
+            if (res.message != null) {
                 toast({
                     title: 'Registration API Failure!',
-                    description: 'An error occurred with the Client Registeration API.',
+                    description: 'An error occurred with the influencer Registeration API.',
                     variant: 'destructive',
                     duration: 3000,
                 });
-                throw new Error(data.message);
+            } else {
+                toast({
+                    title: "Registeration is Successful",
+                    description: `Successfully registered new influencer, ${data.full_name}.`,
+                    duration: 3000
+                });
             }
         } catch (error) {
-            console.error('An error occurred: ', error);
-            toast({
-                title: 'Register Failed!',
-                description: 'An error occurred while registering influencer.',
-                variant: 'destructive',
-                duration: 3000,
-            });
-        }
-
-        if (data && acct) {
-            toast({
-                title: "Registeration is Successful",
-                description: `Successfully registered new influencer, ${data.full_name}.`,
-                duration: 3000
-            });
+            handleApiError(error);
         }
     }
 

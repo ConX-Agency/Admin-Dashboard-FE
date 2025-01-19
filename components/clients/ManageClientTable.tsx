@@ -38,6 +38,8 @@ import { UpdateClientModal } from "./UpdateClientModal"
 import { RegisterClientModal } from "./RegisterClientModal"
 import { useToast } from "@/hooks/use-toast"
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react"
+import { useConx } from "@/context/ConxContext"
+import { handleApiError } from "@/lib/utils"
 
 export function ManageClientTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -49,6 +51,7 @@ export function ManageClientTable() {
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [clientData, setClientData] = useState<Client | null>(null);
     const { toast } = useToast();
+    const { addClient } = useConx();
 
     //Table Columns Definitions
     const columns: ColumnDef<Client>[] = [
@@ -317,43 +320,24 @@ export function ManageClientTable() {
         //client.append('addresses', formattedClient.addresses.toString());
 
         try {
-            const response = await fetch(
-                'https://backend-development-3158.up.railway.app/api/v1/clients',
-                {
-                    method: 'POST',
-                    headers: {
-                        Authorization: `Bearer ${token}`, // Replace with your actual token
-                    },
-                    body: client,
-                },
-            );
-
-            //Handling errors from api response
-            const data = await response.json();
-            if (data.message != null) {
+            const res = await addClient(client);
+            if (res.message != null) {
                 toast({
                     title: 'Registration API Failure!',
                     description: 'An error occurred with the API.',
                     variant: 'destructive',
                     duration: 3000,
                 });
-                throw new Error(data.message);
+            } else {
+                toast({
+                    title: "Registeration is Successful",
+                    description: `Successfully registered new client, ${data.company_name}.`,
+                    duration: 3000
+                });
             }
         } catch (error) {
-            console.error('An error occurred: ', error);
-            toast({
-                title: 'Registeration Failed!',
-                description: 'An error occurred while registering client.',
-                variant: 'destructive',
-                duration: 3000,
-            });
+            handleApiError(error);
         }
-
-        toast({
-            title: "Registeration is Successful",
-            description: `Successfully registered new client, ${data.company_name}.`,
-            duration: 3000
-        });
     }
 
     React.useEffect(() => {
