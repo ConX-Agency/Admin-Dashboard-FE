@@ -1,17 +1,19 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn, handleApiError } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/hooks/use-toast';
-import { useAuth } from '@/context/AuthContext';
+import { useConx } from '@/context/ConxContext';
 import { useEffect } from 'react';
+import { ApiError } from '@/data/error';
+
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const router = useRouter();
-  const { login, token } = useAuth();
+  const { login, token } = useConx();
 
   useEffect(() => {
     if (token) {
@@ -30,43 +32,26 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     formdata.append('password', password);
 
     try {
-      const response = await fetch(
-        'https://backend-development-3158.up.railway.app/api/v1/users/admin/login',
-        {
-          method: 'POST',
-          body: formdata,
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Login failed
-        toast({
-          title: 'Login Failed',
-          description: data.message || 'Invalid login credentials',
-          variant: 'destructive',
-          duration: 3000,
-        });
-      } else {
+      const isLoggedIn = await login(formdata);
+      if (isLoggedIn) {
         // Login success
         toast({
           title: 'Successful Login',
-          description: 'Welcome Back, ConX Admin!',
+          description: `Welcome Back, Admin @${username}`,
           variant: 'default',
           duration: 3000,
         });
-        //Save token to local storage
-        login(data.token);
+      } else {
+        // Login failed
+        toast({
+          title: 'Login Failed',
+          description: 'Invalid Login Credentials',
+          variant: 'destructive',
+          duration: 3000,
+        });
       }
     } catch (error) {
-      // Handle network or unexpected errors
-      toast({
-        title: 'Login Failed',
-        description: 'An error occurred while logging in.',
-        variant: 'destructive',
-        duration: 3000,
-      });
+      handleApiError(error);
     }
   };
 

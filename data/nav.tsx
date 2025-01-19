@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/AuthContext";
+import { useConx } from "@/context/ConxContext";
 import {
   IconLayoutDashboard,
   IconWorldPlus,

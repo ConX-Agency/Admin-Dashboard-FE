@@ -17,12 +17,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { dummyNotificationData, profileLinks } from "@/data/nav";
 import { Separator } from "../ui/separator";
 import Image from "next/image";
-import { useAuth } from "@/context/AuthContext";
+import { useConx } from "@/context/ConxContext";
 
 const ProfileMenu = () => {
   const [userPfp, setUserPfp] = useState("");
   const [userPfpFallback, setUserPfpFallback] = useState("?");
-  const { logout } = useAuth();
+  const { logout } = useConx();
 
   useEffect(() => {
     setUserPfp("https://github.com/shadcn.png");

@@ -5,12 +5,12 @@ import Search from "@/components/layout/Search";
 import { NotificationPanel, ProfileMenu } from "@/components/layout/UserActions";
 import { ThemeChanger } from "../themer/ThemeChanger";
 import { LogoIcon } from "./Nav";
-import { useAuth } from "@/context/AuthContext";
+import { useConx } from "@/context/ConxContext";
 
 export const NavHeader = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showNavItems, setShowNavItems] = useState(false);
-  const { token } = useAuth();
+  const { token } = useConx();
 
   useEffect(() => {
     if (!token) {
