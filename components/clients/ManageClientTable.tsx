@@ -38,6 +38,8 @@ import { UpdateClientModal } from "./UpdateClientModal"
 import { RegisterClientModal } from "./RegisterClientModal"
 import { useToast } from "@/hooks/use-toast"
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react"
+import { useConx } from "@/context/ConxContext"
+import { handleApiError } from "@/lib/utils"
 
 export function ManageClientTable() {
     const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -49,6 +51,7 @@ export function ManageClientTable() {
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
     const [clientData, setClientData] = useState<Client | null>(null);
     const { toast } = useToast();
+    const { addClient } = useConx();
 
     //Table Columns Definitions
     const columns: ColumnDef<Client>[] = [
@@ -294,16 +297,47 @@ export function ManageClientTable() {
         });
     }
 
-    const handleRegister = (data: Client) => {
-        console.log(data);
+    const handleRegister = async (data: Client) => {
+        const token = localStorage.getItem('token');
 
-        //To add Register API here.
+        const client = new FormData();
+        client.append('company_name', data.company_name);
+        client.append('person_in_charge_name', data.person_in_charge_name);
+        client.append('person_in_charge_email', data.person_in_charge_email);
+        client.append('company_email', data.company_email);
+        client.append('contact_number', data.contact_number);
+        client.append('alt_contact_number', data.alt_contact_number);
+        //Need to be modify while there added new value for industry field
+        client.append('industry', 'Food & Beverage');
+        // client.append('cuisine_type', data.cuisine_type);
+        //Need to be modify while there added new value for category field
+        client.append('category', 'not sure yet');
+        client.append('is_non_monetary', data.is_non_monetary.toString());
+        client.append('discount', data.discount.toString());
+        client.append('ways_to_use', data.ways_to_use.toString());
+        client.append('status', data.status);
+        client.append('addresses', JSON.stringify(data.addresses));
+        //client.append('addresses', formattedClient.addresses.toString());
 
-        toast({
-            title: "Registeration is Successful",
-            description: `Successfully registered new client, ${data.company_name}.`,
-            duration: 3000
-        });
+        try {
+            const res = await addClient(client);
+            if (res.message != null) {
+                toast({
+                    title: 'Registration API Failure!',
+                    description: 'An error occurred with the API.',
+                    variant: 'destructive',
+                    duration: 3000,
+                });
+            } else {
+                toast({
+                    title: "Registeration is Successful",
+                    description: `Successfully registered new client, ${data.company_name}.`,
+                    duration: 3000
+                });
+            }
+        } catch (error) {
+            handleApiError(error);
+        }
     }
 
     React.useEffect(() => {
@@ -329,7 +363,7 @@ export function ManageClientTable() {
                     />
                     <FilterDropdown
                         label="Subscription Tier"
-                        items={["All", "Active" , "Pending Approval" , "Blacklisted" , "Deactivated"]}
+                        items={["All", "Active", "Pending Approval", "Blacklisted", "Deactivated"]}
                         value={statusFilter || "All"}
                         onValueChange={handleStatusFilter}
                         minWidth="min-w-[121px]"
@@ -432,7 +466,7 @@ export function ManageClientTable() {
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
                     >
-                        <IconArrowLeft className="h-4 w-4 flex-shrink-0"/>
+                        <IconArrowLeft className="h-4 w-4 flex-shrink-0" />
                     </Button>
                     <Button
                         variant="outline"
@@ -440,22 +474,22 @@ export function ManageClientTable() {
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
                     >
-                        <IconArrowRight className="h-4 w-4 flex-shrink-0"/>
+                        <IconArrowRight className="h-4 w-4 flex-shrink-0" />
                     </Button>
                 </div>
             </div>
 
             {/* Update & Register Modals */}
-            <UpdateClientModal 
-                clientData={clientData} 
-                closeUpdateModal={handleCloseUpdateModal} 
-                handleUpdate={handleUpdate} 
-                updateModalVisibility={isUpdateModalVisible} 
+            <UpdateClientModal
+                clientData={clientData}
+                closeUpdateModal={handleCloseUpdateModal}
+                handleUpdate={handleUpdate}
+                updateModalVisibility={isUpdateModalVisible}
             />
-            <RegisterClientModal 
-                closeRegisterModal={handleCloseRegisterModal} 
-                handleRegister={handleRegister} 
-                registerModalVisibility={isRegisterModalVisible} 
+            <RegisterClientModal
+                closeRegisterModal={handleCloseRegisterModal}
+                handleRegister={handleRegister}
+                registerModalVisibility={isRegisterModalVisible}
             />
         </div>
     )

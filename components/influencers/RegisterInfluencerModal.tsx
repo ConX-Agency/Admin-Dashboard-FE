@@ -38,7 +38,7 @@ export const RegisterInfluencerModal = ({
   registerModalVisibility,
 }: {
   closeRegisterModal: () => void;
-  handleRegister: (data: Influencer) => void;
+  handleRegister: (data: Influencer, acct: any) => void;
   registerModalVisibility: boolean;
 }) => {
   const initialPlatforms: SocialMediaPlatform[] = [];
@@ -179,8 +179,7 @@ export const RegisterInfluencerModal = ({
     // Stop Form Submission when Validation Fails.
     const isValid = handleSocMedValidation();
     if (!isValid) return;
-    const token = localStorage.getItem('token');
-    console.log(data);
+
     const formattedAccounts: SocialMediaPlatform[] = data.platforms.map(
       ({
         social_media_url,
@@ -257,34 +256,9 @@ export const RegisterInfluencerModal = ({
       status: data.status,
     };
 
-    try {
-      const response = await fetch(
-        'https://backend-development-3158.up.railway.app/api/v1/influencers',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`, // Replace with your actual token
-          },
-          body: influencer,
-        },
-      );
-      const data = await response.json();
-      if (data.message != null) {
-        throw new Error(data.message);
-      } else {
-        handleRegister(newInfluencer);
-        reset();
-        closeRegisterModal();
-      }
-    } catch (error) {
-      console.error('An error occurred: ', error);
-      toast({
-        title: 'Register Failed!',
-        description: 'An error occurred while registering influencer.',
-        variant: 'destructive',
-        duration: 3000,
-      });
-    }
+    handleRegister(newInfluencer, formattedAccounts);
+    reset();
+    closeRegisterModal();
   };
 
   return (
@@ -548,9 +522,8 @@ export const RegisterInfluencerModal = ({
                 <div className="grid gap-4 xxxs:grid-cols-2 lg:grid-cols-4">
                   {/* Social Media URL */}
                   <Input
-                    className={`col-span-2 ${
-                      errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
-                    }`}
+                    className={`col-span-2 ${errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
+                      }`}
                     type="text"
                     placeholder="Social Media URL"
                     {...register(`platforms.${index}.social_media_url`, {
@@ -613,9 +586,8 @@ export const RegisterInfluencerModal = ({
 
                   {/* Follower Count */}
                   <Input
-                    className={`hidden xxxs:col-span-2 sm:col-span-1 ${
-                      errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
-                    }`}
+                    className={`hidden xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
+                      }`}
                     type="number"
                     placeholder="Follower Count"
                     {...register(`platforms.${index}.follower_count`, {

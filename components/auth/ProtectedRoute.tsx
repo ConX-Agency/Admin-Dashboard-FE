@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { useConx } from '@/context/ConxContext';
 import { useEffect } from 'react';
 
 const ProtectedRoute = ({ children }: any) => {
-  const { token } = useAuth();
+  const { token } = useConx();
   const router = useRouter();
 
   useEffect(() => {

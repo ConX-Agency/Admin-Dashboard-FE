@@ -1,7 +1,7 @@
 // layout_content.tsx
 "use client";  // Ensures this component runs on the client side
 
-import { AuthProvider } from "@/context/AuthContext";  // Adjust the import path
+import { ConxProvider } from "@/context/ConxContext";  // Adjust the import path
 import { Nav } from "./Nav";
 import { NavHeader } from "./NavHeader";
 import { Toaster } from "../ui/toaster";
@@ -9,7 +9,7 @@ import { Toaster } from "../ui/toaster";
 export function LayoutContent({ children }: { children: React.ReactNode }) {
 
     return (
-        <AuthProvider> {/* Wrap everything inside AuthProvider */}
+        <ConxProvider> {/* Wrap everything inside AuthProvider */}
             <div className="flex h-full w-full">
                 <Nav />
                 <div className="bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto overflow-y-hidden min-h-[100vh]">
@@ -29,6 +29,6 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
                     </main>
                 </div>
             </div>
-        </AuthProvider>
+        </ConxProvider>
     );
 }

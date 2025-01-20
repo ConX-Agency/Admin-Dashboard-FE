@@ -115,7 +115,6 @@ export const RegisterClientModal = ({
   };
 
   const onSubmit = async (data: Client) => {
-    const token = localStorage.getItem('token');
 
     const client_id = crypto.randomUUID();
     const formattedClient = {
@@ -148,35 +147,9 @@ export const RegisterClientModal = ({
     client.append('addresses', JSON.stringify(formattedClient.addresses));
     //client.append('addresses', formattedClient.addresses.toString());
 
-    try {
-      const response = await fetch(
-        'https://backend-development-3158.up.railway.app/api/v1/clients',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`, // Replace with your actual token
-          },
-          body: client,
-        },
-      );
-      //Handling errors from api response
-      const data = await response.json();
-      if (data.message != null) {
-        throw new Error(data.message);
-      } else {
-        handleRegister(formattedClient);
-        closeRegisterModal();
-        reset();
-      }
-    } catch (error) {
-      console.error('An error occurred: ', error);
-      toast({
-        title: 'Register Failed!',
-        description: 'An error occurred while registering client.',
-        variant: 'destructive',
-        duration: 3000,
-      });
-    }
+    handleRegister(formattedClient);
+    closeRegisterModal();
+    reset();
   };
 
   return (
