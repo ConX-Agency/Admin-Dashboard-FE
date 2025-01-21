@@ -19,7 +19,7 @@ import { GetCountries } from "react-country-state-city";
 import { toast } from "@/hooks/use-toast";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { capitalizeFirstLetter } from "@/lib/utils";
-import { ddPlatformFocusValues, ddSocialMediaPlatformsValues, ddStatusValues } from "@/data/dropdown-values";
+import { ddAccountTypeValues, ddCategoryValues, ddIndustryValues, ddPlatformFocusValues, ddSocialMediaPlatformsValues, ddStatusValues } from "@/data/dropdown-values";
 
 export const UpdateInfluencerModal = ({
     influencerData,
@@ -37,6 +37,8 @@ export const UpdateInfluencerModal = ({
     const [countriesList, setCountriesList] = useState<Country[]>([]);
     const [status, setStatus] = useState<Influencer["status"]>("Active");
     const [isMembership, setIsMembership] = useState<boolean>(false);
+    const [industry, setIndustry] = useState<Influencer['industry']>('Food & Beverage');
+    const [category, setCategory] = useState<Influencer['category']>('Undecided');
 
     const {
         control,
@@ -55,11 +57,13 @@ export const UpdateInfluencerModal = ({
             contact_number: influencerData?.contact_number || "",
             alt_contact_number: influencerData?.alt_contact_number || "",
             email_address: influencerData?.email_address || "",
-            country: influencerData?.address?.country || "",
-            state: influencerData?.address?.state || "",
-            city: influencerData?.address?.city || "",
-            address: influencerData?.address?.address || "",
-            postcode: influencerData?.address?.postcode || "",
+            country: influencerData?.country || "",
+            state: influencerData?.state || "",
+            city: influencerData?.city || "",
+            address: influencerData?.address || "",
+            postcode: influencerData?.postcode || "",
+            industry: influencerData?.industry || "",
+            category: influencerData?.category || "",
             status: influencerData?.status || "",
             rate: influencerData?.rate || "",
             platforms: influencerData?.platforms || [],
@@ -88,11 +92,13 @@ export const UpdateInfluencerModal = ({
             setValue("contact_number", influencerData.contact_number || "");
             setValue("alt_contact_number", influencerData.alt_contact_number || "");
             setValue("email_address", influencerData.email_address || "");
-            setValue("country", influencerData.address?.country || "");
-            setValue("state", influencerData.address?.state || "");
-            setValue("city", influencerData.address?.city || "");
-            setValue("address", influencerData.address?.address || "");
-            setValue("postcode", influencerData.address?.postcode || "");
+            setValue("country", influencerData.country || "");
+            setValue("state", influencerData.state || "");
+            setValue("city", influencerData.city || "");
+            setValue("address", influencerData.address || "");
+            setValue("postcode", influencerData.postcode || "");
+            setIndustry(influencerData.industry);
+            setCategory(influencerData.category);
             setValue("rate", influencerData.rate || "");
             setStatus(influencerData.status);
             setValue("platforms", influencerData.platforms || []); // Explicitly set platforms
@@ -206,13 +212,11 @@ export const UpdateInfluencerModal = ({
             whatsapp_consent: false,
             whatsapp_invited: false,
             community_invited: false,
-            address: {
-                address: data.address,
-                city: data.city,
-                postcode: data.postcode,
-                state: data.state,
-                country: data.country,
-            },
+            address: data.address,
+            city: data.city,
+            postcode: data.postcode,
+            state: data.state,
+            country: data.country,
             multiple_countries: false,
             additional_country: false,
             is_membership: isMembership,
@@ -251,7 +255,14 @@ export const UpdateInfluencerModal = ({
                             className={`col-span-2 ${errors.full_name ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("full_name", {
-                                required: { value: true, message: "Full Name is required." }
+                                required: {
+                                    value: true,
+                                    message: 'Full Name is required.'
+                                },
+                                pattern: {
+                                    value: /^[A-Za-z\s]+$/,
+                                    message: 'Full Name must contain only alphabets.',
+                                },
                             })}
                             placeholder="Full Name"
                         />
@@ -261,7 +272,14 @@ export const UpdateInfluencerModal = ({
                             className={`col-span-2 ${errors.preferred_name ? 'border-red-500' : ''}`}
                             type="text"
                             {...register("preferred_name", {
-                                required: { value: true, message: "Preferred Name is required." }
+                                required: {
+                                    value: true,
+                                    message: 'Preferred Name is required.'
+                                },
+                                pattern: {
+                                    value: /^[A-Za-z\s]+$/,
+                                    message: 'Preferred Name must contain only alphabets.',
+                                },
                             })}
                             placeholder="Preferred Name"
                         />
@@ -317,10 +335,38 @@ export const UpdateInfluencerModal = ({
                             className={`col-span-2 ${errors.email_address ? 'border-red-500' : ''}`}
                             type="email"
                             {...register("email_address", {
-                                required: { value: true, message: "Email Address is required." }
+                                required: {
+                                    value: true,
+                                    message: "Email Address is required."
+                                },
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: 'Email Address provided does not match email format.',
+                                },
                             })}
                             placeholder="Email Address"
                         />
+
+                        {/* Industry */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="col-span-2 w-full justify-between border px-3">
+                                    {capitalizeFirstLetter(industry)}
+                                    <ChevronDown className="ml-2 h-5 w-5" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-[190px] max-w-full" align="start">
+                                {ddIndustryValues.map((option) => (
+                                    <DropdownMenuItem
+                                        key={option}
+                                        onClick={() => setIndustry(option as Influencer['industry'])}
+                                        className="cursor-pointer"
+                                    >
+                                        {capitalizeFirstLetter(option)}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
 
                         {/* Country, State, City */}
                         <AddressDropdowns
@@ -435,6 +481,27 @@ export const UpdateInfluencerModal = ({
                             placeholder="Rate (0-100)"
                         />
 
+                        {/* Category */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="col-span-2 w-full justify-between border px-3">
+                                    {capitalizeFirstLetter(category)}
+                                    <ChevronDown className="ml-2 h-5 w-5" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-[190px] max-w-full" align="start">
+                                {ddCategoryValues.map((option) => (
+                                    <DropdownMenuItem
+                                        key={option}
+                                        onClick={() => setCategory(option as Influencer['category'])}
+                                        className="cursor-pointer"
+                                    >
+                                        {capitalizeFirstLetter(option)}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
                         {/* Status */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -501,6 +568,47 @@ export const UpdateInfluencerModal = ({
                                     />
 
                                     {/* Account Type */}
+                                    <Controller
+                                        name={`platforms.${index}.account_type`}
+                                        control={control}
+                                        rules={{
+                                            required: {
+                                                value: true,
+                                                message: `${capitalizeFirstLetter(platform.platform_name)}'s Account Type is required.`,
+                                            },
+                                        }}
+                                        render={({ field }) => (
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        {...field} // Spread the Controller field here
+                                                        variant="outline"
+                                                        className="justify-between xxxs:col-span-2 sm:col-span-1"
+                                                    >
+                                                        <span>{field.value || 'Select Account Type'}</span>
+                                                        <ChevronDown className="ml-2 h-5 w-5" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="start" className="w-[200px]">
+                                                    {ddAccountTypeValues.map((option) => (
+                                                        <DropdownMenuItem
+                                                            key={option}
+                                                            onClick={() =>
+                                                                setValue(
+                                                                    `platforms.${index}.account_type`,
+                                                                    option as SocialMediaPlatform['account_type'],
+                                                                    { shouldValidate: true },
+                                                                )
+                                                            }
+                                                            className="cursor-pointer"
+                                                        >
+                                                            {capitalizeFirstLetter(option)}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        )}
+                                    />
 
                                     {/* Platform Focus */}
                                     <Controller

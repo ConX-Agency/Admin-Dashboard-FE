@@ -24,8 +24,11 @@ import { GetCountries } from 'react-country-state-city';
 import { Country } from '@/data/shared';
 import { toast } from '@/hooks/use-toast';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { capitalizeFirstLetter } from '@/lib/utils';
+import { capitalizeFirstLetter, formatInfluencerCategory } from '@/lib/utils';
 import {
+  ddAccountTypeValues,
+  ddCategoryValues,
+  ddIndustryValues,
   ddPlatformFocusValues,
   ddSocialMediaPlatformsValues,
   ddStatusValues,
@@ -46,6 +49,7 @@ export const RegisterInfluencerModal = ({
   const [countriesList, setCountriesList] = useState<Country[]>([]);
   const [isMembership, setIsMembership] = useState<boolean>(false);
   const [status, setStatus] = useState<Influencer['status']>('Pending Approval');
+  const [industry, setIndustry] = useState<Influencer['industry']>('Food & Beverage');
 
   const {
     control,
@@ -203,27 +207,8 @@ export const RegisterInfluencerModal = ({
       }),
     );
 
-    const influencer = new FormData();
-    influencer.append('full_name', data.full_name);
-    influencer.append('preferred_name', data.preferred_name);
-    influencer.append('contact_number', data.contact_number);
-    influencer.append('alt_contact_number', data.alt_contact_number);
-    influencer.append('email_address', data.email_address);
-    influencer.append('country', data.country);
-    influencer.append('state', data.state);
-    influencer.append('city', data.city);
-    influencer.append('postcode', data.postcode);
-    influencer.append('address', data.address);
-    influencer.append('whatsapp_consent', data.whatsapp_consent);
-    influencer.append('whatsapp_invited', data.whatsapp_invited);
-    influencer.append('community_invited', data.community_invited);
-    influencer.append('industry', data.industry);
-    //No field for invite_count
-    influencer.append('invite_count', '100');
-    influencer.append('rate', data.rate);
-    influencer.append('status', data.status);
-    influencer.append('accounts', JSON.stringify(formattedAccounts));
-    influencer.append('is_membership', data.is_membership);
+    const category = formatInfluencerCategory(data.follower_count) as typeof data.category;
+
     const newInfluencer: Influencer = {
       influencer_id: crypto.randomUUID(),
       full_name: data.full_name,
@@ -235,13 +220,11 @@ export const RegisterInfluencerModal = ({
       whatsapp_invited: false,
       community_invited: false,
       industry: data.industry,
-      address: {
-        address: data.address,
-        city: data.city,
-        postcode: data.postcode,
-        state: data.state,
-        country: data.country,
-      },
+      address: data.address,
+      city: data.city,
+      postcode: data.postcode,
+      state: data.state,
+      country: data.country,
       multiple_countries: false,
       additional_country: false,
       is_membership: isMembership,
@@ -251,7 +234,7 @@ export const RegisterInfluencerModal = ({
         (total: number, platform: SocialMediaPlatform) => total + platform.follower_count,
         0,
       ),
-      category: 'Undecided',
+      category: category,
       invite_count: 0,
       status: data.status,
     };
@@ -279,7 +262,14 @@ export const RegisterInfluencerModal = ({
               className={`col-span-2 ${errors.full_name ? 'border-red-500' : ''}`}
               type="text"
               {...register('full_name', {
-                required: { value: true, message: 'Full Name is required.' },
+                required: {
+                  value: true,
+                  message: 'Full Name is required.'
+                },
+                pattern: {
+                  value: /^[A-Za-z\s]+$/,
+                  message: 'Full Name must contain only alphabets.',
+                },
               })}
               placeholder="Full Name"
             />
@@ -289,7 +279,14 @@ export const RegisterInfluencerModal = ({
               className={`col-span-2 ${errors.preferred_name ? 'border-red-500' : ''}`}
               type="text"
               {...register('preferred_name', {
-                required: { value: true, message: 'Preferred Name is required.' },
+                required: {
+                  value: true,
+                  message: 'Preferred Name is required.'
+                },
+                pattern: {
+                  value: /^[A-Za-z\s]+$/,
+                  message: 'Preferred Name must contain only alphabets.',
+                },
               })}
               placeholder="Preferred Name"
             />
@@ -352,11 +349,32 @@ export const RegisterInfluencerModal = ({
                 },
                 pattern: {
                   value: /\S+@\S+\.\S+/,
-                  message: 'Value provided does not match email format.',
+                  message: 'Email Address provided does not match email format.',
                 },
               })}
               placeholder="Email Address"
             />
+
+            {/* Industry */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="col-span-2 w-full justify-between border px-3">
+                  {capitalizeFirstLetter(industry)}
+                  <ChevronDown className="ml-2 h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[190px] max-w-full" align="start">
+                {ddIndustryValues.map((option) => (
+                  <DropdownMenuItem
+                    key={option}
+                    onClick={() => setIndustry(option as Influencer['industry'])}
+                    className="cursor-pointer"
+                  >
+                    {capitalizeFirstLetter(option)}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Country, State, City */}
             <AddressDropdowns
@@ -540,6 +558,47 @@ export const RegisterInfluencerModal = ({
                   />
 
                   {/* Account Type */}
+                  <Controller
+                    name={`platforms.${index}.account_type`}
+                    control={control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: `${capitalizeFirstLetter(platform.platform_name)}'s Account Type is required.`,
+                      },
+                    }}
+                    render={({ field }) => (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            {...field} // Spread the Controller field here
+                            variant="outline"
+                            className="justify-between xxxs:col-span-2 sm:col-span-1"
+                          >
+                            <span>{field.value || 'Select Account Type'}</span>
+                            <ChevronDown className="ml-2 h-5 w-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-[200px]">
+                          {ddAccountTypeValues.map((option) => (
+                            <DropdownMenuItem
+                              key={option}
+                              onClick={() =>
+                                setValue(
+                                  `platforms.${index}.account_type`,
+                                  option as SocialMediaPlatform['account_type'],
+                                  { shouldValidate: true },
+                                )
+                              }
+                              className="cursor-pointer"
+                            >
+                              {capitalizeFirstLetter(option)}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  />
 
                   {/* Platform Focus */}
                   <Controller
@@ -605,6 +664,7 @@ export const RegisterInfluencerModal = ({
           <Separator className="my-4" />
           <div className="flex flex-col gap-2">
             <div className="flex items-center space-x-2">
+              {/* WhatsApp Consent */}
               <Checkbox
                 className={`${errors.whatsapp_consent ? 'border-red-500' : ''}`}
                 onCheckedChange={(checked: boolean) => {
@@ -624,6 +684,7 @@ export const RegisterInfluencerModal = ({
               </label>
             </div>
             <div className="flex items-center space-x-2">
+              {/* TNC */}
               <Checkbox
                 className={`${errors.tnc_consent ? 'border-red-500' : ''}`}
                 onCheckedChange={(checked: boolean) => {

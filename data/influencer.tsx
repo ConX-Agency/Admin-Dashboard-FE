@@ -1,12 +1,3 @@
-export interface influencerAddress {
-  id?: number;
-  country: string;
-  state: string;
-  city: string;
-  postcode: string;
-  address: string;
-}
-
 export interface SocialMediaPlatform {
   account_id?: string;
   influencer_id?: string;
@@ -24,18 +15,23 @@ export interface Influencer {
   contact_number: string;
   alt_contact_number: string;
   email_address: string;
-  address: influencerAddress;
+  country: string;
+  state: string;
+  city: string;
+  postcode: string;
+  address: string;
   platforms: SocialMediaPlatform[];
   total_follower_count: number;
   multiple_countries?: boolean;
   additional_country: boolean;
-  industry: string;
+  industry: "Food & Beverage";
   whatsapp_consent: boolean;
   whatsapp_invited?: boolean;
   community_invited?: boolean;
   invite_count: number;
   is_membership: boolean;
   rate: string;
+  tnc_consent?: boolean;
   category: "Undecided" | "Micro" | "Nano" | "Macro";
   status: 'Active' | 'Pending Approval' | 'Blacklisted' | 'Cancelled';
 }
@@ -48,14 +44,12 @@ export const dummyInfluencerData: Influencer[] = [
     contact_number: '+11234567890',
     alt_contact_number: '+11234567891',
     email_address: 'emmy.carter@example.com',
-    address: {
-      id: 1,
-      address: '123 Maple Street',
-      city: 'Los Angeles',
-      postcode: '90001',
-      state: 'California',
-      country: 'United States',
-    },
+
+    address: '123 Maple Street',
+    city: 'Los Angeles',
+    postcode: '90001',
+    state: 'California',
+    country: 'United States',
     platforms: [
       {
         social_media_url: 'https://instagram.com/emily123',
@@ -83,7 +77,7 @@ export const dummyInfluencerData: Influencer[] = [
     rate: '0',
     category: 'Micro',
     status: 'Active',
-    industry: 'Food',
+    industry: 'Food & Beverage',
   },
   {
     influencer_id: '1ba79f5d-e465-4287-85fd-c39b19dfcee1',
@@ -92,14 +86,11 @@ export const dummyInfluencerData: Influencer[] = [
     contact_number: '+12345678901',
     alt_contact_number: '+12345678902',
     email_address: 'danny.kim@example.com',
-    address: {
-      id: 2,
-      address: '456 Oak Lane',
-      city: 'Toronto',
-      postcode: 'M4B 1B3',
-      state: 'Ontario',
-      country: 'Canada',
-    },
+    address: '456 Oak Lane',
+    city: 'Toronto',
+    postcode: 'M4B 1B3',
+    state: 'Ontario',
+    country: 'Canada',
     platforms: [
       {
         social_media_url: 'https://youtube.com/dannykim',
@@ -120,7 +111,7 @@ export const dummyInfluencerData: Influencer[] = [
     rate: '0',
     category: 'Nano',
     status: 'Active',
-    industry: 'Photography',
+    industry: 'Food & Beverage',
   },
   {
     influencer_id: '9d7c1722-18e7-4c99-94ed-a22f41f34e04',
@@ -129,14 +120,11 @@ export const dummyInfluencerData: Influencer[] = [
     contact_number: '+441234567890',
     alt_contact_number: '+441234567891',
     email_address: 'soph.martinez@example.com',
-    address: {
-      id: 3,
-      address: '789 Pine Road',
-      city: '',
-      postcode: 'E1 6AN',
-      state: 'Strabane District Council',
-      country: 'United Kingdom',
-    },
+    address: '789 Pine Road',
+    city: '',
+    postcode: 'E1 6AN',
+    state: 'Strabane District Council',
+    country: 'United Kingdom',
     platforms: [
       {
         social_media_url: 'https://instagram.com/sophmart',
@@ -164,7 +152,7 @@ export const dummyInfluencerData: Influencer[] = [
     rate: '0',
     category: 'Nano',
     status: 'Active',
-    industry: 'Food',
+    industry: 'Food & Beverage',
   },
   {
     influencer_id: 'c4ee145b-2781-4070-a00d-2862e19c2a4a',
@@ -173,14 +161,11 @@ export const dummyInfluencerData: Influencer[] = [
     contact_number: '+914567890123',
     alt_contact_number: '+914567890124',
     email_address: 'aarav.patel@example.com',
-    address: {
-      id: 4,
-      address: '321 Cedar Avenue',
-      city: 'Mumbai',
-      postcode: '400001',
-      state: 'Maharashtra',
-      country: 'India',
-    },
+    address: '321 Cedar Avenue',
+    city: 'Mumbai',
+    postcode: '400001',
+    state: 'Maharashtra',
+    country: 'India',
     platforms: [
       {
         social_media_url: 'https://tiktok.com/@aaravp',
@@ -201,7 +186,7 @@ export const dummyInfluencerData: Influencer[] = [
     rate: '0',
     category: 'Micro',
     status: 'Active',
-    industry: 'Food',
+    industry: 'Food & Beverage',
   },
   {
     influencer_id: 'e8b7a78e-34e6-45b7-8bc4-c58fd88cc84a',
@@ -210,14 +195,11 @@ export const dummyInfluencerData: Influencer[] = [
     contact_number: '+815678901234',
     alt_contact_number: '+815678901235',
     email_address: 'hana.tanaka@example.com',
-    address: {
-      id: 5,
-      address: '654 Willow Lane',
-      city: 'Edogawa Ku',
-      postcode: '100-0001',
-      state: 'Tokyo',
-      country: 'Japan',
-    },
+    address: '654 Willow Lane',
+    city: 'Edogawa Ku',
+    postcode: '100-0001',
+    state: 'Tokyo',
+    country: 'Japan',
     platforms: [
       {
         social_media_url: 'https://youtube.com/hanatanaka',
@@ -245,6 +227,6 @@ export const dummyInfluencerData: Influencer[] = [
     rate: '0',
     category: 'Micro',
     status: 'Active',
-    industry: 'Photography',
+    industry: 'Food & Beverage',
   },
 ];

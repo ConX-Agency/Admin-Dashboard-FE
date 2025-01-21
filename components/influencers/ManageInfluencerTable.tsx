@@ -155,7 +155,7 @@ export function ManageInfluencerTable() {
             ),
         },
         {
-            accessorFn: (row) => row.address.country || "N/A",
+            accessorFn: (row) => row.country || "N/A",
             id: "country",
             meta: "Country",
             header: ({ column }) => {
@@ -364,20 +364,21 @@ export function ManageInfluencerTable() {
         influencer.append('contact_number', data.contact_number);
         influencer.append('alt_contact_number', data.alt_contact_number);
         influencer.append('email_address', data.email_address);
-        influencer.append('country', data.address.country);
-        influencer.append('state', data.address.state);
-        influencer.append('city', data.address.city);
-        influencer.append('postcode', data.address.postcode);
-        influencer.append('address', data.address.address);
+        influencer.append('country', data.country);
+        influencer.append('state', data.state);
+        influencer.append('city', data.city);
+        influencer.append('postcode', data.postcode);
+        influencer.append('address', data.address);
+        influencer.append('industry', data.industry);
         influencer.append('whatsapp_consent', data.whatsapp_consent.toString());
         influencer.append('whatsapp_invited', data.whatsapp_invited?.toString()! || 'FALSE');
         influencer.append('community_invited', data.community_invited?.toString()! || 'FALSE');
-        //No field for invite_count
-        influencer.append('invite_count', '100');
+        influencer.append('invite_count', '0');
+        influencer.append('is_membership', data.is_membership?.toString()! || 'FALSE');
         influencer.append('rate', data.rate);
+        influencer.append('category', data.category);
         influencer.append('status', data.status);
         influencer.append('accounts', JSON.stringify(acct));
-        influencer.append('is_membership', data.is_membership?.toString()! || 'FALSE');
 
         try {
             const res = await addInfluencer(influencer);

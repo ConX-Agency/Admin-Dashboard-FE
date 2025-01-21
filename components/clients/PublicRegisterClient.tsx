@@ -135,29 +135,41 @@ export const PublicRegisterClient = () => {
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-full">
                     <div className="grid xxxs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 items-center gap-4 mb-4">
+                        {/* Company Name */}
                         <Input
                             type="text"
                             placeholder="Company Name"
                             className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.company_name ? 'border-red-500' : ''}`}
                             {...register("company_name", {
-                                required: { value: true, message: "Company Name is required." }
+                                required: {
+                                    value: true,
+                                    message: "Company Name is required."
+                                },
+                                pattern: {
+                                    value: /^[a-zA-Z0-9&\-',.\s]+$/,
+                                    message: 'Company Name must contain only alphabets, numbers, &, -, \', ,, ., and spaces.',
+                                }
                             })}
                         />
+
+                        {/* Company Email Address */}
                         <Input
                             type="email"
                             placeholder="Company Email Address"
                             className={`col-span-2 ${errors.company_email ? 'border-red-500' : ''}`}
                             {...register("company_email", {
-                                required: { 
-                                    value: true, 
-                                    message: "Company Email Address is required." 
+                                required: {
+                                    value: true,
+                                    message: "Company Email Address is required."
                                 },
                                 pattern: {
                                     value: /\S+@\S+\.\S+/,
-                                    message: "Value provided does not match email format."
+                                    message: "Company Email Address provided does not match email format."
                                 }
                             })}
                         />
+
+                        {/* Contact Number */}
                         <Input
                             type="text"
                             placeholder="Contact Number (+1234567890)"
@@ -181,29 +193,42 @@ export const PublicRegisterClient = () => {
                                 },
                             })}
                         />
+
+                        {/* PIC Name */}
                         <Input
                             type="text"
                             placeholder="Person-In-Charge (PIC) Name"
                             className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.person_in_charge_name ? 'border-red-500' : ''}`}
-                            {...register("person_in_charge_name", {
-                                required: { value: true, message: "Person in Charge's Name is required." }
+                            {...register('person_in_charge_name', {
+                                required: {
+                                    value: true,
+                                    message: "Person-In-Charge's Name is required."
+                                },
+                                pattern: {
+                                    value: /^[A-Za-z\s]+$/,
+                                    message: "Person-In-Charge's Name must contain only alphabets.",
+                                },
                             })}
                         />
+
+                        {/* PIC Email Address */}
                         <Input
                             type="email"
                             placeholder="PIC Email Address"
                             className={`col-span-2 ${errors.person_in_charge_email ? 'border-red-500' : ''}`}
                             {...register("person_in_charge_email", {
-                                required: { 
-                                    value: true, 
-                                    message: "Person-In-Charge's Email Address is required." 
+                                required: {
+                                    value: true,
+                                    message: 'Person-In-Charge\'s Email Address is required.',
                                 },
                                 pattern: {
                                     value: /\S+@\S+\.\S+/,
-                                    message: "Value provided does not match email format."
-                                }
+                                    message: 'Person-In-Charge\'s Email provided does not match email format.',
+                                },
                             })}
                         />
+
+                        {/* Alt Contact Number */}
                         <Input
                             type="text"
                             placeholder="Alt Contact Number (+1234567890)"
@@ -223,6 +248,8 @@ export const PublicRegisterClient = () => {
                                 },
                             })}
                         />
+
+                        {/* Industry */}
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="col-span-2 px-3 border justify-between w-full
@@ -243,12 +270,21 @@ export const PublicRegisterClient = () => {
                                 ))}
                             </DropdownMenuContent>
                         </DropdownMenu>
+
+                        {/* Category */}
                         <Input
                             type="text"
                             placeholder="Category (Italian, Thai, Malaysian)"
                             className={`col-span-2 ${errors.category ? 'border-red-500' : ''}`}
                             {...register("category", {
-                                required: { value: true, message: "Category is required." }
+                                required: {
+                                    value: true,
+                                    message: "Category is required."
+                                },
+                                pattern: {
+                                    value: /^[A-Za-z\s]+$/,
+                                    message: "Category must contain only alphabets.",
+                                },
                             })}
                         />
                     </div>
@@ -279,6 +315,7 @@ export const PublicRegisterClient = () => {
                                     )}
                                 </div>
                                 <div className="grid xxxs:grid-cols-4 sm:grid-cols-6 items-center gap-4">
+                                    {/* Country, State, City */}
                                     <AddressDropdowns
                                         country={getValues(`addresses.${index}.country`)}
                                         setCountry={(value: string) => {
@@ -306,6 +343,8 @@ export const PublicRegisterClient = () => {
                                         cityInputName={`addresses.${index}.city`}
                                         control={control}
                                     />
+
+                                    {/* Postcode */}
                                     <Input
                                         type="text"
                                         id={`postcode-${address.id}`}
@@ -332,6 +371,8 @@ export const PublicRegisterClient = () => {
                                         )}
                                         className={`xxxs:col-span-2 col-span-1 ${errors.addresses?.[index]?.postcode ? 'border-red-500' : ''}`}
                                     />
+
+                                    {/* Address */}
                                     <Input
                                         type="text"
                                         id={`address-${address.id}`}
@@ -352,6 +393,7 @@ export const PublicRegisterClient = () => {
                     </div>
                     <Separator className="my-4" />
                     <div className="flex items-center space-x-2 justify-start">
+                        {/* TNC */}
                         <Checkbox
                             className={`${errors.tnc_consent ? 'border-red-500' : ''}`}
                             onCheckedChange={(checked: boolean) => {
