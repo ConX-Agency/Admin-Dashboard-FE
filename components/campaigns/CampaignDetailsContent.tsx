@@ -59,7 +59,6 @@ const CampaignContent = ({ name }: { name: string }) => {
 };
 
 const CampaignDetails = ({ name }: { name: string }) => {
-  const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
   const detailsIcons = {
     Location: {
       icon: <IconMapPinFilled className="h-5 w-5 flex-shrink-0" />
@@ -112,7 +111,7 @@ const CampaignDetails = ({ name }: { name: string }) => {
           hover:bg-white dark:hover:bg-black font-light">
           <IconMaximize className="h-5 w-5 flex-shrink-0 text-black dark:text-white" />
         </div>
-        <Image src={`${basePath}/images/banner-test.jpg`}
+        <Image src="/images/banner-test.jpg"
           width={1200}
           height={400}
           alt="banner.jpg"
