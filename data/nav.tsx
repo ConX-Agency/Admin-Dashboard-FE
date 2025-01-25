@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/AuthContext";
+import { useConx } from "@/context/ConxContext";
 import {
   IconLayoutDashboard,
   IconWorldPlus,
@@ -112,7 +112,7 @@ export const profileLinks = [
     ),
     label: "Admin Sign Up",
     shortcut: "⇧⌘S",
-    href: "/"
+    href: "/auth/admin-register"
   },
   {
     icon: (

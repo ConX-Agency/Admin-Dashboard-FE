@@ -18,14 +18,15 @@ import { GetCountries } from 'react-country-state-city';
 import { Country } from '@/data/shared';
 import { toast } from '@/hooks/use-toast';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { capitalizeFirstLetter } from '@/lib/utils';
-import { ddPlatformFocusValues, ddSocialMediaPlatformsValues } from '@/data/dropdown-values';
+import { capitalizeFirstLetter, formatInfluencerCategory } from '@/lib/utils';
+import { ddAccountTypeValues, ddIndustryValues, ddPlatformFocusValues, ddSocialMediaPlatformsValues } from '@/data/dropdown-values';
 import { Checkbox } from '../ui/checkbox';
 
 export const PublicRegisterInfluencer = () => {
   const initialPlatforms: SocialMediaPlatform[] = [];
 
   const [countriesList, setCountriesList] = useState<Country[]>([]);
+  const [industry, setIndustry] = useState<Influencer['industry']>('Food & Beverage');
 
   const {
     control,
@@ -37,7 +38,7 @@ export const PublicRegisterInfluencer = () => {
     clearErrors,
     trigger,
     reset,
-  } = useForm({
+  } = useForm<Influencer>({
     mode: 'onSubmit',
     defaultValues: {
       full_name: '',
@@ -153,12 +154,14 @@ export const PublicRegisterInfluencer = () => {
     return true;
   };
 
-  const handleRegister = async (data: any) => {};
+  const handleRegister = async (data: any) => { };
 
   const onSubmit = async (data: any) => {
     // Stop Form Submission when Validation Fails.
     const isValid = handleSocMedValidation();
     if (!isValid) return;
+
+    const category = formatInfluencerCategory(data.follower_count) as typeof data.category;
 
     const newInfluencer: Influencer = {
       influencer_id: crypto.randomUUID(),
@@ -171,13 +174,11 @@ export const PublicRegisterInfluencer = () => {
       whatsapp_invited: false,
       community_invited: false,
       industry: 'Food & Beverage',
-      address: {
-        address: data.address,
-        city: data.city,
-        postcode: data.postcode,
-        state: data.state,
-        country: data.country,
-      },
+      address: data.address,
+      city: data.city,
+      postcode: data.postcode,
+      state: data.state,
+      country: data.country,
       platforms: data.platforms, // Use data.platforms directly
       total_follower_count: data.platforms.reduce(
         (total: number, platform: SocialMediaPlatform) => total + platform.follower_count,
@@ -188,7 +189,7 @@ export const PublicRegisterInfluencer = () => {
       additional_country: false,
       is_membership: false,
       rate: '0',
-      category: 'Undecided',
+      category: category,
       status: 'Pending Approval',
     };
 
@@ -209,22 +210,35 @@ export const PublicRegisterInfluencer = () => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
         <div className="mb-4 grid gap-4 xxxs:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-          {/* Full Name */}
-          <Input
+            <Input
             className={`col-span-2 ${errors.full_name ? 'border-red-500' : ''}`}
             type="text"
             {...register('full_name', {
-              required: { value: true, message: 'Full Name is required.' },
+              required: { 
+                value: true, 
+                message: 'Full Name is required.' 
+              },
+              pattern: {
+                value: /^[A-Za-z\s]+$/,
+                message: 'Full Name must contain only alphabets.',
+              },
             })}
             placeholder="Full Name"
-          />
+            />
 
           {/* Preferred Name */}
           <Input
             className={`col-span-2 ${errors.preferred_name ? 'border-red-500' : ''}`}
             type="text"
             {...register('preferred_name', {
-              required: { value: true, message: 'Preferred Name is required.' },
+              required: { 
+                value: true, 
+                message: 'Preferred Name is required.' 
+              },
+              pattern: {
+                value: /^[A-Za-z\s]+$/,
+                message: 'Preferred Name must contain only alphabets.',
+              },
             })}
             placeholder="Preferred Name"
           />
@@ -286,11 +300,32 @@ export const PublicRegisterInfluencer = () => {
               },
               pattern: {
                 value: /\S+@\S+\.\S+/,
-                message: 'Value provided does not match email format.',
+                message: 'Email Address provided does not match email format.',
               },
             })}
             placeholder="Email Address"
           />
+
+          {/* Industry */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="col-span-2 w-full justify-between border px-3">
+                {capitalizeFirstLetter(industry)}
+                <ChevronDown className="ml-2 h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[190px] max-w-full" align="start">
+              {ddIndustryValues.map((option) => (
+                <DropdownMenuItem
+                  key={option}
+                  onClick={() => setIndustry(option as Influencer['industry'])}
+                  className="cursor-pointer"
+                >
+                  {capitalizeFirstLetter(option)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Country, State, City */}
           <AddressDropdowns
@@ -389,9 +424,8 @@ export const PublicRegisterInfluencer = () => {
               <div className="grid gap-4 xxxs:grid-cols-2 lg:grid-cols-4">
                 {/* Social Media URL */}
                 <Input
-                  className={`col-span-2 ${
-                    errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
-                  }`}
+                  className={`col-span-2 ${errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
+                    }`}
                   type="text"
                   placeholder="Social Media URL"
                   {...register(`platforms.${index}.social_media_url`, {
@@ -408,6 +442,47 @@ export const PublicRegisterInfluencer = () => {
                 />
 
                 {/* Account Type */}
+                <Controller
+                  name={`platforms.${index}.account_type`}
+                  control={control}
+                  rules={{
+                    required: {
+                      value: true,
+                      message: `${capitalizeFirstLetter(platform.platform_name)}'s Account Type is required.`,
+                    },
+                  }}
+                  render={({ field }) => (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          {...field} // Spread the Controller field here
+                          variant="outline"
+                          className="justify-between xxxs:col-span-2 sm:col-span-1"
+                        >
+                          <span>{field.value || 'Select Account Type'}</span>
+                          <ChevronDown className="ml-2 h-5 w-5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-[200px]">
+                        {ddAccountTypeValues.map((option) => (
+                          <DropdownMenuItem
+                            key={option}
+                            onClick={() =>
+                              setValue(
+                                `platforms.${index}.account_type`,
+                                option as SocialMediaPlatform['account_type'],
+                                { shouldValidate: true },
+                              )
+                            }
+                            className="cursor-pointer"
+                          >
+                            {capitalizeFirstLetter(option)}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                />
 
                 {/* Platform Focus */}
                 <Controller
@@ -454,9 +529,8 @@ export const PublicRegisterInfluencer = () => {
 
                 {/* Follower Count */}
                 <Input
-                  className={`hidden xxxs:col-span-2 sm:col-span-1 ${
-                    errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
-                  }`}
+                  className={`hidden xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
+                    }`}
                   type="number"
                   placeholder="Follower Count"
                   {...register(`platforms.${index}.follower_count`, {
@@ -474,6 +548,7 @@ export const PublicRegisterInfluencer = () => {
         <Separator className="my-4" />
         <div className="flex flex-col gap-2">
           <div className="flex items-center space-x-2">
+            {/* WhatsApp Consent */}
             <Checkbox
               className={`${errors.whatsapp_consent ? 'border-red-500' : ''}`}
               onCheckedChange={(checked: boolean) => {
@@ -493,6 +568,7 @@ export const PublicRegisterInfluencer = () => {
             </label>
           </div>
           <div className="flex items-center space-x-2">
+            {/* TNC */}
             <Checkbox
               className={`${errors.tnc_consent ? 'border-red-500' : ''}`}
               onCheckedChange={(checked: boolean) => {

@@ -133,8 +133,15 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             type="text"
                             placeholder="Company Name"
                             className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.company_name ? 'border-red-500' : ''}`}
-                            {...register("company_name", {
-                                required: { value: true, message: "Company Name is required." }
+                            {...register('company_name', {
+                                required: {
+                                    value: true,
+                                    message: 'Company Name is required.'
+                                },
+                                pattern: {
+                                    value: /^[a-zA-Z0-9&\-',.\s]+$/,
+                                    message: 'Company Name must contain only alphabets, numbers, &, -, \', ,, ., and spaces.',
+                                }
                             })}
                         />
 
@@ -143,8 +150,15 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             type="email"
                             placeholder="Company Email Address"
                             className={`col-span-2 ${errors.company_email ? 'border-red-500' : ''}`}
-                            {...register("company_email", {
-                                required: { value: true, message: "Company Email Address is required." }
+                            {...register('company_email', {
+                                required: {
+                                    value: true,
+                                    message: "Company Email Address is required.",
+                                },
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: 'Company Email Address provided does not match email format.',
+                                },
                             })}
                         />
 
@@ -178,8 +192,15 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             type="text"
                             placeholder="Person-In-Charge (PIC) Name"
                             className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.person_in_charge_name ? 'border-red-500' : ''}`}
-                            {...register("person_in_charge_name", {
-                                required: { value: true, message: "Person in Charge's Name is required." }
+                            {...register('person_in_charge_name', {
+                                required: {
+                                    value: true,
+                                    message: "Person-In-Charge's Name is required."
+                                },
+                                pattern: {
+                                    value: /^[A-Za-z\s]+$/,
+                                    message: "Person-In-Charge's Name must contain only alphabets.",
+                                },
                             })}
                         />
 
@@ -188,8 +209,15 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             type="email"
                             placeholder="PIC Email Address"
                             className={`col-span-2 ${errors.person_in_charge_email ? 'border-red-500' : ''}`}
-                            {...register("person_in_charge_email", {
-                                required: { value: true, message: "Person in Charge's Email is required." }
+                            {...register('person_in_charge_email', {
+                                required: {
+                                    value: true,
+                                    message: 'Person-In-Charge\'s Email Address is required.',
+                                },
+                                pattern: {
+                                    value: /\S+@\S+\.\S+/,
+                                    message: 'Person-In-Charge\'s Email provided does not match email format.',
+                                },
                             })}
                         />
 
@@ -235,13 +263,20 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        {/* Cuisine Type */}
+                        {/* Category */}
                         <Input
                             type="text"
                             placeholder="Category (Italian, Thai, Malaysian)"
                             className={`col-span-2 ${errors.category ? 'border-red-500' : ''}`}
                             {...register("category", {
-                                required: { value: true, message: "Category is required." }
+                                required: { 
+                                    value: true, 
+                                    message: "Category is required." 
+                                },
+                                pattern: {
+                                    value: /^[A-Za-z\s]+$/,
+                                    message: "Category must contain only alphabets.",
+                                },
                             })}
                         />
 
@@ -275,9 +310,9 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             placeholder="Discount (0-100)"
                             className={`col-span-2 ${errors.discount ? 'border-red-500' : ''}`}
                             {...register("discount", {
-                                required: { 
-                                    value: true, 
-                                    message: "Discount is required." 
+                                required: {
+                                    value: true,
+                                    message: "Discount is required."
                                 },
                                 pattern: {
                                     value: /^\d+$/,
@@ -300,9 +335,9 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                             placeholder="Ways to Use"
                             className={`col-span-2 ${errors.ways_to_use ? 'border-red-500' : ''}`}
                             {...register("ways_to_use", {
-                                required: { 
-                                    value: true, 
-                                    message: "Ways to Use is required." 
+                                required: {
+                                    value: true,
+                                    message: "Ways to Use is required."
                                 }
                             })}
                         />
@@ -355,6 +390,7 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                     )}
                                 </div>
                                 <div className="grid xxxs:grid-cols-4 sm:grid-cols-6 items-center gap-4">
+                                    {/* Country, City, State */}
                                     <AddressDropdowns
                                         country={getValues(`addresses.${index}.country`)}
                                         setCountry={(value: string) => {
@@ -382,6 +418,8 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                         cityInputName={`addresses.${index}.city`}
                                         control={control}
                                     />
+
+                                    {/* Postcode */}
                                     <Input
                                         type="text"
                                         id={`postcode-${address.id}`}
@@ -408,6 +446,8 @@ export const UpdateClientModal = ({ clientData, closeUpdateModal, handleUpdate, 
                                         )}
                                         className={`col-span-2 ${errors.addresses?.[index]?.postcode ? 'border-red-500' : ''}`}
                                     />
+
+                                    {/* Address */}
                                     <Input
                                         type="text"
                                         id={`address-${address.id}`}

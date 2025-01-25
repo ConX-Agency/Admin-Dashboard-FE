@@ -115,7 +115,6 @@ export const RegisterClientModal = ({
   };
 
   const onSubmit = async (data: Client) => {
-    const token = localStorage.getItem('token');
 
     const client_id = crypto.randomUUID();
     const formattedClient = {
@@ -148,35 +147,9 @@ export const RegisterClientModal = ({
     client.append('addresses', JSON.stringify(formattedClient.addresses));
     //client.append('addresses', formattedClient.addresses.toString());
 
-    try {
-      const response = await fetch(
-        'https://backend-development-3158.up.railway.app/api/v1/clients',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`, // Replace with your actual token
-          },
-          body: client,
-        },
-      );
-      //Handling errors from api response
-      const data = await response.json();
-      if (data.message != null) {
-        throw new Error(data.message);
-      } else {
-        handleRegister(formattedClient);
-        closeRegisterModal();
-        reset();
-      }
-    } catch (error) {
-      console.error('An error occurred: ', error);
-      toast({
-        title: 'Register Failed!',
-        description: 'An error occurred while registering client.',
-        variant: 'destructive',
-        duration: 3000,
-      });
-    }
+    handleRegister(formattedClient);
+    closeRegisterModal();
+    reset();
   };
 
   return (
@@ -201,7 +174,14 @@ export const RegisterClientModal = ({
                 placeholder="Company Name"
                 className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.company_name ? 'border-red-500' : ''}`}
                 {...register('company_name', {
-                  required: { value: true, message: 'Company Name is required.' },
+                  required: {
+                    value: true,
+                    message: 'Company Name is required.'
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9&\-',.\s]+$/,
+                    message: 'Company Name must contain only alphabets, numbers, &, -, \', ,, ., and spaces.',
+                  }
                 })}
               />
 
@@ -213,11 +193,11 @@ export const RegisterClientModal = ({
                 {...register('company_email', {
                   required: {
                     value: true,
-                    message: "Company's Email Address is required.",
+                    message: "Company Email Address is required.",
                   },
                   pattern: {
                     value: /\S+@\S+\.\S+/,
-                    message: 'Value provided does not match email format.',
+                    message: 'Comapany Email Address provided does not match email format.',
                   },
                 })}
               />
@@ -253,7 +233,14 @@ export const RegisterClientModal = ({
                 placeholder="Person-In-Charge (PIC) Name"
                 className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.person_in_charge_name ? 'border-red-500' : ''}`}
                 {...register('person_in_charge_name', {
-                  required: { value: true, message: "Person in Charge's Name is required." },
+                  required: {
+                    value: true,
+                    message: "Person-In-Charge's Name is required."
+                  },
+                  pattern: {
+                    value: /^[A-Za-z\s]+$/,
+                    message: "Person-In-Charge's Name must contain only alphabets.",
+                  },
                 })}
               />
 
@@ -265,11 +252,11 @@ export const RegisterClientModal = ({
                 {...register('person_in_charge_email', {
                   required: {
                     value: true,
-                    message: "Person-In-Charge's Email Address is required.",
+                    message: 'Person-In-Charge\'s Email Address is required.',
                   },
                   pattern: {
                     value: /\S+@\S+\.\S+/,
-                    message: 'Value provided does not match email format.',
+                    message: 'Person-In-Charge\'s Email provided does not match email format.',
                   },
                 })}
               />
@@ -323,7 +310,14 @@ export const RegisterClientModal = ({
                 placeholder="Category (Italian, Thai, Malaysian)"
                 className={`col-span-2 ${errors.category ? 'border-red-500' : ''}`}
                 {...register('category', {
-                  required: { value: true, message: 'Category is required.' },
+                  required: {
+                    value: true,
+                    message: "Category is required."
+                  },
+                  pattern: {
+                    value: /^[A-Za-z\s]+$/,
+                    message: "Category must contain only alphabets.",
+                  },
                 })}
               />
 
@@ -435,6 +429,7 @@ export const RegisterClientModal = ({
                     )}
                   </div>
                   <div className="grid items-center gap-4 xxxs:grid-cols-4 sm:grid-cols-6">
+                    {/* Country, City, State */}
                     <AddressDropdowns
                       country={getValues(`addresses.${index}.country`)}
                       setCountry={(value: string) => {
@@ -462,6 +457,8 @@ export const RegisterClientModal = ({
                       cityInputName={`addresses.${index}.city`}
                       control={control}
                     />
+
+                    {/* Postcode */}
                     <Input
                       type="text"
                       id={`postcode-${address.id}`}
@@ -486,6 +483,8 @@ export const RegisterClientModal = ({
                       })}
                       className={`col-span-1 xxxs:col-span-2 ${errors.addresses?.[index]?.postcode ? 'border-red-500' : ''}`}
                     />
+
+                    {/* Address */}
                     <Input
                       type="text"
                       id={`address-${address.id}`}
@@ -504,6 +503,7 @@ export const RegisterClientModal = ({
             </div>
             <Separator className="my-4" />
             <div className="flex items-center space-x-2">
+              {/* TNC */}
               <Checkbox
                 className={`${errors.tnc_consent ? 'border-red-500' : ''}`}
                 onCheckedChange={(checked: boolean) => {

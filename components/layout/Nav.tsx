@@ -18,7 +18,7 @@ import {
   MainMenuLink,
   SettingsLink,
 } from '@/data/nav';
-import { useAuth } from '@/context/AuthContext';
+import { useConx } from '@/context/ConxContext';
 
 export function Nav() {
   const [open, setOpen] = useState(false);
@@ -32,7 +32,7 @@ export function Nav() {
     { title: 'Help & Settings', links: SettingsLink },
   ];
   const [showNav, setShowNav] = useState(false);
-  const { token } = useAuth();
+  const { token } = useConx();
 
   useEffect(() => {
     if (!token) {
