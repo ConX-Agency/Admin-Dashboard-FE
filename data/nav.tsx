@@ -112,7 +112,7 @@ export const profileLinks = [
     ),
     label: "Admin Sign Up",
     shortcut: "⇧⌘S",
-    href: "/"
+    href: "/auth/admin-register"
   },
   {
     icon: (
