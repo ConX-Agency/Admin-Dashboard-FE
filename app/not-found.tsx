@@ -5,15 +5,13 @@ import { ShootingStars } from '@/components/ui/shooting-stars';
 import { StarsBackground } from '@/components/ui/stars-background';
 
 export default function NotFound() {
-    const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
-
     return (
         <>
             <div className="flex h-full flex-col items-center justify-center z-[999]">
                 <div className="flex flex-row items-center">
                     <h1 className='xxxs:text-[125px] sm:text-[150px] md:text-[225px]'>4</h1>
                     <Image
-                        src={`${basePath}/images/logo/logo.png`}
+                        src="/images/logo/logo.png"
                         width={100}
                         height={100}
                         alt="404"
