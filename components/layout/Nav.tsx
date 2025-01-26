@@ -107,12 +107,10 @@ export function Nav() {
 }
 
 export const Logo = () => {
-  const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
-
   return (
     <div className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black">
       <Image
-        src={`${basePath}/images/logo/logo.png`}
+        src="/images/logo/logo.png"
         className="h-8 w-8 flex-shrink-0 rounded-full invert-0 dark:invert"
         width={50}
         height={50}
@@ -123,12 +121,10 @@ export const Logo = () => {
 };
 
 export const LogoIcon = () => {
-  const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
-
   return (
     <div className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black">
       <Image
-        src={`${basePath}/images/logo/logo.png`}
+        src="/images/logo/logo.png"
         className="h-8 w-8 flex-shrink-0 rounded-full invert-0 dark:invert"
         width={50}
         height={50}

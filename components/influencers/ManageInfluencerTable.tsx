@@ -54,7 +54,6 @@ export function ManageInfluencerTable() {
     const { toast } = useToast();
     const { addInfluencer } = useConx();
     const [statusFilter, setStatusFilter] = useState<string>("");
-    const basePath = process.env.NODE_ENV === 'production' ? '/Admin-Dashboard-FE' : '';
 
     //Table Columns Definitions
     const columns: ColumnDef<Influencer>[] = [
@@ -119,7 +118,7 @@ export function ManageInfluencerTable() {
                                 <div key={platform.platform_name} className="flex flex-row gap-4 items-center"> {/* Add a key for each child */}
                                     <a href={platform.social_media_url} className="group">
                                         <Image
-                                            src={`${basePath}/images/logo/${platform.platform_name}.svg`}
+                                            src={`/images/logo/${platform.platform_name}.svg`}
                                             width={40}
                                             height={40}
                                             alt="platform-icon.svg"
