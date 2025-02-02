@@ -29,7 +29,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Checkbox } from "../ui/checkbox"
-import { dummyInfluencerData, Influencer } from "@/data/influencer"
+import { dummyInfluencerData, dummyInfluencerDataWithPlatforms, getTotalFollowerCountByInfluencerId, Influencer, InfluencerWithPlatforms, SocialMediaPlatform } from "@/data/influencer"
 import { useEffect, useState } from "react"
 import { Input } from "../ui/input"
 import { UpdateInfluencerModal } from "./UpdateInfluencerModal"
@@ -50,13 +50,13 @@ export function ManageInfluencerTable() {
     const [rowSelection, setRowSelection] = React.useState({});
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
-    const [influencerData, setInfluencerData] = useState<Influencer | null>(null);
+    const [influencerData, setInfluencerData] = useState<InfluencerWithPlatforms | null>(null);
     const { toast } = useToast();
     const { addInfluencer } = useConx();
     const [statusFilter, setStatusFilter] = useState<string>("");
 
     //Table Columns Definitions
-    const columns: ColumnDef<Influencer>[] = [
+    const columns: ColumnDef<InfluencerWithPlatforms>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -90,7 +90,7 @@ export function ManageInfluencerTable() {
             ),
         },
         {
-            accessorFn: (row) => row.total_follower_count || "N/A",
+            accessorFn: (row) => getTotalFollowerCountByInfluencerId(row.influencer_id) || "N/A",
             id: "total_follower_count",
             meta: "Follower Count",
             header: ({ column }) => {
@@ -262,7 +262,7 @@ export function ManageInfluencerTable() {
 
     //Table Config
     const table = useReactTable({
-        data: dummyInfluencerData,
+        data: dummyInfluencerDataWithPlatforms,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -304,7 +304,7 @@ export function ManageInfluencerTable() {
                 duration: 3000
             })
         } else {
-            // Extract and log client_id from each selected row
+            // Extract and log influencer_id from each selected row
             const influencerIds = selectedRows.map((row) => row.original.influencer_id);
             const influencerNames = selectedRows.map((row) => row.original.full_name);
             var concatenatedNames = "";
@@ -323,7 +323,7 @@ export function ManageInfluencerTable() {
         }
     };
 
-    const handleOpenUpdateModal = (data: Influencer) => {
+    const handleOpenUpdateModal = (data: InfluencerWithPlatforms) => {
         setInfluencerData(data);
         setIsUpdateModalVisible(true);
     };
@@ -340,10 +340,29 @@ export function ManageInfluencerTable() {
         setIsRegisterModalVisible(false);
     };
 
-    const handleUpdate = (data: Influencer) => {
+    const handleUpdate = (data: InfluencerWithPlatforms) => {
         console.log(data);
 
-        //To add Update API here.
+        const influencer = new FormData();
+        influencer.append('full_name', data.full_name);
+        influencer.append('preferred_name', data.preferred_name);
+        influencer.append('contact_number', data.contact_number);
+        influencer.append('alt_contact_number', data.alt_contact_number);
+        influencer.append('email_address', data.email_address);
+        influencer.append('country', data.country);
+        influencer.append('state', data.state);
+        influencer.append('city', data.city);
+        influencer.append('postcode', data.postcode);
+        influencer.append('address', data.address);
+        influencer.append('industry', data.industry);
+        influencer.append('whatsapp_invited', data.whatsapp_invited?.toString()! || 'FALSE');
+        influencer.append('community_invited', data.community_invited?.toString()! || 'FALSE');
+        influencer.append('invite_count', '0');
+        influencer.append('is_membership', data.is_membership?.toString()! || 'FALSE');
+        influencer.append('rate', data.rate);
+        influencer.append('category', data.category);
+        influencer.append('status', data.status);
+        influencer.append('accounts', JSON.stringify(data.platforms));
 
         if (data) {
             toast({
@@ -354,7 +373,7 @@ export function ManageInfluencerTable() {
         }
     }
 
-    const handleRegister = async (data: Influencer, acct: any) => {
+    const handleRegister = async (data: InfluencerWithPlatforms) => {
         const token = localStorage.getItem('token');
 
         const influencer = new FormData();
@@ -369,7 +388,7 @@ export function ManageInfluencerTable() {
         influencer.append('postcode', data.postcode);
         influencer.append('address', data.address);
         influencer.append('industry', data.industry);
-        influencer.append('whatsapp_consent', data.whatsapp_consent.toString());
+        influencer.append('whatsapp_consent', data.whatsapp_consent.toString()! || 'FALSE');
         influencer.append('whatsapp_invited', data.whatsapp_invited?.toString()! || 'FALSE');
         influencer.append('community_invited', data.community_invited?.toString()! || 'FALSE');
         influencer.append('invite_count', '0');
@@ -377,7 +396,7 @@ export function ManageInfluencerTable() {
         influencer.append('rate', data.rate);
         influencer.append('category', data.category);
         influencer.append('status', data.status);
-        influencer.append('accounts', JSON.stringify(acct));
+        influencer.append('accounts', JSON.stringify(data.platforms));
 
         try {
             const res = await addInfluencer(influencer);

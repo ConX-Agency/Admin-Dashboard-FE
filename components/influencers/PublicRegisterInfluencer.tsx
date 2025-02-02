@@ -1,6 +1,6 @@
 'use client';
 
-import { Influencer, SocialMediaPlatform } from '@/data/influencer';
+import { Influencer, InfluencerWithPlatforms, SocialMediaPlatform } from '@/data/influencer';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
@@ -13,20 +13,26 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { ChevronDown, PlusIcon } from 'lucide-react';
-import { AddressDropdowns, CountryInput } from '../ui/addressDropdown';
+import { AddressDropdowns } from '../ui/addressDropdown';
 import { GetCountries } from 'react-country-state-city';
 import { Country } from '@/data/shared';
 import { toast } from '@/hooks/use-toast';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { capitalizeFirstLetter, formatInfluencerCategory } from '@/lib/utils';
-import { ddAccountTypeValues, ddIndustryValues, ddPlatformFocusValues, ddSocialMediaPlatformsValues } from '@/data/dropdown-values';
+import {
+  ddAccountTypeValues,
+  ddIndustryValues,
+  ddPlatformFocusValues,
+  ddSocialMediaPlatformsValues,
+} from '@/data/dropdown-values';
 import { Checkbox } from '../ui/checkbox';
 
 export const PublicRegisterInfluencer = () => {
   const initialPlatforms: SocialMediaPlatform[] = [];
 
   const [countriesList, setCountriesList] = useState<Country[]>([]);
-  const [industry, setIndustry] = useState<Influencer['industry']>('Food & Beverage');
+  const [industry, setIndustry] = useState<InfluencerWithPlatforms['industry']>('Food & Beverage');
+  const influencer_id = crypto.randomUUID();
 
   const {
     control,
@@ -38,14 +44,16 @@ export const PublicRegisterInfluencer = () => {
     clearErrors,
     trigger,
     reset,
-  } = useForm<Influencer>({
+  } = useForm<InfluencerWithPlatforms>({
     mode: 'onSubmit',
     defaultValues: {
+      influencer_id: influencer_id,
       full_name: '',
       preferred_name: '',
       contact_number: '',
       alt_contact_number: '',
       email_address: '',
+      industry: 'Food & Beverage',
       whatsapp_consent: false,
       whatsapp_invited: false,
       community_invited: false,
@@ -54,11 +62,13 @@ export const PublicRegisterInfluencer = () => {
       city: '',
       address: '',
       postcode: '',
-      tnc_consent: false,
+      category: 'Undecided',
+      rate: '0',
       multiple_countries: false,
       additional_country: false,
       is_membership: false,
-      rate: '0',
+      tnc_consent: false,
+      invite_count: 0,
       status: 'Pending Approval',
       platforms: initialPlatforms,
     },
@@ -102,7 +112,7 @@ export const PublicRegisterInfluencer = () => {
       // Add a new platform
       append({
         // account_id: crypto.randomUUID(),
-        // influencer_id: crypto.randomUUID(),
+        influencer_id: influencer_id,
         social_media_url: '',
         platform_name: type,
         platform_focus: 'UGC',
@@ -154,46 +164,21 @@ export const PublicRegisterInfluencer = () => {
     return true;
   };
 
-  const handleRegister = async (data: any) => { };
+  const handleRegister = async (data: any) => {};
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: InfluencerWithPlatforms) => {
     // Stop Form Submission when Validation Fails.
     const isValid = handleSocMedValidation();
     if (!isValid) return;
 
-    const category = formatInfluencerCategory(data.follower_count) as typeof data.category;
+    data.industry = industry;
+    const totalFollowerCount = data.platforms.reduce(
+      (total, platform) => total + platform.follower_count,
+      0,
+    );
+    data.category = formatInfluencerCategory(totalFollowerCount) as typeof data.category;
 
-    const newInfluencer: Influencer = {
-      influencer_id: crypto.randomUUID(),
-      full_name: data.full_name,
-      preferred_name: data.preferred_name,
-      contact_number: data.contact_number,
-      alt_contact_number: data.alt_contact_number,
-      email_address: data.email_address,
-      whatsapp_consent: false,
-      whatsapp_invited: false,
-      community_invited: false,
-      industry: 'Food & Beverage',
-      address: data.address,
-      city: data.city,
-      postcode: data.postcode,
-      state: data.state,
-      country: data.country,
-      platforms: data.platforms, // Use data.platforms directly
-      total_follower_count: data.platforms.reduce(
-        (total: number, platform: SocialMediaPlatform) => total + platform.follower_count,
-        0,
-      ),
-      invite_count: 0,
-      multiple_countries: false,
-      additional_country: false,
-      is_membership: false,
-      rate: '0',
-      category: category,
-      status: 'Pending Approval',
-    };
-
-    handleRegister(newInfluencer);
+    handleRegister(data);
     reset();
   };
 
@@ -210,13 +195,13 @@ export const PublicRegisterInfluencer = () => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
         <div className="mb-4 grid gap-4 xxxs:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-            <Input
+          <Input
             className={`col-span-2 ${errors.full_name ? 'border-red-500' : ''}`}
             type="text"
             {...register('full_name', {
-              required: { 
-                value: true, 
-                message: 'Full Name is required.' 
+              required: {
+                value: true,
+                message: 'Full Name is required.',
               },
               pattern: {
                 value: /^[A-Za-z\s]+$/,
@@ -224,16 +209,16 @@ export const PublicRegisterInfluencer = () => {
               },
             })}
             placeholder="Full Name"
-            />
+          />
 
           {/* Preferred Name */}
           <Input
             className={`col-span-2 ${errors.preferred_name ? 'border-red-500' : ''}`}
             type="text"
             {...register('preferred_name', {
-              required: { 
-                value: true, 
-                message: 'Preferred Name is required.' 
+              required: {
+                value: true,
+                message: 'Preferred Name is required.',
               },
               pattern: {
                 value: /^[A-Za-z\s]+$/,
@@ -424,8 +409,9 @@ export const PublicRegisterInfluencer = () => {
               <div className="grid gap-4 xxxs:grid-cols-2 lg:grid-cols-4">
                 {/* Social Media URL */}
                 <Input
-                  className={`col-span-2 ${errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
-                    }`}
+                  className={`col-span-2 ${
+                    errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
+                  }`}
                   type="text"
                   placeholder="Social Media URL"
                   {...register(`platforms.${index}.social_media_url`, {
@@ -529,8 +515,9 @@ export const PublicRegisterInfluencer = () => {
 
                 {/* Follower Count */}
                 <Input
-                  className={`hidden xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
-                    }`}
+                  className={`hidden xxxs:col-span-2 sm:col-span-1 ${
+                    errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
+                  }`}
                   type="number"
                   placeholder="Follower Count"
                   {...register(`platforms.${index}.follower_count`, {

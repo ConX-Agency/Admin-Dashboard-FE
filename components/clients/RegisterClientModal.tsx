@@ -12,7 +12,6 @@ import { Input } from '../ui/input';
 import { ActionButton, Button } from '../ui/button';
 import { Separator } from '../ui/separator';
 import { AddressDropdowns } from '../ui/addressDropdown'; // Updated from AddressDropdown to AddressDropdowns
-import { toast } from '@/hooks/use-toast';
 import { useFieldArray, useForm } from 'react-hook-form';
 import {
   DropdownMenu,
@@ -21,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { ddIndustryValues, ddStatusValues } from '@/data/dropdown-values';
-import { capitalizeFirstLetter } from '@/lib/utils';
+import { capitalizeFirstLetter, handleValidation } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { Checkbox } from '../ui/checkbox';
 
@@ -37,6 +36,7 @@ export const RegisterClientModal = ({
   const [industry, setIndustry] = useState<Client['industry']>('Food & Beverage');
   const [status, setStatus] = useState<Client['status']>('Active');
   const [monetary, setMonetary] = useState<boolean>(true);
+  const client_id = crypto.randomUUID();
   const {
     control,
     handleSubmit,
@@ -49,6 +49,7 @@ export const RegisterClientModal = ({
   } = useForm<Client>({
     mode: 'onSubmit',
     defaultValues: {
+      client_id: client_id,
       company_name: '',
       company_email: '',
       contact_number: '',
@@ -57,12 +58,12 @@ export const RegisterClientModal = ({
       person_in_charge_email: '',
       industry: '',
       category: '',
-      addresses: [{ address: '', city: '', postcode: '', state: '', country: '' } as clientAddress],
+      addresses: [],
       is_non_monetary: false,
       discount: 0,
       ways_to_use: '',
       tnc_consent: false,
-      status: 'Active',
+      status: status,
     },
   });
 
@@ -71,86 +72,33 @@ export const RegisterClientModal = ({
     name: 'addresses',
   });
 
-  // Reset form when modal visibility changes
-  useEffect(() => {
-    if (!registerModalVisibility) {
-      reset();
-    }
-  }, [registerModalVisibility, reset]);
-
   const addAddress = () => {
-    append({ address: '', city: '', postcode: '', state: '', country: '' } as clientAddress);
+    append({ clients_location_id: crypto.randomUUID(), client_id: client_id, address: "", city: "", postcode: "", state: "", country: "" } as clientAddress,);
   };
 
   const removeAddress = (index: number) => {
     remove(index);
   };
 
-  const handleValidation = async () => {
-    const isValid = await trigger();
-
-    if (!isValid) {
-      const displayErrorMessages = (fieldErrors: any) => {
-        Object.values(fieldErrors).forEach((error: any) => {
-          if (error?.message) {
-            // Display error message directly
-            toast({
-              title: 'Validation Error',
-              description: error.message,
-              variant: 'destructive',
-              duration: 3000,
-            });
-          } else if (Array.isArray(error)) {
-            // Recursively handle arrays (e.g., platforms)
-            error.forEach((nestedError) => displayErrorMessages(nestedError));
-          } else if (typeof error === 'object') {
-            // Recursively handle nested objects
-            displayErrorMessages(error);
-          }
-        });
-      };
-
-      displayErrorMessages(errors); // Start processing the errors object
-    }
-  };
-
   const onSubmit = async (data: Client) => {
 
-    const client_id = crypto.randomUUID();
-    const formattedClient = {
-      ...data,
-      client_id,
-      status,
-      industry,
-      addresses: data.addresses.map((address: clientAddress) => ({
-        ...address,
-        // client_id,
-        // client_location_id: crypto.randomUUID(),
-      })),
-    };
-    const client = new FormData();
-    client.append('company_name', data.company_name);
-    client.append('person_in_charge_name', data.person_in_charge_name);
-    client.append('person_in_charge_email', data.person_in_charge_email);
-    client.append('company_email', data.company_email);
-    client.append('contact_number', data.contact_number);
-    client.append('alt_contact_number', data.alt_contact_number);
-    //Need to be modify while there added new value for industry field
-    client.append('industry', 'Food & Beverage');
-    client.append('cuisine_type', data.category);
-    //Need to be modify while there added new value for category field
-    client.append('category', 'not sure yet');
-    client.append('is_non_monetary', data.is_non_monetary.toString());
-    client.append('discount', data.discount.toString());
-    client.append('ways_to_use', data.ways_to_use.toString());
-    client.append('status', data.status);
-    client.append('addresses', JSON.stringify(formattedClient.addresses));
-    //client.append('addresses', formattedClient.addresses.toString());
+    // Set Values for Remaining Fields
+    data.client_id = crypto.randomUUID();
+    data.is_non_monetary = monetary;
+    data.industry = industry;
+    data.status = status;
 
-    handleRegister(formattedClient);
+    handleRegister(data);
     closeRegisterModal();
     reset();
   };
+
+  // UseEffect
+  useEffect(() => {
+    if (!registerModalVisibility) {
+      reset();
+    }
+  }, [registerModalVisibility, reset]);
 
   return (
     <>
@@ -534,7 +482,7 @@ export const RegisterClientModal = ({
                 >
                   Cancel
                 </Button>
-                <Button type="submit" onClick={handleValidation}>
+                <Button type="submit" onClick={() => handleValidation(trigger, errors)}>
                   Save
                 </Button>
               </div>

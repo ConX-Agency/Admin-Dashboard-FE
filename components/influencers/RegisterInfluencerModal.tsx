@@ -1,4 +1,4 @@
-import { Influencer, SocialMediaPlatform } from '@/data/influencer';
+import { Influencer, InfluencerWithPlatforms, SocialMediaPlatform } from '@/data/influencer';
 import {
   Dialog,
   DialogContent,
@@ -24,10 +24,9 @@ import { GetCountries } from 'react-country-state-city';
 import { Country } from '@/data/shared';
 import { toast } from '@/hooks/use-toast';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { capitalizeFirstLetter, formatInfluencerCategory } from '@/lib/utils';
+import { capitalizeFirstLetter, formatInfluencerCategory, handleValidation } from '@/lib/utils';
 import {
   ddAccountTypeValues,
-  ddCategoryValues,
   ddIndustryValues,
   ddPlatformFocusValues,
   ddSocialMediaPlatformsValues,
@@ -41,7 +40,7 @@ export const RegisterInfluencerModal = ({
   registerModalVisibility,
 }: {
   closeRegisterModal: () => void;
-  handleRegister: (data: Influencer, acct: any) => void;
+  handleRegister: (data: InfluencerWithPlatforms) => void;
   registerModalVisibility: boolean;
 }) => {
   const initialPlatforms: SocialMediaPlatform[] = [];
@@ -50,6 +49,7 @@ export const RegisterInfluencerModal = ({
   const [isMembership, setIsMembership] = useState<boolean>(false);
   const [status, setStatus] = useState<Influencer['status']>('Pending Approval');
   const [industry, setIndustry] = useState<Influencer['industry']>('Food & Beverage');
+  const influencer_id = crypto.randomUUID();
 
   const {
     control,
@@ -61,9 +61,10 @@ export const RegisterInfluencerModal = ({
     clearErrors,
     trigger,
     reset,
-  } = useForm({
+  } = useForm<InfluencerWithPlatforms>({
     mode: 'onSubmit',
     defaultValues: {
+      influencer_id: influencer_id,
       full_name: '',
       preferred_name: '',
       contact_number: '',
@@ -78,11 +79,13 @@ export const RegisterInfluencerModal = ({
       city: '',
       address: '',
       postcode: '',
-      tnc_consent: false,
+      category: 'Undecided',
+      rate: '0',
       multiple_countries: false,
       additional_country: false,
       is_membership: false,
-      rate: '0',
+      tnc_consent: false,
+      invite_count: 0,
       status: 'Pending Approval',
       platforms: initialPlatforms,
     },
@@ -127,8 +130,8 @@ export const RegisterInfluencerModal = ({
     } else {
       // Add a new platform
       append({
-        // account_id: crypto.randomUUID(),
-        // influencer_id: crypto.randomUUID(),
+        account_id: crypto.randomUUID(),
+        influencer_id: influencer_id,
         social_media_url: '',
         platform_name: type,
         account_type: 'Food Influencer',
@@ -140,30 +143,6 @@ export const RegisterInfluencerModal = ({
 
   const isPlatformSelected = (type: SocialMediaPlatform['platform_name']) =>
     platformFields.some((platform) => platform.platform_name === type);
-
-  const handleValidation = async () => {
-    const isValid = await trigger();
-    if (!isValid) {
-      const displayErrorMessages = (fieldErrors: any) => {
-        Object.values(fieldErrors).forEach((error: any) => {
-          if (error?.message) {
-            toast({
-              title: 'Validation Error',
-              description: error.message,
-              variant: 'destructive',
-              duration: 3000,
-            });
-          } else if (Array.isArray(error)) {
-            error.forEach((nestedError) => displayErrorMessages(nestedError));
-          } else if (typeof error === 'object') {
-            displayErrorMessages(error);
-          }
-        });
-      };
-
-      displayErrorMessages(errors); // Start processing the errors object
-    }
-  };
 
   const handleSocMedValidation = () => {
     if (platformFields.length === 0) {
@@ -179,67 +158,21 @@ export const RegisterInfluencerModal = ({
     return true;
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: InfluencerWithPlatforms) => {
     // Stop Form Submission when Validation Fails.
     const isValid = handleSocMedValidation();
     if (!isValid) return;
 
-    const formattedAccounts: SocialMediaPlatform[] = data.platforms.map(
-      ({
-        social_media_url,
-        platform_name,
-        account_type,
-        platform_focus,
-        follower_count,
-      }: {
-        influencer_id: number;
-        social_media_url: string;
-        platform_name: 'instagram' | 'tiktok' | 'youtube' | 'RED';
-        account_type: 'Food Influencer' | "Photographer";
-        platform_focus: 'UGC' | 'Food' | 'Lifestyle';
-        follower_count: number;
-      }): SocialMediaPlatform => ({
-        social_media_url,
-        platform_name,
-        account_type,
-        platform_focus,
-        follower_count,
-      }),
+    data.industry = industry;
+    data.is_membership = isMembership;
+    const totalFollowerCount = data.platforms.reduce(
+      (total, platform) => total + platform.follower_count,
+      0,
     );
+    data.category = formatInfluencerCategory(totalFollowerCount) as typeof data.category;
+    data.status = status;
 
-    const category = formatInfluencerCategory(data.follower_count) as typeof data.category;
-
-    const newInfluencer: Influencer = {
-      influencer_id: crypto.randomUUID(),
-      full_name: data.full_name,
-      preferred_name: data.preferred_name,
-      contact_number: data.contact_number,
-      alt_contact_number: data.alt_contact_number,
-      email_address: data.email_address,
-      whatsapp_consent: false,
-      whatsapp_invited: false,
-      community_invited: false,
-      industry: data.industry,
-      address: data.address,
-      city: data.city,
-      postcode: data.postcode,
-      state: data.state,
-      country: data.country,
-      multiple_countries: false,
-      additional_country: false,
-      is_membership: isMembership,
-      rate: data.rate,
-      platforms: data.platforms, // Use data.platforms directly
-      total_follower_count: data.platforms.reduce(
-        (total: number, platform: SocialMediaPlatform) => total + platform.follower_count,
-        0,
-      ),
-      category: category,
-      invite_count: 0,
-      status: data.status,
-    };
-
-    handleRegister(newInfluencer, formattedAccounts);
+    handleRegister(data);
     reset();
     closeRegisterModal();
   };
@@ -264,7 +197,7 @@ export const RegisterInfluencerModal = ({
               {...register('full_name', {
                 required: {
                   value: true,
-                  message: 'Full Name is required.'
+                  message: 'Full Name is required.',
                 },
                 pattern: {
                   value: /^[A-Za-z\s]+$/,
@@ -281,7 +214,7 @@ export const RegisterInfluencerModal = ({
               {...register('preferred_name', {
                 required: {
                   value: true,
-                  message: 'Preferred Name is required.'
+                  message: 'Preferred Name is required.',
                 },
                 pattern: {
                   value: /^[A-Za-z\s]+$/,
@@ -490,7 +423,7 @@ export const RegisterInfluencerModal = ({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="col-span-2 w-full justify-between border px-3">
-                  {capitalizeFirstLetter(status)}
+                  Status: {capitalizeFirstLetter(status)}
                   <ChevronDown className="ml-2 h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -540,8 +473,9 @@ export const RegisterInfluencerModal = ({
                 <div className="grid gap-4 xxxs:grid-cols-2 lg:grid-cols-4">
                   {/* Social Media URL */}
                   <Input
-                    className={`col-span-2 ${errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
-                      }`}
+                    className={`col-span-2 ${
+                      errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
+                    }`}
                     type="text"
                     placeholder="Social Media URL"
                     {...register(`platforms.${index}.social_media_url`, {
@@ -645,8 +579,9 @@ export const RegisterInfluencerModal = ({
 
                   {/* Follower Count */}
                   <Input
-                    className={`hidden xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
-                      }`}
+                    className={`hidden xxxs:col-span-2 sm:col-span-1 ${
+                      errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
+                    }`}
                     type="number"
                     placeholder="Follower Count"
                     {...register(`platforms.${index}.follower_count`, {
@@ -716,7 +651,7 @@ export const RegisterInfluencerModal = ({
               >
                 Cancel
               </Button>
-              <Button type="submit" onClick={handleValidation}>
+              <Button type="submit" onClick={() => handleValidation(trigger, errors)}>
                 Save
               </Button>
             </div>

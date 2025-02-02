@@ -1,15 +1,18 @@
 import { ApiError } from "@/data/error";
 import { toast } from "@/hooks/use-toast";
 import { clsx, type ClassValue } from "clsx"
+import { FieldErrors, UseFormTrigger } from "react-hook-form";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const parseDate = (dateString: string) => {
-  const [day, month, year] = dateString.split("/").map(Number); // Split "14/10/2024" into [14, 10, 2024]
-  return new Date(year, month - 1, day); // Months are 0-indexed in JavaScript's Date object, fixed by substracting 1
+export const parseDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Months are 0-indexed in JavaScript's Date object, add 1 to match human-readable format
+  const day = date.getDate();
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`; // Format as "YYYY-MM-DD"
 };
 
 export function calculateChanges(previous: string | number, current: string | number): string {
@@ -81,3 +84,31 @@ export function formatInfluencerCategory(follower_count: number): string {
     return "Undecided";
   }
 }
+
+export const handleValidation = async (trigger: UseFormTrigger<any>, errors: FieldErrors<any>) => {
+  const isValid = await trigger();
+
+  if (!isValid) {
+    const displayErrorMessages = (fieldErrors: any) => {
+      Object.values(fieldErrors).forEach((error: any) => {
+        if (error?.message) {
+          // Display error message directly
+          toast({
+            title: 'Validation Error',
+            description: error.message,
+            variant: 'destructive',
+            duration: 3000,
+          });
+        } else if (Array.isArray(error)) {
+          // Recursively handle arrays (e.g., platforms)
+          error.forEach((nestedError) => displayErrorMessages(nestedError));
+        } else if (typeof error === 'object') {
+          // Recursively handle nested objects
+          displayErrorMessages(error);
+        }
+      });
+    };
+
+    displayErrorMessages(errors); // Start processing the errors object
+  }
+};

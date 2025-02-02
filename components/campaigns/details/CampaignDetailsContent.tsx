@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { AceTabs } from "../ui/aceTabs";
-import { IconBubbleFilled, IconBuildingStore, IconCalendarMonth, IconClock, IconCopyMinusFilled, IconMapPinFilled, IconMaximize, IconPlus, IconSpeakerphone, IconTicket, IconWorldBolt, IconWorldStar } from "@tabler/icons-react";
+import { AceTabs } from "../../ui/aceTabs";
+import { IconBuildingStore, IconCalendarMonth, IconClock, IconCopyMinusFilled, IconMapPinFilled, IconMaximize, IconPlus, IconSpeakerphone, IconTicket, IconWorldBolt, IconWorldStar } from "@tabler/icons-react";
 import Image from "next/image";
 import { dummyCampaignsData } from "@/data/campaign";
-import { AnimatedIconButton } from "../ui/button";
+import { AnimatedIconButton } from "../../ui/button";
 import { Tilt } from 'react-tilt'
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
@@ -128,12 +128,12 @@ const CampaignDetails = ({ name }: { name: string }) => {
           <DetailsItem
             icon={detailsIcons.Location.icon}
             label="Location"
-            value={FilteredCampaign[0].campaign_id}
+            value={FilteredCampaign[0].campaign_id!}
           />
           <DetailsItem
             icon={detailsIcons.DateRange}
             label="Campaign Date"
-            value={`${FilteredCampaign[0].dateRange.from} - ${FilteredCampaign[0].dateRange.to}`}
+            value={`${FilteredCampaign[0].start_date} - ${FilteredCampaign[0].end_date}`}
           />
           <DetailsItem
             icon={detailsIcons.InfluencerLimit}
