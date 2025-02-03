@@ -18,7 +18,7 @@ import { GetCountries } from 'react-country-state-city';
 import { Country } from '@/data/shared';
 import { toast } from '@/hooks/use-toast';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { capitalizeFirstLetter, formatInfluencerCategory } from '@/lib/utils';
+import { capitalizeFirstLetter, formatInfluencerCategory, handleValidation } from '@/lib/utils';
 import {
   ddAccountTypeValues,
   ddIndustryValues,
@@ -124,31 +124,6 @@ export const PublicRegisterInfluencer = () => {
 
   const isPlatformSelected = (type: SocialMediaPlatform['platform_name']) =>
     platformFields.some((platform) => platform.platform_name === type);
-
-  const handleValidation = async () => {
-    const isValid = await trigger();
-
-    if (!isValid) {
-      const displayErrorMessages = (fieldErrors: any) => {
-        Object.values(fieldErrors).forEach((error: any) => {
-          if (error?.message) {
-            toast({
-              title: 'Validation Error',
-              description: error.message,
-              variant: 'destructive',
-              duration: 3000,
-            });
-          } else if (Array.isArray(error)) {
-            error.forEach((nestedError) => displayErrorMessages(nestedError));
-          } else if (typeof error === 'object') {
-            displayErrorMessages(error);
-          }
-        });
-      };
-
-      displayErrorMessages(errors); // Start processing the errors object
-    }
-  };
 
   const handleSocMedValidation = () => {
     if (platformFields.length === 0) {
@@ -579,7 +554,7 @@ export const PublicRegisterInfluencer = () => {
           </div>
         </div>
         <div className="mt-4 flex justify-end gap-2 xxxs:flex-col sm:flex-row">
-          <Button type="submit" onClick={handleValidation}>
+          <Button type="submit" onClick={() => handleValidation(trigger, errors)}>
             Save
           </Button>
         </div>

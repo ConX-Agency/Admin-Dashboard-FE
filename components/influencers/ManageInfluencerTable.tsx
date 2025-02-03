@@ -29,7 +29,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Checkbox } from "../ui/checkbox"
-import { dummyInfluencerData, dummyInfluencerDataWithPlatforms, getTotalFollowerCountByInfluencerId, Influencer, InfluencerWithPlatforms, SocialMediaPlatform } from "@/data/influencer"
+import { dummyInfluencerDataWithPlatforms, getTotalFollowerCountByInfluencerId, Influencer, InfluencerWithPlatforms, SocialMediaPlatform } from "@/data/influencer"
 import { useEffect, useState } from "react"
 import { Input } from "../ui/input"
 import { UpdateInfluencerModal } from "./UpdateInfluencerModal"
@@ -38,7 +38,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { formatFollowerCount, handleApiError } from "@/lib/utils"
 import Image from 'next/image'
-import { FilterDropdown } from "../ui/filterDropdown"
+import { FilterDropdown } from "@/components/ui/filters"
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react"
 import { useConx } from "@/context/ConxContext"
 

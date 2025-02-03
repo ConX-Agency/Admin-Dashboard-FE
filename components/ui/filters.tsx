@@ -1,5 +1,5 @@
 import { FiltersProps, dummyCampaignsData } from '@/data/campaign';
-import { parseDate, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,7 +14,7 @@ import { Calendar } from './calendar';
 import { useState, useEffect } from 'react';
 import { Button } from './button';
 
-export const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
+const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   const defaultFilter = {
     slot_status: 'All',
     status: 'All',
@@ -244,3 +244,5 @@ const FilterDropdown = ({
     </DropdownMenuContent>
   </DropdownMenu>
 );
+
+export {Filters, FilterDropdown};

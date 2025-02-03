@@ -36,7 +36,7 @@ import { Campaign, dummyCampaignsData, getTotalBookedSlotsByCampaign } from '@/d
 import { getCompanyNameById } from '@/data/clients';
 import RegisterCampaignModal from './RegisterCampaignModal';
 import UpdateCampaignModal from './UpdateCampaignModal';
-import { Filters } from '../ui/campaignFilter';
+import { Filters } from '@/components/ui/filters';
 
 export function ManageCampaignTable() {
   const [sorting, setSorting] = useState<SortingState>([]);

@@ -16,6 +16,7 @@ import {
   IconLogout,
   IconChartHistogram,
   IconHourglassEmpty,
+  IconCalendarCog,
 } from "@tabler/icons-react";
 
 //Navigation Links
@@ -31,22 +32,29 @@ export const MainMenuLink = [
 
 export const CampaignsLink = [
   {
-    label: "Manage All Campaigns",
+    label: "Manage Campaigns",
     href: "/campaigns/manage-campaigns",
+    icon: (
+      <IconCalendarCog className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
+    ),
+  },
+  {
+    label: "Manage Campaign's Bookings",
+    href: "/campaigns/manage-campaigns-bookings",
     icon: (
       <IconCalendarMonth className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Manage Influencer's Bookings",
-    href: "/campaigns/manage-bookings",
+    href: "/campaigns/manage-influencers-bookings",
     icon: (
       <IconCalendarClock className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),
   },
   {
     label: "Manage Pending Services",
-    href: "/campaigns/manage-services",
+    href: "/campaigns/manage-pending-services",
     icon: (
       <IconHourglassEmpty className="text-black dark:text-white h-5 w-5 flex-shrink-0" />
     ),

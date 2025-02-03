@@ -146,6 +146,7 @@ const RegisterCampaignModal = ({
     data.campaign_locations = handleLocationSubmissionFormat();
 
     handleRegister(data);
+    closeRegisterModal();
     reset();
   };
 

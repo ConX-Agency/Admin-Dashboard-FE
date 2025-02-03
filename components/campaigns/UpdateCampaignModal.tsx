@@ -52,9 +52,7 @@ const UpdateCampaignModal = ({
   updateModalVisibility: boolean;
 }) => {
   const ClientID_Company = getAllCompanyNamesAndIds();
-  const [clientID, setClientID] = useState<Client['client_id']>(
-    campaignData?.client_id || ClientID_Company[0].client_id,
-  );
+  const [clientID, setClientID] = useState("");
   const [company_name, setCompanyName] = useState<Client['company_name']>(
     campaignData
       ? ClientID_Company.find((client) => client.client_id === campaignData.client_id)
@@ -75,15 +73,13 @@ const UpdateCampaignModal = ({
   const [clientAddresses, setClientAddresses] = useState<clientAddress[]>([]);
 
   const {
-    control,
     handleSubmit,
     register,
     setValue,
-    getValues,
     formState: { errors },
-    trigger,
     clearErrors,
     reset,
+    trigger
   } = useForm<CampaignWithLocation>({
     mode: 'onSubmit',
   });
@@ -141,7 +137,6 @@ const UpdateCampaignModal = ({
         status: campaignData?.status || 'Pending Result',
         campaign_locations: getLocationsByCampaignId(campaignData?.campaign_id || ''),
       });
-      setClientAddresses(getClientAddressesById(clientID)!);
       setStartDate(campaignData?.start_date ? new Date(campaignData.start_date) : new Date());
       setEndDate(campaignData?.end_date ? new Date(campaignData.end_date) : new Date());
       setIsHalal(campaignData.isHalal);
@@ -187,16 +182,11 @@ const UpdateCampaignModal = ({
 
   // UseEffects
   useEffect(() => {
-    setClientAddresses(getClientAddressesById(clientID)!);
-  }, []);
-
-  useEffect(() => {
-    if (!updateModalVisibility) {
-      reset();
-      setClientID(ClientID_Company[0].client_id);
-      setCompanyName(ClientID_Company[0].company_name);
-    }
-  }, [updateModalVisibility, reset]);
+    const initialClientID = campaignData?.client_id || ClientID_Company[0].client_id;
+    setClientID(initialClientID);
+    setClientAddresses(getClientAddressesById(initialClientID) || []);
+    reset();
+  }, [campaignData, reset]);
 
   return (
     <>
