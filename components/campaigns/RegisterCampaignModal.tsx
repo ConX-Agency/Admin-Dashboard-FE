@@ -40,7 +40,7 @@ const RegisterCampaignModal = ({
   registerModalVisibility,
 }: {
   closeRegisterModal: () => void;
-  handleRegister: (data: Campaign) => void;
+  handleRegister: (data: CampaignWithLocation) => void;
   registerModalVisibility: boolean;
 }) => {
   const ClientID_Company = getAllCompanyNamesAndIds();
@@ -74,7 +74,6 @@ const RegisterCampaignModal = ({
   } = useForm<CampaignWithLocation>({
     mode: 'onSubmit',
     defaultValues: {
-      campaign_id: crypto.randomUUID(),
       client_id: clientID,
       campaign_name: '',
       food_offering: '',
@@ -107,9 +106,7 @@ const RegisterCampaignModal = ({
   const handleLocationSubmissionFormat = () => {
     const formattedCampaignLocations: CampaignLocations[] = chosenClientAddresses.map(
       (address) => ({
-        campaign_location_id: crypto.randomUUID(),
-        campaign_id: crypto.randomUUID(),
-        clients_location_id: address.clients_location_id,
+        clients_location_id: address.clients_location_id!,
       }),
     );
 

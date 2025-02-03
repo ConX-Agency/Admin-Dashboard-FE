@@ -14,13 +14,16 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { ddIndustryValues } from '@/data/dropdown-values';
-import { capitalizeFirstLetter, handleValidation } from '@/lib/utils';
+import { capitalizeFirstLetter, handleApiError, handleValidation } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { Checkbox } from '../ui/checkbox';
+import { toast } from '@/hooks/use-toast';
+import { useConx } from '@/context/ConxContext';
 
 export const PublicRegisterClient = () => {
   const [industry, setIndustry] = useState<Client['industry']>('Food & Beverage');
   const client_id = crypto.randomUUID();
+  const { addClient } = useConx();
   const {
     control,
     handleSubmit,
@@ -81,7 +84,42 @@ export const PublicRegisterClient = () => {
     remove(index);
   };
 
-  const handleRegister = async (data: Client) => {};
+  const handleRegister = async (data: Client) => {
+    const client = new FormData();
+    client.append('company_name', data.company_name);
+    client.append('person_in_charge_name', data.person_in_charge_name);
+    client.append('person_in_charge_email', data.person_in_charge_email);
+    client.append('company_email', data.company_email);
+    client.append('contact_number', data.contact_number);
+    client.append('alt_contact_number', data.alt_contact_number);
+    client.append('industry', data.industry);
+    client.append('category', data.category);
+    client.append('is_non_monetary', data.is_non_monetary.toString());
+    client.append('discount', data.discount.toString());
+    client.append('ways_to_use', data.ways_to_use.toString());
+    client.append('status', data.status);
+    client.append('addresses', JSON.stringify(data.addresses));
+
+    try {
+        const res = await addClient(client);
+        if (res.message != null) {
+            toast({
+                title: 'Registration API Failure!',
+                description: 'An error occurred with the API.',
+                variant: 'destructive',
+                duration: 3000,
+            });
+        } else {
+            toast({
+                title: "Registeration is Successful",
+                description: `Successfully registered new client, ${data.company_name}.`,
+                duration: 3000
+            });
+        }
+    } catch (error) {
+        handleApiError(error);
+    }
+  };
 
   const onSubmit = async (data: Client) => {
     // Set Values for Remaining Fields

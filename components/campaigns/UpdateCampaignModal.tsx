@@ -48,11 +48,11 @@ const UpdateCampaignModal = ({
 }: {
   campaignData: Campaign | null;
   closeUpdateModal: () => void;
-  handleUpdate: (data: Campaign) => void;
+  handleUpdate: (data: CampaignWithLocation, initial_locations: CampaignLocations[]) => void;
   updateModalVisibility: boolean;
 }) => {
   const ClientID_Company = getAllCompanyNamesAndIds();
-  const [clientID, setClientID] = useState("");
+  const [clientID, setClientID] = useState('');
   const [company_name, setCompanyName] = useState<Client['company_name']>(
     campaignData
       ? ClientID_Company.find((client) => client.client_id === campaignData.client_id)
@@ -71,6 +71,7 @@ const UpdateCampaignModal = ({
 
   const [chosenClientAddresses, setChosenClientAddresses] = useState<clientAddress[]>([]);
   const [clientAddresses, setClientAddresses] = useState<clientAddress[]>([]);
+  const [initialLocations, setInitialLocations] = useState<CampaignLocations[]>([]);
 
   const {
     handleSubmit,
@@ -79,15 +80,15 @@ const UpdateCampaignModal = ({
     formState: { errors },
     clearErrors,
     reset,
-    trigger
+    trigger,
   } = useForm<CampaignWithLocation>({
     mode: 'onSubmit',
   });
 
   // Location Handling
   const handleCampaignAddressesInitialization = () => {
-    const locations = getLocationsByCampaignId(campaignData?.campaign_id!);
-    const addresses = locations
+    setInitialLocations(getLocationsByCampaignId(campaignData?.campaign_id!));
+    const addresses = initialLocations
       .map((loc) => getClientAddressesByClientLocationId(loc.clients_location_id || ''))
       .flat();
     setChosenClientAddresses(addresses);
@@ -103,14 +104,21 @@ const UpdateCampaignModal = ({
     );
   };
 
-  const handleLocationSubmissionFormat = () => {
-    const formattedCampaignLocations: CampaignLocations[] = chosenClientAddresses.map(
-      (address) => ({
-        campaign_location_id: crypto.randomUUID(),
-        campaign_id: crypto.randomUUID(),
-        clients_location_id: address.clients_location_id,
-      }),
-    );
+  const handleLocationSubmissionFormat = (campaign_id: string) => {
+    const formattedCampaignLocations: CampaignLocations[] = chosenClientAddresses
+      .filter((address) => address.clients_location_id !== undefined)
+      .map((address) => {
+        // Get existing location's campaign_location_id.
+        const existingLocation = initialLocations.find(
+          (loc) => loc.clients_location_id === address.clients_location_id,
+        );
+
+        return {
+          campaign_location_id: existingLocation ? existingLocation.campaign_location_id : '',
+          campaign_id: campaign_id,
+          clients_location_id: address.clients_location_id!,
+        };
+      });
 
     return formattedCampaignLocations;
   };
@@ -173,9 +181,9 @@ const UpdateCampaignModal = ({
     data.isHalal = isHalal;
     data.slot_status = slotStatus;
     data.status = status;
-    data.campaign_locations = handleLocationSubmissionFormat();
+    data.campaign_locations = handleLocationSubmissionFormat(data.campaign_id!);
 
-    handleUpdate(data);
+    handleUpdate(data, initialLocations);
     closeUpdateModal();
     reset();
   };

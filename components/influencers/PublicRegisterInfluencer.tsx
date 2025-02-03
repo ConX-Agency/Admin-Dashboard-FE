@@ -18,7 +18,7 @@ import { GetCountries } from 'react-country-state-city';
 import { Country } from '@/data/shared';
 import { toast } from '@/hooks/use-toast';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { capitalizeFirstLetter, formatInfluencerCategory, handleValidation } from '@/lib/utils';
+import { capitalizeFirstLetter, formatInfluencerCategory, handleApiError, handleValidation } from '@/lib/utils';
 import {
   ddAccountTypeValues,
   ddIndustryValues,
@@ -26,6 +26,7 @@ import {
   ddSocialMediaPlatformsValues,
 } from '@/data/dropdown-values';
 import { Checkbox } from '../ui/checkbox';
+import { useConx } from '@/context/ConxContext';
 
 export const PublicRegisterInfluencer = () => {
   const initialPlatforms: SocialMediaPlatform[] = [];
@@ -33,6 +34,7 @@ export const PublicRegisterInfluencer = () => {
   const [countriesList, setCountriesList] = useState<Country[]>([]);
   const [industry, setIndustry] = useState<InfluencerWithPlatforms['industry']>('Food & Beverage');
   const influencer_id = crypto.randomUUID();
+  const { addInfluencer } = useConx();
 
   const {
     control,
@@ -139,7 +141,49 @@ export const PublicRegisterInfluencer = () => {
     return true;
   };
 
-  const handleRegister = async (data: any) => {};
+  const handleRegister = async (data: any) => {
+    const influencer = new FormData();
+    influencer.append('full_name', data.full_name);
+    influencer.append('preferred_name', data.preferred_name);
+    influencer.append('contact_number', data.contact_number);
+    influencer.append('alt_contact_number', data.alt_contact_number);
+    influencer.append('email_address', data.email_address);
+    influencer.append('country', data.country);
+    influencer.append('state', data.state);
+    influencer.append('city', data.city);
+    influencer.append('postcode', data.postcode);
+    influencer.append('address', data.address);
+    influencer.append('industry', data.industry);
+    influencer.append('whatsapp_consent', data.whatsapp_consent.toString()! || 'FALSE');
+    influencer.append('whatsapp_invited', data.whatsapp_invited?.toString()! || 'FALSE');
+    influencer.append('community_invited', data.community_invited?.toString()! || 'FALSE');
+    influencer.append('invite_count', '0');
+    influencer.append('is_membership', data.is_membership?.toString()! || 'FALSE');
+    influencer.append('rate', data.rate);
+    influencer.append('category', data.category);
+    influencer.append('status', data.status);
+    influencer.append('accounts', JSON.stringify(data.platforms));
+
+    try {
+      const res = await addInfluencer(influencer);
+      if (res.message != null) {
+        toast({
+          title: 'Registration API Failure!',
+          description: 'An error occurred with the influencer Registeration API.',
+          variant: 'destructive',
+          duration: 3000,
+        });
+      } else {
+        toast({
+          title: 'Registeration is Successful',
+          description: `Successfully registered new influencer, ${data.full_name}.`,
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
 
   const onSubmit = async (data: InfluencerWithPlatforms) => {
     // Stop Form Submission when Validation Fails.

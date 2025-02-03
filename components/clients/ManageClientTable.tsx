@@ -286,9 +286,22 @@ export function ManageClientTable() {
     };
 
     const handleUpdate = (data: Client) => {
-        console.log(data);
+        const token = localStorage.getItem('token');
 
-        //To add Update API here.
+        const client = new FormData();
+        client.append('company_name', data.company_name);
+        client.append('person_in_charge_name', data.person_in_charge_name);
+        client.append('person_in_charge_email', data.person_in_charge_email);
+        client.append('company_email', data.company_email);
+        client.append('contact_number', data.contact_number);
+        client.append('alt_contact_number', data.alt_contact_number);
+        client.append('industry', data.industry);
+        client.append('category', data.category);
+        client.append('is_non_monetary', data.is_non_monetary.toString());
+        client.append('discount', data.discount.toString());
+        client.append('ways_to_use', data.ways_to_use.toString());
+        client.append('status', data.status);
+        client.append('addresses', JSON.stringify(data.addresses));
 
         toast({
             title: "Update Profile is Successful",
@@ -307,17 +320,13 @@ export function ManageClientTable() {
         client.append('company_email', data.company_email);
         client.append('contact_number', data.contact_number);
         client.append('alt_contact_number', data.alt_contact_number);
-        //Need to be modify while there added new value for industry field
-        client.append('industry', 'Food & Beverage');
-        // client.append('cuisine_type', data.cuisine_type);
-        //Need to be modify while there added new value for category field
-        client.append('category', 'not sure yet');
+        client.append('industry', data.industry);
+        client.append('category', data.category);
         client.append('is_non_monetary', data.is_non_monetary.toString());
         client.append('discount', data.discount.toString());
         client.append('ways_to_use', data.ways_to_use.toString());
         client.append('status', data.status);
         client.append('addresses', JSON.stringify(data.addresses));
-        //client.append('addresses', formattedClient.addresses.toString());
 
         try {
             const res = await addClient(client);

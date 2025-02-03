@@ -32,7 +32,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Checkbox } from '../ui/checkbox';
-import { Campaign, dummyCampaignsData, getTotalBookedSlotsByCampaign } from '@/data/campaign';
+import { Campaign, CampaignLocations, CampaignWithLocation, dummyCampaignsData, getTotalBookedSlotsByCampaign } from '@/data/campaign';
 import { getCompanyNameById } from '@/data/clients';
 import RegisterCampaignModal from './RegisterCampaignModal';
 import UpdateCampaignModal from './UpdateCampaignModal';
@@ -232,8 +232,26 @@ export function ManageCampaignTable() {
     setIsRegisterModalVisible(false);
   };
 
-  const handleRegister = (data: Campaign) => {
-    console.log(data);
+  const handleRegister = (data: CampaignWithLocation) => {
+    const token = localStorage.getItem('token');
+
+    const campaign = new FormData();
+    campaign.append('client_id', data.client_id);
+    campaign.append('campaign_name', data.campaign_name);
+    campaign.append('food_offering', data.food_offering);
+    campaign.append('key_message', data.key_message);
+    campaign.append('total_nano_influencers', data.total_nano_influencers.toString());
+    campaign.append('total_micro_influencers', data.total_micro_influencers.toString());
+    campaign.append('total_photographer', data.total_photographer.toString());
+    campaign.append('total_content_creator', data.total_content_creator.toString());
+    campaign.append('max_pax', data.max_pax.toString());
+    campaign.append('start_date', data.start_date.toString());
+    campaign.append('end_date', data.end_date.toString());
+    campaign.append('isHalal', data.isHalal.toString());
+    campaign.append('slot_status', data.slot_status.toString());
+    campaign.append('status', data.status.toString());
+    campaign.append('campaign_locations', JSON.stringify(data.campaign_locations));
+
   };
 
   const handleOpenUpdateModal = (data: Campaign) => {
@@ -245,8 +263,25 @@ export function ManageCampaignTable() {
     setIsUpdateModalVisible(false);
   };
 
-  const handleUpdate = (data: Campaign) => {
-    console.log(data);
+  const handleUpdate = (data: CampaignWithLocation, initial_locations: CampaignLocations[]) => {
+    const token = localStorage.getItem('token');
+
+    const campaign = new FormData();
+    campaign.append('client_id', data.client_id);
+    campaign.append('campaign_name', data.campaign_name);
+    campaign.append('food_offering', data.food_offering);
+    campaign.append('key_message', data.key_message);
+    campaign.append('total_nano_influencers', data.total_nano_influencers.toString());
+    campaign.append('total_micro_influencers', data.total_micro_influencers.toString());
+    campaign.append('total_photographer', data.total_photographer.toString());
+    campaign.append('total_content_creator', data.total_content_creator.toString());
+    campaign.append('max_pax', data.max_pax.toString());
+    campaign.append('start_date', data.start_date.toString());
+    campaign.append('end_date', data.end_date.toString());
+    campaign.append('isHalal', data.isHalal.toString());
+    campaign.append('slot_status', data.slot_status.toString());
+    campaign.append('status', data.status.toString());
+    campaign.append('campaign_locations', JSON.stringify(data.campaign_locations));
   };
 
   return (

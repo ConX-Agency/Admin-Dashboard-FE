@@ -1,6 +1,6 @@
 export interface clientAddress {
-    clients_location_id: string;
-    client_id: string;
+    clients_location_id?: string;
+    client_id?: string;
     country: string;
     state: string;
     city: string;
