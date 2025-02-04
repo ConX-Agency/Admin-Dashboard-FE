@@ -185,7 +185,7 @@ const RegisterCampaignModal = ({
                     <ChevronDown className="ml-2 h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-full" align="start">
+                <DropdownMenuContent className="w-full px-2 pt-3 max-h-[220px] overflow-y-scroll" align="start">
                   <Input
                     type="text"
                     placeholder="Search Company Name"
