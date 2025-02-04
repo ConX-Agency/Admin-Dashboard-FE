@@ -248,6 +248,7 @@ export function ManageCampaignTable() {
 
       //To add delete API here.
 
+      table.resetRowSelection();
       toast({
         title: "Deletion is Successful",
         description: `Successfully deleted ${concatenatedNames}'s profile(s).`,
@@ -297,7 +298,6 @@ export function ManageCampaignTable() {
 
   const handleUpdate = (data: CampaignWithLocation, initial_locations: CampaignLocations[]) => {
     const token = localStorage.getItem('token');
-    console.log(data);
 
     const campaign = new FormData();
     campaign.append('client_id', data.client_id);

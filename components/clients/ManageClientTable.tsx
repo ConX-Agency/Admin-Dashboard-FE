@@ -260,6 +260,7 @@ export function ManageClientTable() {
 
             //To add delete API here.
 
+            table.resetRowSelection();
             toast({
                 title: "Deletion is Successful",
                 description: `Successfully deleted ${concatenatedNames}'s profile(s).`,

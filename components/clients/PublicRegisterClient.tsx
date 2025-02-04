@@ -64,7 +64,7 @@ export const PublicRegisterClient = () => {
   useEffect(() => {
     return () => {
       sessionStorage.clear(); // Clear session storage on unmount
-      console.log('Session cookies cleared on component unmount');
+      // console.log('Session cookies cleared on component unmount');
     };
   }, []); // Empty dependency array ensures cleanup runs on unmount.
 

@@ -315,6 +315,7 @@ export function ManageInfluencerTable() {
 
             //To add delete API here.
 
+            table.resetRowSelection();
             toast({
                 title: "Deletion is Successful",
                 description: `Successfully deleted ${concatenatedNames}'s profile(s).`,
@@ -341,8 +342,6 @@ export function ManageInfluencerTable() {
     };
 
     const handleUpdate = (data: InfluencerWithPlatforms) => {
-        console.log(data);
-
         const influencer = new FormData();
         influencer.append('full_name', data.full_name);
         influencer.append('preferred_name', data.preferred_name);
