@@ -39,7 +39,7 @@ export const dummyClientAddresses: clientAddress[] = [
     {
         clients_location_id: "CL006",
         client_id: "C001",
-        address: "123 Flavor Street",
+        address: "124 Flavor Street",
         city: "Klang",
         postcode: "50000",
         state: "Selangor",
@@ -48,7 +48,7 @@ export const dummyClientAddresses: clientAddress[] = [
     {
         clients_location_id: "CL007",
         client_id: "C001",
-        address: "123 Flavor Street",
+        address: "125 Flavor Street",
         city: "Klang",
         postcode: "50000",
         state: "Selangor",

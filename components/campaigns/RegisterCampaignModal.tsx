@@ -45,9 +45,9 @@ const RegisterCampaignModal = ({
 }) => {
   const ClientID_Company = getAllCompanyNamesAndIds();
   const [clientID, setClientID] = useState<Client['client_id']>(ClientID_Company[0].client_id);
-  const [company_name, setCompanyName] = useState<Client['company_name']>(
-    ClientID_Company[0].company_name,
-  );
+  const [company_name, setCompanyName] = useState<Client['company_name']>(ClientID_Company[0].company_name);
+  const [searchCompanyName, setSearchCompanyName] = useState<string>('');
+
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(
     new Date(new Date().setMonth(new Date().getMonth() + 1)),
@@ -59,7 +59,6 @@ const RegisterCampaignModal = ({
 
   const [chosenClientAddresses, setChosenClientAddresses] = useState<clientAddress[]>([]);
   const [clientAddresses, setClientAddresses] = useState<clientAddress[]>([]);
-
 
   const {
     control,
@@ -135,6 +134,7 @@ const RegisterCampaignModal = ({
     if (!isValid) return;
 
     // Set Values for remaining fields
+    data.client_id = clientID;
     data.start_date = startDate;
     data.end_date = endDate;
     data.isHalal = isHalal;
@@ -186,7 +186,17 @@ const RegisterCampaignModal = ({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-full" align="start">
-                  {ClientID_Company.map((client) => (
+                  <Input
+                    type="text"
+                    placeholder="Search Company Name"
+                    className="w-full p-2 border-b border-gray-300 mb-2"
+                    value={searchCompanyName}
+                    onChange={(e) => setSearchCompanyName(e.target.value)}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  />
+                  {ClientID_Company.filter((client) =>
+                    client.company_name.toLowerCase().includes(searchCompanyName.toLowerCase())
+                  ).map((client) => (
                     <DropdownMenuItem
                       key={client.client_id}
                       onClick={() => {

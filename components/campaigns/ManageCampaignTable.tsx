@@ -220,8 +220,40 @@ export function ManageCampaignTable() {
     },
   });
 
+  // Action Buttons
   const navigateToCampaignDetails = (campaign_name: string) => {
     router.push(`/campaigns/campaign-details/?name=${campaign_name}`);
+  };
+
+  const handleDelete = () => {
+
+    const selectedRows = table.getSelectedRowModel().rows;
+
+    if (!selectedRows || selectedRows.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "User not Selected",
+        description: `Can't proceed, select a user to delete first!`,
+        duration: 3000
+      })
+    } else {
+      // Extract and log client_id from each selected row
+      const campaignIds = selectedRows.map((row) => row.original.campaign_id);
+      const campaignNames = selectedRows.map((row) => row.original.campaign_name);
+      var concatenatedNames = "";
+
+      if (campaignNames.length > 1) {
+        concatenatedNames = campaignNames.join(", ");
+      }
+
+      //To add delete API here.
+
+      toast({
+        title: "Deletion is Successful",
+        description: `Successfully deleted ${concatenatedNames}'s profile(s).`,
+        duration: 5000
+      })
+    }
   };
 
   const handleOpenRegisterModal = () => {
@@ -265,6 +297,7 @@ export function ManageCampaignTable() {
 
   const handleUpdate = (data: CampaignWithLocation, initial_locations: CampaignLocations[]) => {
     const token = localStorage.getItem('token');
+    console.log(data);
 
     const campaign = new FormData();
     campaign.append('client_id', data.client_id);
@@ -318,6 +351,7 @@ export function ManageCampaignTable() {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+          <ActionButton icon="trash" label="delete" onClick={handleDelete} />
           <ActionButton icon="plus" label="register" onClick={handleOpenRegisterModal} />
         </div>
       </div>

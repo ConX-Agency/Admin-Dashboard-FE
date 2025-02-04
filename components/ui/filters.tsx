@@ -13,9 +13,11 @@ import { Filter, FilterX, Calendar as LucideCalendar, ChevronDown } from 'lucide
 import { Calendar } from './calendar';
 import { useState, useEffect } from 'react';
 import { Button } from './button';
+import { Input } from './input';
 
 const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   const defaultFilter = {
+    campaign_name: '',
     slot_status: 'All',
     status: 'All',
     start_date: new Date(new Date().getFullYear(), 0, 1),
@@ -24,6 +26,13 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
 
   const [isFiltered, setIsFiltered] = useState(false);
   const [multiFilter, setMultiFilter] = useState(defaultFilter);
+
+  const handleCampaignNameChange = (name: string) => {
+    setMultiFilter((prev) => ({
+      ...prev,
+      campaign_name: name,
+    }));
+  };
 
   const handleSelectStartDate = (date?: Date) => {
     if (date) {
@@ -44,9 +53,10 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   };
 
   const filterCampaigns = () => {
-    const { slot_status, status, start_date, end_date } = multiFilter;
+    const { campaign_name, slot_status, status, start_date, end_date } = multiFilter;
 
     const filteredData = dummyCampaignsData.filter((campaign) => {
+      let matchesCampaignName = campaign_name === '' || campaign.campaign_name.toLowerCase().includes(campaign_name.toLowerCase());
       let matchesSlotStatus = slot_status === 'All' || campaign.slot_status === slot_status;
       let matchesCampaignStatus = status === 'All' || campaign.status === status;
       let matchesDateRange = true;
@@ -61,10 +71,8 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
           (campaignEndDate >= start_date && campaignEndDate <= end_date);
       }
 
-      return matchesSlotStatus && matchesCampaignStatus && matchesDateRange;
+      return matchesCampaignName && matchesSlotStatus && matchesCampaignStatus && matchesDateRange;
     });
-
-    console.log(filteredData);
 
     onFilterChange(filteredData);
   };
@@ -85,6 +93,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   // Check if the current filter is the default filter
   const isDefaultFilter = () => {
     return (
+      multiFilter.campaign_name === defaultFilter.campaign_name &&
       multiFilter.status === defaultFilter.status &&
       multiFilter.slot_status === defaultFilter.slot_status &&
       multiFilter.start_date.getTime() === defaultFilter.start_date.getTime() &&
@@ -104,7 +113,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
   }, [multiFilter]);
 
   return (
-    <div className="mb-1 flex w-full flex-row flex-wrap justify-start gap-1">
+    <div className="mb-0 flex w-full flex-row flex-wrap justify-start gap-1">
       <AnimatePresence>
         <Button
           variant={isFiltered ? 'outline' : 'ghost'}
@@ -135,12 +144,21 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
         </Button>
       </AnimatePresence>
 
+      {/* Filter by Campaign Name */}
+      <Input
+        type="text"
+        placeholder="Search Campaign"
+        value={multiFilter.campaign_name}
+        onChange={(e) => handleCampaignNameChange(e.target.value)}
+        className="h-[40px] w-[190px] px-2 border rounded-md"
+      />
+
       {/* Filter by Start Date */}
       <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="flex h-[40px] min-w-[190px] items-center justify-between p-2"
+            className="flex h-[40px] min-w-[125px] items-center justify-between p-2"
           >
             <span>
               {multiFilter.start_date ? multiFilter.start_date.toLocaleDateString('en-GB', {
@@ -167,7 +185,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            className="flex h-[40px] min-w-[190px] items-center justify-between p-2"
+            className="flex h-[40px] min-w-[125px] items-center justify-between p-2"
           >
             <span>
               {multiFilter.end_date ? multiFilter.end_date.toLocaleDateString('en-GB', {
@@ -195,7 +213,7 @@ const Filters: React.FC<FiltersProps> = ({ onFilterChange }) => {
         items={['All', 'Filled', 'Pending']}
         value={multiFilter.slot_status}
         onValueChange={(value) => handleFilterChange('slot_status', value)}
-        minWidth="min-w-[140px]"
+        minWidth="min-w-[130px]"
       />
 
       {/* Campaign Status */}

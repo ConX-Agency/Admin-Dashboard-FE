@@ -52,13 +52,9 @@ const UpdateCampaignModal = ({
   updateModalVisibility: boolean;
 }) => {
   const ClientID_Company = getAllCompanyNamesAndIds();
-  const [clientID, setClientID] = useState('');
-  const [company_name, setCompanyName] = useState<Client['company_name']>(
-    campaignData
-      ? ClientID_Company.find((client) => client.client_id === campaignData.client_id)
-          ?.company_name || ''
-      : ClientID_Company[0].company_name,
-  );
+  const [clientID, setClientID] = useState<Client['client_id']>(ClientID_Company[0].client_id);
+  const [company_name, setCompanyName] = useState<Client['company_name']>(ClientID_Company[0].company_name);
+  const [searchCompanyName, setSearchCompanyName] = useState<string>('');
 
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(
@@ -87,8 +83,18 @@ const UpdateCampaignModal = ({
 
   // Location Handling
   const handleCampaignAddressesInitialization = () => {
-    setInitialLocations(getLocationsByCampaignId(campaignData?.campaign_id!));
-    const addresses = initialLocations
+
+    // Set Client ID and Addresses
+    setClientID(campaignData?.client_id!);
+    setClientAddresses(getClientAddressesById(campaignData?.client_id!) || []);
+
+    // Get client's existing selected locations by campaign_id 
+    // (initialLocations did not work because state management is asynchronous, can use UseEffect)
+    const locations = getLocationsByCampaignId(campaignData?.campaign_id!);
+    setInitialLocations(locations);
+
+    // Get client's existing selected addresses by client_location_id
+    const addresses = locations
       .map((loc) => getClientAddressesByClientLocationId(loc.clients_location_id || ''))
       .flat();
     setChosenClientAddresses(addresses);
@@ -123,37 +129,6 @@ const UpdateCampaignModal = ({
     return formattedCampaignLocations;
   };
 
-  // Important to set Influencer's initial data.
-  useEffect(() => {
-    clearErrors();
-    if (campaignData) {
-      reset({
-        campaign_id: campaignData?.campaign_id || '',
-        client_id: campaignData?.client_id || '',
-        campaign_name: campaignData?.campaign_name || '',
-        food_offering: campaignData?.food_offering || '',
-        key_message: campaignData?.key_message || '',
-        total_nano_influencers: campaignData?.total_nano_influencers || 0,
-        total_micro_influencers: campaignData?.total_micro_influencers || 0,
-        total_photographer: campaignData?.total_photographer || 0,
-        total_content_creator: campaignData?.total_content_creator || 0,
-        max_pax: campaignData?.max_pax || 0,
-        start_date: campaignData?.start_date || new Date(),
-        end_date: campaignData?.end_date || new Date(),
-        isHalal: campaignData?.isHalal || false,
-        slot_status: campaignData?.slot_status || 'Pending',
-        status: campaignData?.status || 'Pending Result',
-        campaign_locations: getLocationsByCampaignId(campaignData?.campaign_id || ''),
-      });
-      setStartDate(campaignData?.start_date ? new Date(campaignData.start_date) : new Date());
-      setEndDate(campaignData?.end_date ? new Date(campaignData.end_date) : new Date());
-      setIsHalal(campaignData.isHalal);
-      setSlotStatus(campaignData.slot_status);
-      setStatus(campaignData.status);
-      handleCampaignAddressesInitialization();
-    }
-  }, [campaignData, reset, updateModalVisibility]);
-
   // Validation
   const handleCampaignAddressesValidation = () => {
     if (chosenClientAddresses.length === 0) {
@@ -176,6 +151,7 @@ const UpdateCampaignModal = ({
     if (!isValid) return;
 
     // Set Values for remaining fields
+    data.client_id = clientID;
     data.start_date = startDate;
     data.end_date = endDate;
     data.isHalal = isHalal;
@@ -190,11 +166,41 @@ const UpdateCampaignModal = ({
 
   // UseEffects
   useEffect(() => {
-    const initialClientID = campaignData?.client_id || ClientID_Company[0].client_id;
-    setClientID(initialClientID);
-    setClientAddresses(getClientAddressesById(initialClientID) || []);
-    reset();
-  }, [campaignData, reset]);
+    clearErrors();
+    if (campaignData) {
+      reset({
+        campaign_id: campaignData?.campaign_id || '',
+        client_id: campaignData?.client_id || '',
+        campaign_name: campaignData?.campaign_name || '',
+        food_offering: campaignData?.food_offering || '',
+        key_message: campaignData?.key_message || '',
+        total_nano_influencers: campaignData?.total_nano_influencers || 0,
+        total_micro_influencers: campaignData?.total_micro_influencers || 0,
+        total_photographer: campaignData?.total_photographer || 0,
+        total_content_creator: campaignData?.total_content_creator || 0,
+        max_pax: campaignData?.max_pax || 0,
+        start_date: campaignData?.start_date || new Date(),
+        end_date: campaignData?.end_date || new Date(),
+        isHalal: campaignData?.isHalal || false,
+        slot_status: campaignData?.slot_status || 'Pending',
+        status: campaignData?.status || 'Pending Result',
+        campaign_locations: getLocationsByCampaignId(campaignData?.campaign_id || ''),
+      });
+      handleCampaignAddressesInitialization();
+      setStartDate(campaignData?.start_date ? new Date(campaignData.start_date) : new Date());
+      setEndDate(campaignData?.end_date ? new Date(campaignData.end_date) : new Date());
+      setIsHalal(campaignData.isHalal);
+      setSlotStatus(campaignData.slot_status);
+      setStatus(campaignData.status);
+      setCompanyName(campaignData
+        ? ClientID_Company.find((client) => client.client_id === campaignData.client_id)
+          ?.company_name || ''
+        : ClientID_Company[0].company_name);
+    } else {
+      setClientID(ClientID_Company[0].client_id);
+      setClientAddresses(getClientAddressesById(ClientID_Company[0].client_id) || []);
+    }
+  }, [campaignData, reset, updateModalVisibility]); // Add campaignData as a dependency to trigger useEffect when it changes
 
   return (
     <>
@@ -221,13 +227,27 @@ const UpdateCampaignModal = ({
                     <ChevronDown className="ml-2 h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-full" align="start">
-                  {ClientID_Company.map((client) => (
+                <DropdownMenuContent className="w-full px-2 pt-3" align="start">
+                  <Input
+                    type="text"
+                    placeholder="Search Company Name"
+                    className="w-full p-2 border-b border-gray-300 mb-2"
+                    value={searchCompanyName}
+                    onChange={(e) => setSearchCompanyName(e.target.value)}
+                    onKeyDown={(e) => e.stopPropagation()}
+                  />
+                  {ClientID_Company.filter((client) =>
+                    client.company_name.toLowerCase().includes(searchCompanyName.toLowerCase())
+                  ).map((client) => (
                     <DropdownMenuItem
                       key={client.client_id}
+                      tabIndex={-1}
                       onClick={() => {
                         setClientID(client.client_id);
                         setClientAddresses(getClientAddressesById(client.client_id)!);
+                        if (clientID !== client.client_id) { //if client_id is not the same reset chosenClientAddresses.
+                          setChosenClientAddresses([]);
+                        }
                         setCompanyName(client.company_name);
                       }}
                       className="cursor-pointer"
