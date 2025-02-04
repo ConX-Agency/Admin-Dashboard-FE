@@ -43,8 +43,12 @@ export function ManageCampaignTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
+  const [isInfluencerModalVisible, setIsInfluencerModalVisible] = useState(false);
+
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
   const [campaignData, setCampaignData] = useState<Campaign | null>(null);
 

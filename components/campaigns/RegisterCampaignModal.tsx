@@ -228,8 +228,9 @@ const RegisterCampaignModal = ({
                   },
                 })}
               />
-            </div>
-            <div className="mb-4 grid items-center gap-4 xxxs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
+
+            <div className='col-span-2'></div>
+
               {/* Start Date */}
               <Popover>
                 <PopoverTrigger asChild>
@@ -532,7 +533,7 @@ const RegisterCampaignModal = ({
               ))}
             </div>
             <DialogFooter>
-              <div className="mt-4 flex gap-2 xxxs:flex-col sm:flex-row">
+              <div className="mt-4 flex gap-2 xxxs:flex-col-reverse sm:flex-row">
                 <Button
                   type="button"
                   onClick={closeRegisterModal}

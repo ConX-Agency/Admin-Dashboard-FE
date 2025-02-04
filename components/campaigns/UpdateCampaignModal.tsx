@@ -578,7 +578,7 @@ const UpdateCampaignModal = ({
               ))}
             </div>
             <DialogFooter>
-              <div className="mt-4 flex gap-2 xxxs:flex-col sm:flex-row">
+              <div className="mt-4 flex gap-2 xxxs:flex-col-reverse sm:flex-row">
                 <Button
                   type="button"
                   onClick={closeUpdateModal}
