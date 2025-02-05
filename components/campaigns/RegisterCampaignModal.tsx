@@ -33,6 +33,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Textarea } from '../ui/textarea';
 import { Separator } from '../ui/separator';
 import { Checkbox } from '../ui/checkbox';
+import { Label } from '../ui/label';
 
 const RegisterCampaignModal = ({
   closeRegisterModal,
@@ -169,346 +170,416 @@ const RegisterCampaignModal = ({
           modalTopRightClose={closeRegisterModal}
         >
           <DialogHeader>
-            <DialogTitle>Register New Campaign</DialogTitle>
+            <DialogTitle className='leading-7'>Register New Campaign</DialogTitle>
             <DialogDescription>
               This is a campaign request form, please fill it up and click on the "Submit" button to
               proceed.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Client ID - Company Name */}
             <div className="mb-4 grid items-center gap-4 xxxs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="col-span-2 w-full justify-between border px-3">
-                    {capitalizeFirstLetter(company_name)}
-                    <ChevronDown className="ml-2 h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-full px-2 pt-3 max-h-[220px] overflow-y-scroll" align="start">
-                  <Input
-                    type="text"
-                    placeholder="Search Company Name"
-                    className="w-full p-2 border-b border-gray-300 mb-2"
-                    value={searchCompanyName}
-                    onChange={(e) => setSearchCompanyName(e.target.value)}
-                    onKeyDown={(e) => e.stopPropagation()}
-                  />
-                  {ClientID_Company.filter((client) =>
-                    client.company_name.toLowerCase().includes(searchCompanyName.toLowerCase())
-                  ).map((client) => (
-                    <DropdownMenuItem
-                      key={client.client_id}
-                      onClick={() => {
-                        setClientID(client.client_id);
-                        setClientAddresses(getClientAddressesById(client.client_id)!);
-                        setCompanyName(client.company_name);
-                      }}
-                      className="cursor-pointer"
-                    >
-                      {capitalizeFirstLetter(client.company_name)}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {/* Client ID - Company Name */}
+              <div className="flex flex-col col-span-2">
+                <Label htmlFor="company_name" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Company Name
+                </Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between border px-3">
+                      {capitalizeFirstLetter(company_name)}
+                      <ChevronDown className="ml-2 h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full px-2 pt-3 max-h-[220px] overflow-y-scroll" align="start">
+                    <Input
+                      type="text"
+                      placeholder="Search Company Name"
+                      className="w-full p-2 border-b border-gray-300 mb-2"
+                      value={searchCompanyName}
+                      onChange={(e) => setSearchCompanyName(e.target.value)}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                    {ClientID_Company.filter((client) =>
+                      client.company_name.toLowerCase().includes(searchCompanyName.toLowerCase())
+                    ).map((client) => (
+                      <DropdownMenuItem
+                        key={client.client_id}
+                        onClick={() => {
+                          setClientID(client.client_id);
+                          setClientAddresses(getClientAddressesById(client.client_id)!);
+                          setCompanyName(client.company_name);
+                        }}
+                        className="cursor-pointer"
+                      >
+                        {capitalizeFirstLetter(client.company_name)}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
               {/* Campaign Name */}
-              <Input
-                type="text"
-                placeholder="Campaign Name"
-                className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-4 ${errors.campaign_name ? 'border-red-500' : ''}`}
-                {...register('campaign_name', {
-                  required: {
-                    value: true,
-                    message: 'Campaign Name is required.',
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z\s]+$/,
-                    message: 'Campaign Name must contain only alphabets and spaces.',
-                  },
-                })}
-              />
+              <div className="flex flex-col xxxs:col-span-2 sm:col-span-4">
+                <Label htmlFor="campaign_name" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Campaign Name
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="Campaign Name"
+                  className={`${errors.campaign_name ? 'border-red-500' : ''}`}
+                  {...register('campaign_name', {
+                    required: {
+                      value: true,
+                      message: 'Campaign Name is required.',
+                    },
+                    pattern: {
+                      value: /^[a-zA-Z\s]+$/,
+                      message: 'Campaign Name must contain only alphabets and spaces.',
+                    },
+                  })}
+                />
+              </div>
 
-            <div className='col-span-2'></div>
+              <div className='xxxs:hidden lg:block lg:col-span-2'></div>
 
               {/* Start Date */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center justify-between p-2 xxxs:col-span-2 sm:col-span-4 lg:col-span-2"
-                  >
-                    <span>
-                      {startDate.toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                      })}
-                    </span>
-                    <LucideCalendar className="ml-1 h-[20px] w-[20px]" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={new Date(startDate)}
-                    onSelect={(date) => date && setStartDate(date)}
-                    className="rounded-md border"
-                  />
-                </PopoverContent>
-              </Popover>
+              <div className="flex flex-col col-span-2">
+                <Label htmlFor="start_date" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Start Date
+                </Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center justify-between p-2"
+                    >
+                      <span>
+                        {startDate.toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })}
+                      </span>
+                      <LucideCalendar className="ml-1 h-[20px] w-[20px]" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={new Date(startDate)}
+                      onSelect={(date) => date && setStartDate(date)}
+                      className="rounded-md border"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
               {/* End Date */}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center justify-between p-2 xxxs:col-span-2 sm:col-span-4 lg:col-span-2"
-                  >
-                    <span>
-                      {endDate.toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                      })}
-                    </span>
-                    <LucideCalendar className="ml-1 h-[20px] w-[20px]" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={new Date(endDate)}
-                    onSelect={(date) => date && setEndDate(date)}
-                    className="rounded-md border"
-                  />
-                </PopoverContent>
-              </Popover>
+              <div className="flex flex-col col-span-2">
+                <Label htmlFor="end_date" className="mb-1 text-xs ml-1 text-neutral-500">
+                  End Date
+                </Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center justify-between p-2"
+                    >
+                      <span>
+                        {endDate.toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })}
+                      </span>
+                      <LucideCalendar className="ml-1 h-[20px] w-[20px]" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={new Date(endDate)}
+                      onSelect={(date) => date && setEndDate(date)}
+                      className="rounded-md border"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
 
               {/* IsHalal */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-between border px-3 xxxs:col-span-2 sm:col-span-4 lg:col-span-2"
-                  >
-                    {isHalal ? 'Is Halal' : 'Not Halal'}
-                    <ChevronDown className="ml-2 h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-full" align="start">
-                  {['Is Halal', 'Not Halal'].map((option) => (
-                    <DropdownMenuItem
-                      key={option}
-                      onClick={() => setIsHalal(option === 'Is Halal')}
-                      className="cursor-pointer"
+              <div className="flex flex-col col-span-2">
+                <Label htmlFor="ishalal" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Halal Status
+                </Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between border px-3"
                     >
-                      {option}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                      {isHalal ? 'Is Halal' : 'Not Halal'}
+                      <ChevronDown className="ml-2 h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full" align="start">
+                    {['Is Halal', 'Not Halal'].map((option) => (
+                      <DropdownMenuItem
+                        key={option}
+                        onClick={() => setIsHalal(option === 'Is Halal')}
+                        className="cursor-pointer"
+                      >
+                        {option}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
               {/* Max Pax */}
-              <Input
-                type="text"
-                placeholder="Max Pax"
-                className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.max_pax ? 'border-red-500' : ''}`}
-                {...register('max_pax', {
-                  required: {
-                    value: true,
-                    message: 'Max Pax is required.',
-                  },
-                  pattern: {
-                    value: /^[0-9]+$/,
-                    message: 'Max Pax must contain only numbers.',
-                  },
-                  min: {
-                    value: 1,
-                    message: 'Max Pax must be at least 1.',
-                  },
-                  max: {
-                    value: 10,
-                    message: 'Max Pax must be at most 10.',
-                  },
-                })}
-              />
+              <div className="flex flex-col col-span-2">
+                <Label htmlFor="max_pax" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Max Pax
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="Max Pax"
+                  className={`${errors.max_pax ? 'border-red-500' : ''}`}
+                  {...register('max_pax', {
+                    required: {
+                      value: true,
+                      message: 'Max Pax is required.',
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Max Pax must contain only numbers.',
+                    },
+                    min: {
+                      value: 1,
+                      message: 'Max Pax must be at least 1.',
+                    },
+                    max: {
+                      value: 10,
+                      message: 'Max Pax must be at most 10.',
+                    },
+                  })}
+                />
+              </div>
 
               {/* Total Nano Influencers */}
-              <Input
-                type="text"
-                placeholder="Total Micro Influencers"
-                className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.total_micro_influencers ? 'border-red-500' : ''}`}
-                {...register('total_micro_influencers', {
-                  required: {
-                    value: true,
-                    message: 'Total Micro Influencers is required.',
-                  },
-                  pattern: {
-                    value: /^[0-9]+$/,
-                    message: 'Total Micro Influencers must contain only numbers.',
-                  },
-                  min: {
-                    value: 1,
-                    message: 'Total Micro Influencers must be at least 1.',
-                  },
-                  max: {
-                    value: 10,
-                    message: 'Total Micro Influencers must be at most 10.',
-                  },
-                })}
-              />
+              <div className="flex flex-col col-span-2">
+                <Label htmlFor="total_micro_influencers" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Total Nano Influencers
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="Total Micro Influencers"
+                  className={`${errors.total_micro_influencers ? 'border-red-500' : ''}`}
+                  {...register('total_micro_influencers', {
+                    required: {
+                      value: true,
+                      message: 'Total Micro Influencers is required.',
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Total Micro Influencers must contain only numbers.',
+                    },
+                    min: {
+                      value: 1,
+                      message: 'Total Micro Influencers must be at least 1.',
+                    },
+                    max: {
+                      value: 10,
+                      message: 'Total Micro Influencers must be at most 10.',
+                    },
+                  })}
+                />
+              </div>
 
               {/* Total Micro Influencers */}
-              <Input
-                type="text"
-                placeholder="Total Nano Influencers"
-                className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.total_nano_influencers ? 'border-red-500' : ''}`}
-                {...register('total_nano_influencers', {
-                  required: {
-                    value: true,
-                    message: 'Total Nano Influencers is required.',
-                  },
-                  pattern: {
-                    value: /^[0-9]+$/,
-                    message: 'Total Nano Influencers must contain only numbers.',
-                  },
-                  min: {
-                    value: 1,
-                    message: 'Total Nano Influencers must be at least 1.',
-                  },
-                  max: {
-                    value: 10,
-                    message: 'Total Nano Influencers must be at most 10.',
-                  },
-                })}
-              />
+              <div className="flex flex-col col-span-2">
+                <Label htmlFor="total_nano_influencers" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Total Micro Influencers
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="Total Nano Influencers"
+                  className={`${errors.total_nano_influencers ? 'border-red-500' : ''}`}
+                  {...register('total_nano_influencers', {
+                    required: {
+                      value: true,
+                      message: 'Total Nano Influencers is required.',
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Total Nano Influencers must contain only numbers.',
+                    },
+                    min: {
+                      value: 1,
+                      message: 'Total Nano Influencers must be at least 1.',
+                    },
+                    max: {
+                      value: 10,
+                      message: 'Total Nano Influencers must be at most 10.',
+                    },
+                  })}
+                />
+              </div>
 
               {/* Total Content Creator */}
-              <Input
-                type="text"
-                placeholder="Total Content Creator"
-                className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.total_content_creator ? 'border-red-500' : ''}`}
-                {...register('total_content_creator', {
-                  required: {
-                    value: true,
-                    message: 'Total Content Creator is required.',
-                  },
-                  pattern: {
-                    value: /^[0-9]+$/,
-                    message: 'Total Content Creator must contain only numbers.',
-                  },
-                  min: {
-                    value: 1,
-                    message: 'Total Content Creator must be at least 1.',
-                  },
-                  max: {
-                    value: 10,
-                    message: 'Total Content Creator must be at most 10.',
-                  },
-                })}
-              />
+              <div className="flex flex-col col-span-2">
+                <Label htmlFor="total_content_creator" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Total Content Creator
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="Total Content Creator"
+                  className={`${errors.total_content_creator ? 'border-red-500' : ''}`}
+                  {...register('total_content_creator', {
+                    required: {
+                      value: true,
+                      message: 'Total Content Creator is required.',
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Total Content Creator must contain only numbers.',
+                    },
+                    min: {
+                      value: 1,
+                      message: 'Total Content Creator must be at least 1.',
+                    },
+                    max: {
+                      value: 10,
+                      message: 'Total Content Creator must be at most 10.',
+                    },
+                  })}
+                />
+              </div>
 
               {/* Total Photographer */}
-              <Input
-                type="text"
-                placeholder="Total Photographers"
-                className={`xxxs:col-span-2 sm:col-span-4 lg:col-span-2 ${errors.total_photographer ? 'border-red-500' : ''}`}
-                {...register('total_photographer', {
-                  required: {
-                    value: true,
-                    message: 'Total Photographer is required.',
-                  },
-                  pattern: {
-                    value: /^[0-9]+$/,
-                    message: 'Total Photographer must contain only numbers.',
-                  },
-                  min: {
-                    value: 1,
-                    message: 'Total Photographer must be at least 1.',
-                  },
-                  max: {
-                    value: 10,
-                    message: 'Total Photographer must be at most 10.',
-                  },
-                })}
-              />
+              <div className="flex flex-col col-span-2">
+                <Label htmlFor="total_photographer" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Total Photographer
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="Total Photographers"
+                  className={`${errors.total_photographer ? 'border-red-500' : ''}`}
+                  {...register('total_photographer', {
+                    required: {
+                      value: true,
+                      message: 'Total Photographer is required.',
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: 'Total Photographer must contain only numbers.',
+                    },
+                    min: {
+                      value: 1,
+                      message: 'Total Photographer must be at least 1.',
+                    },
+                    max: {
+                      value: 10,
+                      message: 'Total Photographer must be at most 10.',
+                    },
+                  })}
+                />
+              </div>
 
               {/* Food Offerings */}
-              <Textarea
-                placeholder="Food Offerings"
-                className={`min-h-[88px] resize-none xxxs:col-span-2 sm:col-span-4 lg:col-span-8 ${errors.food_offering ? 'border-red-500' : ''}`}
-                {...register('food_offering', {
-                  required: {
-                    value: true,
-                    message: 'Food Offerings is required.',
-                  },
-                })}
-              />
+              <div className="flex flex-col xxxs:col-span-2 sm:col-span-4 lg:col-span-8">
+                <Label htmlFor="food_offering" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Food Offerings
+                </Label>
+                <Textarea
+                  placeholder="Food Offerings"
+                  className={`min-h-[88px] resize-none xxxs:text-sm md:text-md ${errors.food_offering ? 'border-red-500' : ''}`}
+                  {...register('food_offering', {
+                    required: {
+                      value: true,
+                      message: 'Food Offerings is required.',
+                    },
+                  })}
+                />
+              </div>
 
               {/* Key Messages */}
-              <Textarea
-                placeholder="Key Messages"
-                className={`min-h-[88px] resize-none xxxs:col-span-2 sm:col-span-4 lg:col-span-8 ${errors.key_message ? 'border-red-500' : ''}`}
-                {...register('key_message', {
-                  required: {
-                    value: true,
-                    message: 'Key Messages is required.',
-                  },
-                })}
-              />
+              <div className="flex flex-col xxxs:col-span-2 sm:col-span-4 lg:col-span-8">
+                <Label htmlFor="key_message" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Key Messages
+                </Label>
+                <Textarea
+                  placeholder="Key Messages"
+                  className={`min-h-[88px] resize-none xxxs:text-sm md:text-md ${errors.key_message ? 'border-red-500' : ''}`}
+                  {...register('key_message', {
+                    required: {
+                      value: true,
+                      message: 'Key Messages is required.',
+                    },
+                  })}
+                />
+              </div>
 
               {/* Slot Status */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-between border px-3 xxxs:col-span-2 sm:col-span-4 lg:col-span-2"
-                  >
-                    {slotStatus}
-                    <ChevronDown className="ml-2 h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-full" align="start">
-                  {['Filled', 'Pending'].map((option) => (
-                    <DropdownMenuItem
-                      key={option}
-                      onClick={() => setSlotStatus(option as typeof slotStatus)}
-                      className="cursor-pointer"
+              <div className="flex flex-col xxxs:col-span-2">
+                <Label htmlFor="slot_status" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Slot Status
+                </Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between border px-3"
                     >
-                      {option}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                      {slotStatus}
+                      <ChevronDown className="ml-2 h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full" align="start">
+                    {['Filled', 'Pending'].map((option) => (
+                      <DropdownMenuItem
+                        key={option}
+                        onClick={() => setSlotStatus(option as typeof slotStatus)}
+                        className="cursor-pointer"
+                      >
+                        {option}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
               {/* Status */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-between border px-3 xxxs:col-span-2 sm:col-span-4 lg:col-span-2"
-                  >
-                    {status}
-                    <ChevronDown className="ml-2 h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-full" align="start">
-                  {['Pending Result', 'Inactive', 'Completed'].map((option) => (
-                    <DropdownMenuItem
-                      key={option}
-                      onClick={() => setStatus(option as typeof status)}
-                      className="cursor-pointer"
+              <div className="flex flex-col xxxs:col-span-2">
+                <Label htmlFor="status" className="mb-1 text-xs ml-1 text-neutral-500">
+                  Status
+                </Label>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between border px-3"
                     >
-                      {option}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                      {status}
+                      <ChevronDown className="ml-2 h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full" align="start">
+                    {['Pending Result', 'Inactive', 'Completed'].map((option) => (
+                      <DropdownMenuItem
+                        key={option}
+                        onClick={() => setStatus(option as typeof status)}
+                        className="cursor-pointer"
+                      >
+                        {option}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
             <Separator className="mb-3 mt-5" />
             <div className="grid items-center gap-4 xxxs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-8">
-              <h2 className="text-md col-span-8 font-bold">Campaign Applicable Addresses</h2>
+              <h2 className="text-md xxxs:col-span-2 sm:col-span-4 lg:col-span-8 font-bold">Campaign Applicable Addresses</h2>
               {clientAddresses.map((address) => (
                 <div
                   key={address.clients_location_id}
