@@ -1,7 +1,6 @@
 "use client"
 
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { CampaignDetailsContent } from "@/components/campaigns/CampaignDetailsContent";
+import { CampaignDetailsContent } from "@/components/campaigns/details/CampaignDetailsContent";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { IconCalendarCog, IconWorldPlus } from "@tabler/icons-react";

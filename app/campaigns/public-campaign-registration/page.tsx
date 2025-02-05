@@ -1,10 +1,10 @@
-import PublicRegisterCampaign from '@/components/campaigns/PublicRegisterCampaign'
+// import PublicRegisterCampaign from '@/components/campaigns/PublicRegisterCampaign'
 import React from 'react'
 
 const PublicCampaignRegistration = () => {
     return (
         <>
-            <PublicRegisterCampaign />
+            {/* <PublicRegisterCampaign /> */}
         </>
     )
 }

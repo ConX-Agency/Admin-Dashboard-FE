@@ -41,6 +41,7 @@ export interface CountryInputProps {
     setCountry: (country: string) => void;
     setCountryId: (id: number) => void;
     countriesList: Country[];
+    span?: string;
     className?: string;
     placeholder?: string;
     ref?: React.Ref<HTMLButtonElement>;
@@ -53,6 +54,7 @@ export interface StateInputProps {
     setState: (state: string) => void;
     setStateId: (id: number) => void;
     stateList: State[];
+    span?: string;
     className?: string;
     isDisabled: boolean;
     ref?: React.Ref<HTMLButtonElement>;
@@ -65,6 +67,7 @@ export interface CityInputProps {
     setCity: (city: string) => void;
     setCityId: (id: number) => void;
     cityList: City[];
+    span?: string;
     className?: string;
     isDisabled: boolean;
     ref?: React.Ref<HTMLButtonElement>;
@@ -83,8 +86,11 @@ export interface AddressDropdownsProps {
     stateMessage: string;
     cityMessage: string;
     countryClassname?: string;
+    countrySpan?: string;
     stateClassname?: string;
+    stateSpan?: string;
     cityClassname?: string;
+    citySpan?: string;
     countryPlaceholder?: string;
     countryInputName: string; //React-Hook-Form utilizes the name in the controller to set the values.
     stateInputName: string;

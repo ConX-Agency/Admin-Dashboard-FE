@@ -5,12 +5,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ChevronDown } from "lucide-react";
 import { Button } from "../ui/button";
 import { Control, Controller } from "react-hook-form";
+import { Label } from "./label";
 
 export const CountryInput = ({
   country,
   setCountry,
   setCountryId,
   countriesList,
+  span,
   className,
   placeholder,
   control,
@@ -28,35 +30,40 @@ export const CountryInput = ({
         },
       }} // Add validation rule
       render={({ field }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className={`flex justify-between items-center p-3 w-full bg-white dark:bg-neutral-950 ${className}`}
-            >
-              <span>{country || placeholder}</span>
-              <ChevronDown className="h-5 w-5 ml-2" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[200px] overflow-y-scroll max-h-[200px]" align="start">
-            {countriesList.map((item: any) => (
-              <DropdownMenuItem
-                key={item.id}
-                onClick={() => {
-                  const selectedCountry = countriesList.find(
-                    (countryItem) => countryItem.name === item.name
-                  );
-                  setCountry(selectedCountry?.name || "");
-                  setCountryId(selectedCountry?.id || 0);
-                  field.onChange(selectedCountry?.name || ""); // Update field value
-                }}
-                className="cursor-pointer"
+        <div className={`flex flex-col ${span}`}>
+          <Label htmlFor={input_name} className="mb-1 text-xs ml-1 text-neutral-500">
+            Country
+          </Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className={`flex justify-between items-center p-3 w-full bg-white dark:bg-neutral-950 ${className}`}
               >
-                {item.name}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                <span className="truncate">{country || placeholder}</span>
+                <ChevronDown className="h-5 w-5 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[200px] overflow-y-scroll max-h-[200px]" align="start">
+              {countriesList.map((item: any) => (
+                <DropdownMenuItem
+                  key={item.id}
+                  onClick={() => {
+                    const selectedCountry = countriesList.find(
+                      (countryItem) => countryItem.name === item.name
+                    );
+                    setCountry(selectedCountry?.name || "");
+                    setCountryId(selectedCountry?.id || 0);
+                    field.onChange(selectedCountry?.name || ""); // Update field value
+                  }}
+                  className="cursor-pointer"
+                >
+                  {item.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       )}
     />
   );
@@ -69,6 +76,7 @@ const StateInput = ({
   setStateId,
   stateList,
   isDisabled,
+  span,
   className,
   control,
   message,
@@ -85,36 +93,41 @@ const StateInput = ({
         },
       }}
       render={({ field }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className={`flex justify-between items-center p-3 w-full bg-white dark:bg-neutral-950 ${className}`}
-              disabled={isDisabled}
-            >
-              <span>{state || "State"}</span>
-              <ChevronDown className="h-5 w-5 ml-2" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[200px] overflow-y-scroll max-h-[200px]" align="start">
-            {stateList.map((item: any) => (
-              <DropdownMenuItem
-                key={item.id}
-                onClick={() => {
-                  const selectedState = stateList.find(
-                    (stateItem) => stateItem.name === item.name
-                  );
-                  setState(selectedState?.name || "");
-                  setStateId(selectedState?.id || 0);
-                  field.onChange(selectedState?.name || ""); // Update field value
-                }}
-                className="cursor-pointer"
+        <div className={`flex flex-col ${span}`}>
+          <Label htmlFor={input_name} className="mb-1 text-xs ml-1 text-neutral-500">
+            State
+          </Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className={`flex justify-between items-center p-3 w-full bg-white dark:bg-neutral-950 ${className}`}
+                disabled={isDisabled}
               >
-                {item.name}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                <span className="truncate">{state || "State"}</span>
+                <ChevronDown className="h-5 w-5 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[200px] overflow-y-scroll max-h-[200px]" align="start">
+              {stateList.map((item: any) => (
+                <DropdownMenuItem
+                  key={item.id}
+                  onClick={() => {
+                    const selectedState = stateList.find(
+                      (stateItem) => stateItem.name === item.name
+                    );
+                    setState(selectedState?.name || "");
+                    setStateId(selectedState?.id || 0);
+                    field.onChange(selectedState?.name || ""); // Update field value
+                  }}
+                  className="cursor-pointer"
+                >
+                  {item.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       )}
     />
   );
@@ -127,22 +140,27 @@ const CityInput = ({
   setCityId,
   cityList,
   isDisabled,
+  span,
   className,
   control,
   message,
   input_name
 }: CityInputProps & { control: Control<any> }) => {
   return (
-      <Controller
-        name={input_name} // The name that matches the form field name
-        control={control} // Connect with react-hook-form control
-        rules={{
-          validate: (value) => {
-            if (isDisabled) return true; // Skip validation if disabled
-            return value ? true : `${message}`;
-          },
-        }}
-        render={({ field, fieldState }) => (
+    <Controller
+      name={input_name} // The name that matches the form field name
+      control={control} // Connect with react-hook-form control
+      rules={{
+        validate: (value) => {
+          if (isDisabled) return true; // Skip validation if disabled
+          return value ? true : `${message}`;
+        },
+      }}
+      render={({ field, fieldState }) => (
+        <div className={`flex flex-col ${span}`}>
+          <Label htmlFor={input_name} className="mb-1 text-xs ml-1 text-neutral-500">
+            City
+          </Label>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -151,7 +169,7 @@ const CityInput = ({
                 className={`flex justify-between items-center p-3 w-full bg-white dark:bg-neutral-950 ${className}`}
                 disabled={isDisabled}
               >
-                <span>{city || "City"}</span>
+                <span className="truncate">{city || "City"}</span>
                 <ChevronDown className="h-5 w-5 ml-2" />
               </Button>
             </DropdownMenuTrigger>
@@ -174,8 +192,9 @@ const CityInput = ({
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-        )}
-      />
+        </div>
+      )}
+    />
   );
 };
 
@@ -190,8 +209,11 @@ export const AddressDropdowns = ({
   stateMessage,
   cityMessage,
   countryClassname,
+  countrySpan,
   stateClassname,
+  stateSpan,
   cityClassname,
+  citySpan,
   countryPlaceholder,
   countryInputName,
   stateInputName,
@@ -276,6 +298,7 @@ export const AddressDropdowns = ({
         setCountry={(newCountry: Country["name"]) => handleCountryChange(newCountry, countryId)}
         setCountryId={setCountryId}
         countriesList={countriesList}
+        span={countrySpan}
         className={countryClassname}
         placeholder={countryPlaceholder || "Country"}
         control={control}
@@ -288,6 +311,7 @@ export const AddressDropdowns = ({
         setStateId={setStateId}
         stateList={stateList}
         isDisabled={!stateList.length}
+        span={stateSpan}
         className={stateClassname}
         control={control}
         message={stateMessage}
@@ -299,6 +323,7 @@ export const AddressDropdowns = ({
         setCityId={setCityId}
         cityList={cityList}
         isDisabled={!cityList.length}
+        span={citySpan}
         className={cityClassname}
         control={control}
         message={cityMessage}

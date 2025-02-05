@@ -1,14 +1,13 @@
-"use client"
+'use client';
 
-import React from 'react'
-import { ManageCampaignTable } from './ManageCampaignTable'
+import { ManageCampaignTable } from './ManageCampaignTable';
 
 const ManageCampaignContent = () => {
   return (
-    <div className="h-full w-full flex">
-        <ManageCampaignTable />
+    <div className="flex h-full w-full flex-col">
+      <ManageCampaignTable />
     </div>
-  )
-}
+  );
+};
 
-export default ManageCampaignContent
+export default ManageCampaignContent;

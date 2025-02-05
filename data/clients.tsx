@@ -1,6 +1,6 @@
 export interface clientAddress {
-    client_location_id: string;
-    client_id: string;
+    clients_location_id?: string;
+    client_id?: string;
     country: string;
     state: string;
     city: string;
@@ -26,22 +26,78 @@ export interface Client {
     status: "Active" | "Pending Approval" | "Blacklisted" | "Cancelled";
 }
 
+export const dummyClientAddresses: clientAddress[] = [
+    {
+        clients_location_id: "CL001",
+        client_id: "C001",
+        address: "123 Flavor Street",
+        city: "Klang",
+        postcode: "50000",
+        state: "Selangor",
+        country: "Malaysia",
+    },
+    {
+        clients_location_id: "CL006",
+        client_id: "C001",
+        address: "124 Flavor Street",
+        city: "Klang",
+        postcode: "50000",
+        state: "Selangor",
+        country: "Malaysia",
+    },
+    {
+        clients_location_id: "CL007",
+        client_id: "C001",
+        address: "125 Flavor Street",
+        city: "Klang",
+        postcode: "50000",
+        state: "Selangor",
+        country: "Malaysia",
+    },
+    {
+        clients_location_id: "CL002",
+        client_id: "C002",
+        address: "56 Mediterranean Lane",
+        city: "Athens",
+        postcode: "10552",
+        state: "Attica",
+        country: "Greece",
+    },
+    {
+        clients_location_id: "CL003",
+        client_id: "C003",
+        address: "22 Spice Road",
+        city: "Mumbai",
+        postcode: "400001",
+        state: "Maharashtra",
+        country: "India",
+    },
+    {
+        clients_location_id: "CL004",
+        client_id: "C004",
+        address: "99 Italian Avenue",
+        city: "Rome",
+        postcode: "00184",
+        state: "Lazio",
+        country: "Italy",
+    },
+    {
+        clients_location_id: "CL005",
+        client_id: "C005",
+        address: "88 Sashimi Street",
+        city: "Tokyo",
+        postcode: "100-0001",
+        state: "Tokyo",
+        country: "Japan",
+    },
+];
+
 export const dummyClientData: Client[] = [
     {
-        client_id: "eb626727-ea74-4de7-87ab-db79039c5042",
+        client_id: "CL001",
         company_name: "Tasty Treats Inc.",
         company_email: "info@tastytreats.com",
-        addresses: [
-            {
-                client_location_id: "loc1",
-                client_id: "eb626727-ea74-4de7-87ab-db79039c5042",
-                address: "123 Flavor Street",
-                city: "Klang",
-                postcode: "50000",
-                state: "Selangor",
-                country: "Malaysia",
-            },
-        ],
+        addresses: dummyClientAddresses.filter(address => address.client_id === "C001"),
         person_in_charge_name: "John Doe",
         person_in_charge_email: "john.doe@tastytreats.com",
         industry: "Food & Beverage",
@@ -55,20 +111,10 @@ export const dummyClientData: Client[] = [
         status: "Active"
     },
     {
-        client_id: "1ba79f5d-e465-4287-85fd-c39b19dfcee1",
+        client_id: "CL002",
         company_name: "Souvlaki Haven",
         company_email: "contact@souvlakihaven.com",
-        addresses: [
-            {
-                client_location_id: "loc2",
-                client_id: "1ba79f5d-e465-4287-85fd-c39b19dfcee1",
-                address: "56 Mediterranean Lane",
-                city: "Athens",
-                postcode: "10552",
-                state: "Attica",
-                country: "Greece",
-            },
-        ],
+        addresses: dummyClientAddresses.filter(address => address.client_id === "C002"),
         person_in_charge_name: "Maria Papadopoulos",
         person_in_charge_email: "maria@souvlakihaven.com",
         industry: "Food & Beverage",
@@ -82,20 +128,10 @@ export const dummyClientData: Client[] = [
         status: "Active"
     },
     {
-        client_id: "9d7c1722-18e7-4c99-94ed-a22f41f34e04",
+        client_id: "CL003",
         company_name: "Curry Delight",
         company_email: "hello@currydelight.com",
-        addresses: [
-            {
-                client_location_id: "loc3",
-                client_id: "9d7c1722-18e7-4c99-94ed-a22f41f34e04",
-                address: "22 Spice Road",
-                city: "Mumbai",
-                postcode: "400001",
-                state: "Maharashtra",
-                country: "India",
-            },
-        ],
+        addresses: dummyClientAddresses.filter(address => address.client_id === "C003"),
         person_in_charge_name: "Rajesh Kapoor",
         person_in_charge_email: "rajesh@currydelight.com",
         industry: "Food & Beverage",
@@ -109,20 +145,10 @@ export const dummyClientData: Client[] = [
         status: "Active"
     },
     {
-        client_id: "c4ee145b-2781-4070-a00d-2862e19c2a4a",
+        client_id: "CL004",
         company_name: "Pizza Paradise",
         company_email: "info@pizzaparadise.com",
-        addresses: [
-            {
-                client_location_id: "loc4",
-                client_id: "c4ee145b-2781-4070-a00d-2862e19c2a4a",
-                address: "99 Italian Avenue",
-                city: "Rome",
-                postcode: "00184",
-                state: "Lazio",
-                country: "Italy",
-            },
-        ],
+        addresses: dummyClientAddresses.filter(address => address.client_id === "C004"),
         person_in_charge_name: "Giovanni Rossi",
         person_in_charge_email: "giovanni@pizzaparadise.com",
         industry: "Food & Beverage",
@@ -136,20 +162,10 @@ export const dummyClientData: Client[] = [
         status: "Active"
     },
     {
-        client_id: "5b1c7f01-90ae-4fab-9983-60b8cbdddf51",
+        client_id: "CL005",
         company_name: "Sushi World",
         company_email: "contact@sushiworld.com",
-        addresses: [
-            {
-                client_location_id: "loc5",
-                client_id: "5b1c7f01-90ae-4fab-9983-60b8cbdddf51",
-                address: "88 Sashimi Street",
-                city: "Tokyo",
-                postcode: "100-0001",
-                state: "Tokyo",
-                country: "Japan",
-            },
-        ],
+        addresses: dummyClientAddresses.filter(address => address.client_id === "C005"),
         person_in_charge_name: "Haruto Tanaka",
         person_in_charge_email: "haruto@sushiworld.com",
         industry: "Food & Beverage",
@@ -163,3 +179,26 @@ export const dummyClientData: Client[] = [
         status: "Active"
     },
 ];
+
+export function getCompanyNameById(clientId: string): string | undefined {
+    const client = dummyClientData.find(client => client.client_id === clientId);
+    return client?.company_name;
+}
+
+export function getClientAddressesById(clientId: string): clientAddress[] | undefined {
+    const client = dummyClientData.find(client => client.client_id === clientId);
+    return client?.addresses as clientAddress[];
+}
+
+export function getClientAddressesByClientLocationId(clientLocationId: string): clientAddress[] {
+    const matchingAddresses: clientAddress[] = [];
+    for (const client of dummyClientData) {
+        const addresses = client.addresses.filter(address => address.clients_location_id === clientLocationId);
+        matchingAddresses.push(...addresses);
+    }
+    return matchingAddresses;
+}
+
+export function getAllCompanyNamesAndIds(): { client_id: string, company_name: string }[] {
+    return dummyClientData.map(client => ({ client_id: client.client_id, company_name: client.company_name }));
+}
