@@ -24,6 +24,7 @@ import { capitalizeFirstLetter, handleValidation } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { toast } from '@/hooks/use-toast';
 
 export const RegisterClientModal = ({
   closeRegisterModal,
@@ -81,7 +82,24 @@ export const RegisterClientModal = ({
     remove(index);
   };
 
+  const handleAddressValidation = () => {
+    if (fields.length === 0) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please provide at least one Address.',
+        variant: 'destructive',
+        duration: 3000,
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const onSubmit = async (data: Client) => {
+
+    const isValid = handleAddressValidation();
+    if (!isValid) return;
 
     // Set Values for Remaining Fields
     data.client_id = crypto.randomUUID();
@@ -100,6 +118,12 @@ export const RegisterClientModal = ({
       reset();
     }
   }, [registerModalVisibility, reset]);
+
+  useEffect(() => {
+    if (fields.length === 0) {
+      addAddress();
+    }
+  }, [fields]);
 
   return (
     <>

@@ -27,6 +27,7 @@ import {
 } from '@/data/dropdown-values';
 import { Checkbox } from '../ui/checkbox';
 import { useConx } from '@/context/ConxContext';
+import { Label } from '../ui/label';
 
 export const PublicRegisterInfluencer = () => {
   const initialPlatforms: SocialMediaPlatform[] = [];
@@ -214,122 +215,154 @@ export const PublicRegisterInfluencer = () => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="w-full">
         <div className="mb-4 grid gap-4 xxxs:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-          <Input
-            className={`col-span-2 ${errors.full_name ? 'border-red-500' : ''}`}
-            type="text"
-            {...register('full_name', {
-              required: {
-                value: true,
-                message: 'Full Name is required.',
-              },
-              pattern: {
-                value: /^[A-Za-z\s]+$/,
-                message: 'Full Name must contain only alphabets.',
-              },
-            })}
-            placeholder="Full Name"
-          />
+          {/* Full Name */}
+          <div className="flex flex-col col-span-2">
+            <Label htmlFor="full_name" className="mb-1 text-xs ml-1 text-neutral-500">
+              Full Name
+            </Label>
+            <Input
+              className={`${errors.full_name ? 'border-red-500' : ''}`}
+              type="text"
+              {...register('full_name', {
+                required: {
+                  value: true,
+                  message: 'Full Name is required.',
+                },
+                pattern: {
+                  value: /^[A-Za-z\s]+$/,
+                  message: 'Full Name must contain only alphabets.',
+                },
+              })}
+              placeholder="Full Name"
+            />
+          </div>
 
           {/* Preferred Name */}
-          <Input
-            className={`col-span-2 ${errors.preferred_name ? 'border-red-500' : ''}`}
-            type="text"
-            {...register('preferred_name', {
-              required: {
-                value: true,
-                message: 'Preferred Name is required.',
-              },
-              pattern: {
-                value: /^[A-Za-z\s]+$/,
-                message: 'Preferred Name must contain only alphabets.',
-              },
-            })}
-            placeholder="Preferred Name"
-          />
+          <div className="flex flex-col col-span-2">
+            <Label htmlFor="preferred_name" className="mb-1 text-xs ml-1 text-neutral-500">
+              Preferred Name
+            </Label>
+            <Input
+              className={`${errors.preferred_name ? 'border-red-500' : ''}`}
+              type="text"
+              {...register('preferred_name', {
+                required: {
+                  value: true,
+                  message: 'Preferred Name is required.',
+                },
+                pattern: {
+                  value: /^[A-Za-z\s]+$/,
+                  message: 'Preferred Name must contain only alphabets.',
+                },
+              })}
+              placeholder="Preferred Name"
+            />
+          </div>
 
           {/* Contact Number */}
-          <Input
-            className={`col-span-2 ${errors.contact_number ? 'border-red-500' : ''}`}
-            type="text"
-            {...register('contact_number', {
-              required: {
-                value: true,
-                message: 'Contact Number is required.',
-              },
-              pattern: {
-                value: /^\+\d{1,4}\d{7,15}$/,
-                message: 'Contact Number must include country code and be digits only.',
-              },
-              minLength: {
-                value: 8,
-                message: 'Contact Number must be at least 8 digits.',
-              },
-              maxLength: {
-                value: 19, // + (1-4 country code) + (7-15 phone number)
-                message: 'Contact Number must not exceed 19 digits.',
-              },
-            })}
-            placeholder="Contact Number (+1234567890)"
-          />
+          <div className="flex flex-col col-span-2">
+            <Label htmlFor="contact_number" className="mb-1 text-xs ml-1 text-neutral-500">
+              Contact Number
+            </Label>
+            <Input
+              className={`${errors.contact_number ? 'border-red-500' : ''}`}
+              type="text"
+              {...register('contact_number', {
+                required: {
+                  value: true,
+                  message: 'Contact Number is required.',
+                },
+                pattern: {
+                  value: /^\+\d{1,4}\d{7,15}$/,
+                  message: 'Contact Number must include country code and be digits only.',
+                },
+                minLength: {
+                  value: 8,
+                  message: 'Contact Number must be at least 8 digits.',
+                },
+                maxLength: {
+                  value: 19, // + (1-4 country code) + (7-15 phone number)
+                  message: 'Contact Number must not exceed 19 digits.',
+                },
+              })}
+              placeholder="Contact Number (+1234567890)"
+            />
+          </div>
 
           {/* Alt Contact Number */}
-          <Input
-            className={`col-span-2 ${errors.alt_contact_number ? 'border-red-500' : ''}`}
-            type="text"
-            {...register('alt_contact_number', {
-              pattern: {
-                value: /^\+\d{1,4}\d{7,15}$/,
-                message: 'Alternative Contact Number must include country code and be digits only.',
-              },
-              minLength: {
-                value: 8,
-                message: 'Alternative Contact Number must be at least 8 digits.',
-              },
-              maxLength: {
-                value: 19, // + (1-4 country code) + (7-15 phone number)
-                message: 'Alternative Contact Number must not exceed 19 digits.',
-              },
-            })}
-            placeholder="Alt Contact Number (+1234567890)"
-          />
+          <div className="flex flex-col col-span-2">
+            <Label htmlFor="alt_contact_number" className="mb-1 text-xs ml-1 text-neutral-500">
+              Alt Contact Number
+            </Label>
+            <Input
+              className={`${errors.alt_contact_number ? 'border-red-500' : ''}`}
+              type="text"
+              {...register('alt_contact_number', {
+                pattern: {
+                  value: /^\+\d{1,4}\d{7,15}$/,
+                  message:
+                    'Alternative Contact Number must include country code and be digits only.',
+                },
+                minLength: {
+                  value: 8,
+                  message: 'Alternative Contact Number must be at least 8 digits.',
+                },
+                maxLength: {
+                  value: 19, // + (1-4 country code) + (7-15 phone number)
+                  message: 'Alternative Contact Number must not exceed 19 digits.',
+                },
+              })}
+              placeholder="Alt Contact Number (+1234567890)"
+            />
+          </div>
 
           {/* Email Address */}
-          <Input
-            className={`col-span-2 ${errors.email_address ? 'border-red-500' : ''}`}
-            type="email"
-            {...register('email_address', {
-              required: {
-                value: true,
-                message: 'Email Address is required.',
-              },
-              pattern: {
-                value: /\S+@\S+\.\S+/,
-                message: 'Email Address provided does not match email format.',
-              },
-            })}
-            placeholder="Email Address"
-          />
+          <div className="flex flex-col col-span-2">
+            <Label htmlFor="email_address" className="mb-1 text-xs ml-1 text-neutral-500">
+              Email Address
+            </Label>
+            <Input
+              className={`${errors.email_address ? 'border-red-500' : ''}`}
+              type="email"
+              {...register('email_address', {
+                required: {
+                  value: true,
+                  message: 'Email Address is required.',
+                },
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: 'Email Address provided does not match email format.',
+                },
+              })}
+              placeholder="Email Address"
+            />
+          </div>
 
           {/* Industry */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="col-span-2 w-full justify-between border px-3">
-                {capitalizeFirstLetter(industry)}
-                <ChevronDown className="ml-2 h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[190px] max-w-full" align="start">
-              {ddIndustryValues.map((option) => (
-                <DropdownMenuItem
-                  key={option}
-                  onClick={() => setIndustry(option as Influencer['industry'])}
-                  className="cursor-pointer"
-                >
-                  {capitalizeFirstLetter(option)}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex flex-col col-span-2">
+            <Label htmlFor="industry" className="mb-1 text-xs ml-1 text-neutral-500">
+              Industry
+            </Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="w-full justify-between border px-3">
+                  {capitalizeFirstLetter(industry)}
+                  <ChevronDown className="ml-2 h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[190px] max-w-full" align="start">
+                {ddIndustryValues.map((option) => (
+                  <DropdownMenuItem
+                    key={option}
+                    onClick={() => setIndustry(option as Influencer['industry'])}
+                    className="cursor-pointer"
+                  >
+                    {capitalizeFirstLetter(option)}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
           {/* Country, State, City */}
           <AddressDropdowns
@@ -339,7 +372,8 @@ export const PublicRegisterInfluencer = () => {
               trigger();
             }}
             countryMessage="Country is required."
-            countryClassname={`xxxs:col-span-2 sm:col-span-1 md:col-span-2 ${errors.country ? 'border-red-500' : ''}`}
+            countrySpan='xxxs:col-span-2 sm:col-span-1 md:col-span-2'
+            countryClassname={`${errors.country ? 'border-red-500' : ''}`}
             countryInputName="country"
             state={getValues('state')}
             setState={(value) => {
@@ -347,7 +381,8 @@ export const PublicRegisterInfluencer = () => {
               trigger();
             }}
             stateMessage="State is required."
-            stateClassname={`xxxs:col-span-2 sm:col-span-1 md:col-span-2 ${errors.state ? 'border-red-500' : ''}`}
+            stateSpan='xxxs:col-span-2 sm:col-span-1 md:col-span-2'
+            stateClassname={`${errors.state ? 'border-red-500' : ''}`}
             stateInputName="state"
             city={getValues('city')}
             setCity={(value) => {
@@ -355,45 +390,56 @@ export const PublicRegisterInfluencer = () => {
               trigger();
             }}
             cityMessage="City is required."
-            cityClassname={`xxxs:col-span-2 sm:col-span-1 md:col-span-2 ${errors.city ? 'border-red-500' : ''}`}
+            citySpan='xxxs:col-span-2 sm:col-span-1 md:col-span-2'
+            cityClassname={`${errors.city ? 'border-red-500' : ''}`}
             cityInputName="city"
             control={control}
           />
 
           {/* Postcode */}
-          <Input
-            className={`xxxs:col-span-2 sm:col-span-1 lg:col-span-2 ${errors.postcode ? 'border-red-500' : ''}`}
-            type="text"
-            {...register('postcode', {
-              required: {
-                value: true,
-                message: `Postcode is required.`,
-              },
-              minLength: {
-                value: 4,
-                message: `Postcode must be at least 4 numbers.`,
-              },
-              maxLength: {
-                value: 6,
-                message: `Postcode must be no more than 6 numbers.`,
-              },
-              pattern: {
-                value: /^\d+$/,
-                message: `Postcode must contain numbers only.`,
-              },
-            })}
-            placeholder="Postcode"
-          />
+          <div className="flex flex-col xxxs:col-span-2 sm:col-span-1 lg:col-span-2">
+            <Label htmlFor="postcode" className="mb-1 text-xs ml-1 text-neutral-500">
+              Postcode
+            </Label>
+            <Input
+              className={`${errors.postcode ? 'border-red-500' : ''}`}
+              type="text"
+              {...register('postcode', {
+                required: {
+                  value: true,
+                  message: `Postcode is required.`,
+                },
+                minLength: {
+                  value: 4,
+                  message: `Postcode must be at least 4 numbers.`,
+                },
+                maxLength: {
+                  value: 6,
+                  message: `Postcode must be no more than 6 numbers.`,
+                },
+                pattern: {
+                  value: /^\d+$/,
+                  message: `Postcode must contain numbers only.`,
+                },
+              })}
+              placeholder="Postcode"
+            />
+          </div>
 
           {/* Address */}
-          <Input
-            className={`xxxs:col-span-2 md:col-span-3 lg:col-span-4 ${errors.address ? 'border-red-500' : ''}`}
-            type="text"
-            {...register('address', {
-              required: { value: true, message: 'Address is required.' },
-            })}
-            placeholder="Address"
-          />
+          <div className="flex flex-col xxxs:col-span-2 md:col-span-3 lg:col-span-4">
+            <Label htmlFor="address" className="mb-1 text-xs ml-1 text-neutral-500">
+              Address
+            </Label>
+            <Input
+              className={`${errors.address ? 'border-red-500' : ''}`}
+              type="text"
+              {...register('address', {
+                required: { value: true, message: 'Address is required.' },
+              })}
+              placeholder="Address"
+            />
+          </div>
         </div>
         <Separator className="my-4" />
         <div className="flex w-full flex-col gap-4">
@@ -427,24 +473,28 @@ export const PublicRegisterInfluencer = () => {
               <p className="ml-1 text-lg font-semibold capitalize">{platform.platform_name}</p>
               <div className="grid gap-4 xxxs:grid-cols-2 lg:grid-cols-4">
                 {/* Social Media URL */}
-                <Input
-                  className={`col-span-2 ${
-                    errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
-                  }`}
-                  type="text"
-                  placeholder="Social Media URL"
-                  {...register(`platforms.${index}.social_media_url`, {
-                    required: {
-                      value: true,
-                      message: `${capitalizeFirstLetter(platform.platform_name)}'s Social Media URL is required.`,
-                    },
-                    pattern: {
-                      value:
-                        /^(https?:\/\/)?(www\.)?(youtube\.com|tiktok\.com|xiaohongshu\.com|instagram\.com)(\/.*)?$/,
-                      message: `${capitalizeFirstLetter(platform.platform_name)}'s Social Media URL must be from YouTube, TikTok, XiaoHongShu, or Instagram.`,
-                    },
-                  })}
-                />
+                <div className="flex flex-col col-span-2">
+                  <Label htmlFor={`platforms.${index}.social_media_url`} className="mb-1 text-xs ml-1 text-neutral-500">
+                    Social Media URL
+                  </Label>
+                  <Input
+                    className={`${errors.platforms?.[index]?.social_media_url ? 'border-red-500' : ''
+                      }`}
+                    type="text"
+                    placeholder="Social Media URL"
+                    {...register(`platforms.${index}.social_media_url`, {
+                      required: {
+                        value: true,
+                        message: `${capitalizeFirstLetter(platform.platform_name)}'s Social Media URL is required.`,
+                      },
+                      pattern: {
+                        value:
+                          /^(https?:\/\/)?(www\.)?(youtube\.com|tiktok\.com|xiaohongshu\.com|instagram\.com)(\/.*)?$/,
+                        message: `${capitalizeFirstLetter(platform.platform_name)}'s Social Media URL must be from YouTube, TikTok, XiaoHongShu, or Instagram.`,
+                      },
+                    })}
+                  />
+                </div>
 
                 {/* Account Type */}
                 <Controller
@@ -457,35 +507,40 @@ export const PublicRegisterInfluencer = () => {
                     },
                   }}
                   render={({ field }) => (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          {...field} // Spread the Controller field here
-                          variant="outline"
-                          className="justify-between xxxs:col-span-2 sm:col-span-1"
-                        >
-                          <span>{field.value || 'Select Account Type'}</span>
-                          <ChevronDown className="ml-2 h-5 w-5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="w-[200px]">
-                        {ddAccountTypeValues.map((option) => (
-                          <DropdownMenuItem
-                            key={option}
-                            onClick={() =>
-                              setValue(
-                                `platforms.${index}.account_type`,
-                                option as SocialMediaPlatform['account_type'],
-                                { shouldValidate: true },
-                              )
-                            }
-                            className="cursor-pointer"
+                    <div className="flex flex-col xxxs:col-span-2 sm:col-span-1">
+                      <Label htmlFor={`platforms.${index}.account_type`} className="mb-1 text-xs ml-1 text-neutral-500">
+                        Account Type
+                      </Label>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            {...field} // Spread the Controller field here
+                            variant="outline"
+                            className="justify-between"
                           >
-                            {capitalizeFirstLetter(option)}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                            <span>{field.value || 'Select Account Type'}</span>
+                            <ChevronDown className="ml-2 h-5 w-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-[200px]">
+                          {ddAccountTypeValues.map((option) => (
+                            <DropdownMenuItem
+                              key={option}
+                              onClick={() =>
+                                setValue(
+                                  `platforms.${index}.account_type`,
+                                  option as SocialMediaPlatform['account_type'],
+                                  { shouldValidate: true },
+                                )
+                              }
+                              className="cursor-pointer"
+                            >
+                              {capitalizeFirstLetter(option)}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   )}
                 />
 
@@ -500,43 +555,47 @@ export const PublicRegisterInfluencer = () => {
                     },
                   }}
                   render={({ field }) => (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          {...field} // Spread the Controller field here
-                          variant="outline"
-                          className="justify-between xxxs:col-span-2 sm:col-span-1"
-                        >
-                          <span>{field.value || 'Select Platform Focus'}</span>
-                          <ChevronDown className="ml-2 h-5 w-5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start" className="w-[200px]">
-                        {ddPlatformFocusValues.map((option) => (
-                          <DropdownMenuItem
-                            key={option}
-                            onClick={() =>
-                              setValue(
-                                `platforms.${index}.platform_focus`,
-                                option as SocialMediaPlatform['platform_focus'],
-                                { shouldValidate: true },
-                              )
-                            }
-                            className="cursor-pointer"
+                    <div className="flex flex-col xxxs:col-span-2 sm:col-span-1">
+                      <Label htmlFor={`platforms.${index}.platform_focus`} className="mb-1 text-xs ml-1 text-neutral-500">
+                        Platform Focus
+                      </Label>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            {...field} // Spread the Controller field here
+                            variant="outline"
+                            className="justify-between"
                           >
-                            {capitalizeFirstLetter(option)}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                            <span>{field.value || 'Select Platform Focus'}</span>
+                            <ChevronDown className="ml-2 h-5 w-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="w-[200px]">
+                          {ddPlatformFocusValues.map((option) => (
+                            <DropdownMenuItem
+                              key={option}
+                              onClick={() =>
+                                setValue(
+                                  `platforms.${index}.platform_focus`,
+                                  option as SocialMediaPlatform['platform_focus'],
+                                  { shouldValidate: true },
+                                )
+                              }
+                              className="cursor-pointer"
+                            >
+                              {capitalizeFirstLetter(option)}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   )}
                 />
 
                 {/* Follower Count */}
                 <Input
-                  className={`hidden xxxs:col-span-2 sm:col-span-1 ${
-                    errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
-                  }`}
+                  className={`hidden xxxs:col-span-2 sm:col-span-1 ${errors.platforms?.[index]?.follower_count ? 'border-red-500' : ''
+                    }`}
                   type="number"
                   placeholder="Follower Count"
                   {...register(`platforms.${index}.follower_count`, {
@@ -598,8 +657,12 @@ export const PublicRegisterInfluencer = () => {
           </div>
         </div>
         <div className="mt-4 flex justify-end gap-2 xxxs:flex-col sm:flex-row">
-          <Button type="submit" onClick={() => handleValidation(trigger, errors)}>
-            Save
+          <Button
+            type="submit"
+            onClick={() => handleValidation(trigger, errors)}
+            variant="outline"
+          >
+            Register
           </Button>
         </div>
       </form>
