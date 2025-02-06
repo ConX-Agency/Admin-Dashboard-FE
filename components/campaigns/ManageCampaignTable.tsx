@@ -37,6 +37,7 @@ import { getCompanyNameById } from '@/data/clients';
 import RegisterCampaignModal from './RegisterCampaignModal';
 import UpdateCampaignModal from './UpdateCampaignModal';
 import { Filters } from '@/components/ui/filters';
+import CampaignDetailsModal from './details/CampaignDetailsModal';
 
 export function ManageCampaignTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -46,6 +47,7 @@ export function ManageCampaignTable() {
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
+  const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
   const [campaignData, setCampaignData] = useState<Campaign | null>(null);
 
   const { toast } = useToast();
@@ -188,7 +190,7 @@ export function ManageCampaignTable() {
           <ActionButton
             icon="info"
             label="info"
-            onClick={() => navigateToCampaignDetails(row.getValue('campaign_name'))}
+            onClick={() => handleOpenDetailsModal(row.original)}
           />
           <ActionButton
             icon="pencil"
@@ -295,6 +297,15 @@ export function ManageCampaignTable() {
   const handleCloseUpdateModal = () => {
     setIsUpdateModalVisible(false);
   };
+
+  const handleOpenDetailsModal = (data: Campaign) => {
+    setCampaignData(data);
+    setIsDetailsModalVisible(true);
+  }
+
+  const handleCloseCampaignDetailsModal = () => {
+    setIsDetailsModalVisible(false);
+  }
 
   const handleUpdate = (data: CampaignWithLocation, initial_locations: CampaignLocations[]) => {
     const token = localStorage.getItem('token');
@@ -433,6 +444,12 @@ export function ManageCampaignTable() {
         closeUpdateModal={handleCloseUpdateModal}
         handleUpdate={handleUpdate}
         updateModalVisibility={isUpdateModalVisible}
+      />
+
+      <CampaignDetailsModal
+        campaignData={campaignData}
+        closeCampaignDetailsModal={handleCloseCampaignDetailsModal}
+        campaignDetailsModalVisibility={isDetailsModalVisible}
       />
     </div>
   );

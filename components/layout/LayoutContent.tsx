@@ -1,5 +1,4 @@
-// layout_content.tsx
-"use client";  // Ensures this component runs on the client side
+"use client";
 
 import { ConxProvider } from "@/context/ConxContext";  // Adjust the import path
 import { Nav } from "./Nav";

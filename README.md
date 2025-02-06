@@ -53,6 +53,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 3. [Simple Error 404 Implementation](https://www.youtube.com/watch?v=PbFH_VE1Iks&ab_channel=NetNinja)
 4. [Command Item not Clickable](https://github.com/shadcn-ui/ui/issues/2944#issuecomment-1986062418)
 5. [Table Scrollbar Problem](https://stackoverflow.com/questions/78341914/how-can-i-make-the-shadcn-ui-scrollarea-take-full-width-and-add-a-scroll-when-th)
+6. [Inspect Element Keeps Crashing](https://stackoverflow.com/questions/70702095/why-does-chrome-say-im-offline-whenever-i-have-my-devtools-open)
 
 ## Graphics Resources Used
 1. https://tabler.io/icons
