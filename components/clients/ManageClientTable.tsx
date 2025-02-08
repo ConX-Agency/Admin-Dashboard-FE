@@ -328,26 +328,26 @@ export function ManageClientTable() {
         client.append('ways_to_use', data.ways_to_use.toString());
         client.append('status', data.status);
         client.append('addresses', JSON.stringify(data.addresses));
-
-        try {
-            const res = await addClient(client);
-            if (res.message != null) {
-                toast({
-                    title: 'Registration API Failure!',
-                    description: 'An error occurred with the API.',
-                    variant: 'destructive',
-                    duration: 3000,
-                });
-            } else {
-                toast({
-                    title: "Registeration is Successful",
-                    description: `Successfully registered new client, ${data.company_name}.`,
-                    duration: 3000
-                });
-            }
-        } catch (error) {
-            handleApiError(error);
-        }
+        console.log(data);
+        // try {
+        //     const res = await addClient(client);
+        //     if (res.message != null) {
+        //         toast({
+        //             title: 'Registration API Failure!',
+        //             description: 'An error occurred with the API.',
+        //             variant: 'destructive',
+        //             duration: 3000,
+        //         });
+        //     } else {
+        //         toast({
+        //             title: "Registeration is Successful",
+        //             description: `Successfully registered new client, ${data.company_name}.`,
+        //             duration: 3000
+        //         });
+        //     }
+        // } catch (error) {
+        //     handleApiError(error);
+        // }
     }
 
     React.useEffect(() => {
