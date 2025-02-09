@@ -271,34 +271,34 @@ export function ManageClientTable() {
         }
     }
 
-    const handleDelete = () => {
-        const selectedRows = table.getSelectedRowModel().rows;
+    const handleDelete = async () => {
+        try {
+            const selectedRows = table.getSelectedRowModel().rows;
+            if (!selectedRows || selectedRows.length === 0) {
+                toast({
+                    variant: "destructive",
+                    title: "User not Selected",
+                    description: `Can't proceed, select a user to delete first!`,
+                    duration: 3000
+                })
+            } else {
+                // Extract and log client_id from each selected row
+                const clientIds = selectedRows.map((row) => row.original.client_id);
+                const clientNames = selectedRows.map((row) => row.original.company_name);
 
-        if (!selectedRows || selectedRows.length === 0) {
-            toast({
-                variant: "destructive",
-                title: "User not Selected",
-                description: `Can't proceed, select a user to delete first!`,
-                duration: 3000
-            })
-        } else {
-            // Extract and log client_id from each selected row
-            const clientIds = selectedRows.map((row) => row.original.client_id);
-            const clientNames = selectedRows.map((row) => row.original.company_name);
-            var concatenatedNames = "";
+                // Delete clients
+                for (let clientId of clientIds) await deleteClient(clientId);
+                table.resetRowSelection();
 
-            if (clientNames.length > 1) {
-                concatenatedNames = clientNames.join(", ");
+                toast({
+                    title: "Deletion is Successful",
+                    description: `Successfully deleted ${clientNames.join(", ")}'s profile(s).`,
+                    duration: 5000
+                })
+                await handleGetAllClients();
             }
-
-            //To add delete API here.
-
-            table.resetRowSelection();
-            toast({
-                title: "Deletion is Successful",
-                description: `Successfully deleted ${concatenatedNames}'s profile(s).`,
-                duration: 5000
-            })
+        } catch (error) {
+            handleApiError(error);
         }
     };
 
