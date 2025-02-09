@@ -59,6 +59,7 @@ export interface CreateClient {
     ways_to_use: string;
     status: "Active" | "Pending Approval" | "Blacklisted" | "Cancelled";
     addresses: CreateClientAddress[];
+    tnc_consent?: boolean;
 }
 
 export interface UpdateClient {
