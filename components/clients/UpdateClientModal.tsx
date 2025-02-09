@@ -1,4 +1,4 @@
-import { Client, clientAddress } from '@/data/clients';
+import { Client, UpdateClient, UpdateClientAddress } from '@/data/clients';
 import {
   Dialog,
   DialogContent,
@@ -30,9 +30,9 @@ export const UpdateClientModal = ({
   handleUpdate,
   updateModalVisibility,
 }: {
-  clientData: Client | null;
+  clientData: Client;
   closeUpdateModal: () => void;
-  handleUpdate: (data: Client) => void;
+  handleUpdate: (clientId: number, data: UpdateClient) => void;
   updateModalVisibility: boolean;
 }) => {
   const [status, setStatus] = useState<Client['status']>('Active');
@@ -48,7 +48,7 @@ export const UpdateClientModal = ({
     formState: { errors },
     trigger,
     reset,
-  } = useForm<Client>({
+  } = useForm<UpdateClient>({
     mode: 'onSubmit',
   });
 
@@ -61,7 +61,6 @@ export const UpdateClientModal = ({
   useEffect(() => {
     if (clientData) {
       reset({
-        client_id: clientData.client_id,
         company_name: clientData.company_name || '',
         company_email: clientData.company_email || '',
         contact_number: clientData.contact_number || '',
@@ -84,27 +83,26 @@ export const UpdateClientModal = ({
 
   const addAddress = () => {
     append({
-      clients_location_id: crypto.randomUUID(),
       client_id: clientData?.client_id,
       address: '',
       city: '',
       postcode: '',
       state: '',
       country: '',
-    } as clientAddress);
+    } as UpdateClientAddress);
   };
 
   const removeAddress = (index: number) => {
     remove(index);
   };
 
-  const onSubmit = async (data: Client) => {
+  const onSubmit = async (data: UpdateClient) => {
     // Set Values for Remaining Fields
     data.is_non_monetary = monetary;
     data.industry = industry;
     data.status = status;
 
-    handleUpdate(data);
+    handleUpdate(clientData?.client_id, data);
     closeUpdateModal();
     reset();
   };
@@ -435,9 +433,9 @@ export const UpdateClientModal = ({
             </div>
             {fields.map((address, index) => (
               <div
-                key={address.clients_location_id}
+                key={index}
                 className="mb-2 flex flex-col gap-4"
-                id={`address-form-${address.clients_location_id}`}
+                id={`address-form-${index}`}
               >
                 <div className="flex flex-row items-center justify-between">
                   <h1 className="ml-1 text-lg font-semibold">Address #{index + 1}</h1>
@@ -454,7 +452,7 @@ export const UpdateClientModal = ({
                 <div className="grid items-center gap-4 xxxs:grid-cols-2 sm:grid-cols-4 md:grid-cols-6">
                   {/* Country, City, State */}
                   <AddressDropdowns
-                    country={getValues(`addresses.${index}.country`)}
+                    country={getValues(`addresses.${index}.country`)!}
                     setCountry={(value: string) => {
                       setValue(`addresses.${index}.country`, value, { shouldValidate: true });
                       trigger(); //retrigger validation after fixing error.
@@ -463,7 +461,7 @@ export const UpdateClientModal = ({
                     countrySpan='xxxs:col-span-4 sm:col-span-2'
                     countryClassname={`${errors.addresses?.[index]?.country ? 'border-red-500' : ''}`}
                     countryInputName={`addresses.${index}.country`}
-                    state={getValues(`addresses.${index}.state`)}
+                    state={getValues(`addresses.${index}.state`)!}
                     stateMessage={`Address #${index + 1}'s State is required.`}
                     setState={(value: string) => {
                       setValue(`addresses.${index}.state`, value, { shouldValidate: true });
@@ -472,7 +470,7 @@ export const UpdateClientModal = ({
                     stateSpan='xxxs:col-span-4 sm:col-span-2'
                     stateClassname={`${errors.addresses?.[index]?.state ? 'border-red-500' : ''}`}
                     stateInputName={`addresses.${index}.state`}
-                    city={getValues(`addresses.${index}.city`)}
+                    city={getValues(`addresses.${index}.city`)!}
                     cityMessage={`Address #${index + 1}'s City is required.`}
                     setCity={(value: string) => {
                       setValue(`addresses.${index}.city`, value, { shouldValidate: true });

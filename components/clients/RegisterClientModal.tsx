@@ -1,4 +1,4 @@
-import { Client, clientAddress } from '@/data/clients';
+import { Client, ClientAddress, CreateClient, CreateClientAddress } from '@/data/clients';
 import { useEffect, useState } from 'react';
 import {
   Dialog,
@@ -32,13 +32,12 @@ export const RegisterClientModal = ({
   registerModalVisibility,
 }: {
   closeRegisterModal: () => void;
-  handleRegister: (data: Client) => void;
+  handleRegister: (data: CreateClient) => void;
   registerModalVisibility: boolean;
 }) => {
   const [industry, setIndustry] = useState<Client['industry']>('Food & Beverage');
   const [status, setStatus] = useState<Client['status']>('Active');
   const [monetary, setMonetary] = useState<boolean>(true);
-  const client_id = crypto.randomUUID();
   const {
     control,
     handleSubmit,
@@ -48,10 +47,9 @@ export const RegisterClientModal = ({
     formState: { errors },
     trigger,
     reset,
-  } = useForm<Client>({
+  } = useForm<CreateClient>({
     mode: 'onSubmit',
     defaultValues: {
-      client_id: client_id,
       company_name: '',
       company_email: '',
       contact_number: '',
@@ -64,7 +62,6 @@ export const RegisterClientModal = ({
       is_non_monetary: false,
       discount: 0,
       ways_to_use: '',
-      tnc_consent: false,
       status: status,
     },
   });
@@ -75,7 +72,13 @@ export const RegisterClientModal = ({
   });
 
   const addAddress = () => {
-    append({ clients_location_id: crypto.randomUUID(), client_id: client_id, address: "", city: "", postcode: "", state: "", country: "" } as clientAddress,);
+    append({
+      address: "",
+      city: "",
+      postcode: "",
+      state: "",
+      country: ""
+    } as CreateClientAddress);
   };
 
   const removeAddress = (index: number) => {
@@ -96,13 +99,11 @@ export const RegisterClientModal = ({
     return true;
   };
 
-  const onSubmit = async (data: Client) => {
-
+  const onSubmit = async (data: CreateClient) => {
     const isValid = handleAddressValidation();
     if (!isValid) return;
 
     // Set Values for Remaining Fields
-    data.client_id = crypto.randomUUID();
     data.is_non_monetary = monetary;
     data.industry = industry;
     data.status = status;
@@ -548,8 +549,7 @@ export const RegisterClientModal = ({
               ))}
             </div>
             <Separator className="my-4" />
-            <div className="flex items-center space-x-2">
-              {/* TNC */}
+            {/* <div className="flex items-center space-x-2">
               <Checkbox
                 className={`${errors.tnc_consent ? 'border-red-500' : ''}`}
                 onCheckedChange={(checked: boolean) => {
@@ -570,7 +570,7 @@ export const RegisterClientModal = ({
                 processed in accordance with ConX Agency's Terms & Conditions.
                 <span className="text-xl text-red-600">*</span>
               </label>
-            </div>
+            </div> */}
             <DialogFooter>
               <div className="mt-4 flex gap-2 xxxs:flex-col-reverse sm:flex-row">
                 <Button

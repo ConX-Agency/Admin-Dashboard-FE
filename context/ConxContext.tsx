@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { ApiError } from '@/data/error';
+import { Client, ClientAddress } from '@/data/clients';
 
 const ConxContext = createContext<ConxContextType | undefined>(undefined);
 
@@ -9,7 +10,18 @@ interface ConxContextType {
   token: string | null;
   login: (formData: FormData) => Promise<boolean>;
   logout: () => void;
-  addClient: (formData: FormData) => Promise<any>;
+
+  // Clients
+  getAllClients: () => Promise<Client[]>;
+  getClient: (clientId: number) => Promise<Client>;
+  addClient: (formData: FormData) => Promise<Client>;
+  updateClient: (clientId: number, formData: FormData) => Promise<Client>;
+  deleteClient: (clientId: number) => Promise<boolean>;
+  addClientAddress: (formData: FormData) => Promise<ClientAddress>;
+  updateClientAddress: (clientAddressId: number, formData: FormData) => Promise<ClientAddress>;
+  deleteClientAddress: (clientAddressId: number) => Promise<boolean>;
+
+  // Influencers
   addInfluencer: (formData: FormData) => Promise<any>;
 }
 
@@ -40,7 +52,8 @@ export const ConxProvider = ({ children }: { children: ReactNode }) => {
       }
       return false;
     } else {
-      throw new ApiError(response.status, response.statusText);
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
     }
   }
 
@@ -50,6 +63,41 @@ export const ConxProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     router.push('/auth/login');
   };
+
+  // Client API functions
+  const getAllClients = async () => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/clients`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
+    }
+  }
+
+  const getClient = async (clientId: number) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/${clientId}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
+    }
+  }
 
   const addClient = async (formData: FormData) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/clients`,
@@ -65,10 +113,105 @@ export const ConxProvider = ({ children }: { children: ReactNode }) => {
       const data = await response.json();
       return data;
     } else {
-      throw new ApiError(response.status, response.statusText);
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
     }
   }
 
+  const updateClient = async (clientId: number, formData: FormData) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/${clientId}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
+    }
+  }
+
+  const deleteClient = async (clientId: number) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/${clientId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
+    }
+  }
+
+  const addClientAddress = async (formData: FormData) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/location`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
+    }
+  }
+
+  const updateClientAddress = async (clientAddressId: number, formData: FormData) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/location/${clientAddressId}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
+    }
+  }
+
+  const deleteClientAddress = async (clientAddressId: number) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/clients/location/${clientAddressId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
+    }
+  }
+
+  // Influencer API functions
   const addInfluencer = async (formData: FormData) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/influencers`,
       {
@@ -83,7 +226,8 @@ export const ConxProvider = ({ children }: { children: ReactNode }) => {
       const data = await response.json();
       return data;
     } else {
-      throw new ApiError(response.status, response.statusText);
+      const error = await response.json();
+      throw new ApiError(response.status, error.message);
     }
   }
 
@@ -92,7 +236,18 @@ export const ConxProvider = ({ children }: { children: ReactNode }) => {
     token,
     login,
     logout,
+
+    // Clients
+    getAllClients,
+    getClient,
     addClient,
+    updateClient,
+    deleteClient,
+    addClientAddress,
+    updateClientAddress,
+    deleteClientAddress,
+
+    // Influencers
     addInfluencer
   }}>{children}</ConxContext.Provider>
 }
