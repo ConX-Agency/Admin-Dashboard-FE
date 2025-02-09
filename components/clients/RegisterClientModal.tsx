@@ -22,7 +22,6 @@ import {
 import { ddIndustryValues, ddStatusValues } from '@/data/dropdown-values';
 import { capitalizeFirstLetter, handleValidation } from '@/lib/utils';
 import { ChevronDown } from 'lucide-react';
-import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { toast } from '@/hooks/use-toast';
 
@@ -109,7 +108,6 @@ export const RegisterClientModal = ({
     data.status = status;
 
     handleRegister(data);
-    closeRegisterModal();
     reset();
   };
 

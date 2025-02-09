@@ -103,7 +103,6 @@ export const UpdateClientModal = ({
     data.status = status;
 
     handleUpdate(clientData?.client_id, data);
-    closeUpdateModal();
     reset();
   };
 

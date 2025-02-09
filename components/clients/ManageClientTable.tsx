@@ -49,6 +49,7 @@ export function ManageClientTable() {
     const [statusFilter, setStatusFilter] = useState<string>("");
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedClient, setSelectedClient] = useState<Client | null>(null);
     const [allClients, setAllClients] = useState<Client[]>([]);
     const { toast } = useToast();
@@ -264,8 +265,10 @@ export function ManageClientTable() {
     // --------------------------- Get, Create, Delete and Update API -------------------------
     const handleGetAllClients = async () => {
         try {
+            setIsLoading(true);
             const res = await getAllClients();
             setAllClients(res);
+            setIsLoading(false);
         } catch (error) {
             handleApiError(error);
         }
@@ -358,6 +361,7 @@ export function ManageClientTable() {
                 description: `Successfully updated ${data.company_name}'s profile.`,
                 duration: 3000
             });
+            handleCloseUpdateModal();
             await handleGetAllClients();
         } catch (error) {
             handleApiError(error);
@@ -387,6 +391,7 @@ export function ManageClientTable() {
                 description: `Successfully registered new client, ${data.company_name}.`,
                 duration: 3000
             });
+            handleCloseRegisterModal();
             await handleGetAllClients();
         } catch (error) {
             handleApiError(error);
@@ -479,33 +484,42 @@ export function ManageClientTable() {
                         ))}
                     </TableHeader>
                     <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                    className="border-neutral-500"
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
+                        {isLoading ?
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    No results.
+                                    {isLoading ? "Loading..." : "No Results."}
                                 </TableCell>
                             </TableRow>
-                        )}
+                            : table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        data-state={row.getIsSelected() && "selected"}
+                                        className="border-neutral-500"
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
+                                        No Results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
                     </TableBody>
                 </Table>
             </div>
