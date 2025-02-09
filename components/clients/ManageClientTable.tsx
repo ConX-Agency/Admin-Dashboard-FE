@@ -30,8 +30,8 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Checkbox } from "../ui/checkbox"
-import { dummyClientData, Client } from "@/data/clients"
-import { useState } from "react"
+import { Client, CreateClient, UpdateClient } from "@/data/clients"
+import { useEffect, useState } from "react"
 import { Input } from "../ui/input"
 import { FilterDropdown } from "@/components/ui/filters"
 import { UpdateClientModal } from "./UpdateClientModal"
@@ -42,18 +42,19 @@ import { useConx } from "@/context/ConxContext"
 import { handleApiError } from "@/lib/utils"
 
 export function ManageClientTable() {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState({});
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+    const [rowSelection, setRowSelection] = useState({});
     const [statusFilter, setStatusFilter] = useState<string>("");
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
-    const [clientData, setClientData] = useState<Client | null>(null);
+    const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+    const [allClients, setAllClients] = useState<Client[]>([]);
     const { toast } = useToast();
-    const { addClient } = useConx();
+    const { getAllClients, addClient, updateClient, deleteClient, addClientAddress, updateClientAddress, deleteClientAddress } = useConx();
 
-    //Table Columns Definitions
+    // -------------------------- Table-related configs -------------------------- 
     const columns: ColumnDef<Client>[] = [
         {
             id: "select",
@@ -205,9 +206,8 @@ export function ManageClientTable() {
         },
     ];
 
-    //Table Config
     const table = useReactTable({
-        data: dummyClientData,
+        data: allClients,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -224,8 +224,10 @@ export function ManageClientTable() {
             rowSelection,
         },
     })
+    // --------------------------------------------------------------------------
 
-    //Action Buttons' Logics
+
+    // ----------------------------- Filter & Search -----------------------------
     const handleSearch = (value: string) => {
         table.setColumnFilters((prev) => [
             ...prev.filter((filter) => filter.id !== "company_name"),
@@ -234,43 +236,14 @@ export function ManageClientTable() {
     };
 
     const handleStatusFilter = (value: string) => {
-        setStatusFilter(value); // Update the filter value
+        setStatusFilter(value);
     };
+    // --------------------------------------------------------------------------
 
-    const handleDelete = () => {
 
-        const selectedRows = table.getSelectedRowModel().rows;
-
-        if (!selectedRows || selectedRows.length === 0) {
-            toast({
-                variant: "destructive",
-                title: "User not Selected",
-                description: `Can't proceed, select a user to delete first!`,
-                duration: 3000
-            })
-        } else {
-            // Extract and log client_id from each selected row
-            const clientIds = selectedRows.map((row) => row.original.client_id);
-            const clientNames = selectedRows.map((row) => row.original.company_name);
-            var concatenatedNames = "";
-
-            if (clientNames.length > 1) {
-                concatenatedNames = clientNames.join(", ");
-            }
-
-            //To add delete API here.
-
-            table.resetRowSelection();
-            toast({
-                title: "Deletion is Successful",
-                description: `Successfully deleted ${concatenatedNames}'s profile(s).`,
-                duration: 5000
-            })
-        }
-    };
-
+    // ---------------- Register and update modal buttons' logics ----------------
     const handleOpenUpdateModal = (data: Client) => {
-        setClientData(data);
+        setSelectedClient(data);
         setIsUpdateModalVisible(true);
     };
 
@@ -285,80 +258,151 @@ export function ManageClientTable() {
     const handleCloseRegisterModal = () => {
         setIsRegisterModalVisible(false);
     };
+    // ----------------------------------------------------------------------------
 
-    const handleUpdate = (data: Client) => {
-        const token = localStorage.getItem('token');
 
-        const client = new FormData();
-        client.append('company_name', data.company_name);
-        client.append('person_in_charge_name', data.person_in_charge_name);
-        client.append('person_in_charge_email', data.person_in_charge_email);
-        client.append('company_email', data.company_email);
-        client.append('contact_number', data.contact_number);
-        client.append('alt_contact_number', data.alt_contact_number);
-        client.append('industry', data.industry);
-        client.append('category', data.category);
-        client.append('is_non_monetary', data.is_non_monetary.toString());
-        client.append('discount', data.discount.toString());
-        client.append('ways_to_use', data.ways_to_use.toString());
-        client.append('status', data.status);
-        client.append('addresses', JSON.stringify(data.addresses));
-
-        toast({
-            title: "Update Profile is Successful",
-            description: `Successfully updated ${data.company_name}'s profile.`,
-            duration: 3000
-        });
+    // --------------------------- Get, Create, Delete and Update API -------------------------
+    const handleGetAllClients = async () => {
+        try {
+            const res = await getAllClients();
+            setAllClients(res);
+        } catch (error) {
+            handleApiError(error);
+        }
     }
 
-    const handleRegister = async (data: Client) => {
-        const token = localStorage.getItem('token');
+    const handleDelete = async () => {
+        try {
+            const selectedRows = table.getSelectedRowModel().rows;
+            if (!selectedRows || selectedRows.length === 0) {
+                toast({
+                    variant: "destructive",
+                    title: "User not Selected",
+                    description: `Can't proceed, select a user to delete first!`,
+                    duration: 3000
+                })
+            } else {
+                // Extract and log client_id from each selected row
+                const clientIds = selectedRows.map((row) => row.original.client_id);
+                const clientNames = selectedRows.map((row) => row.original.company_name);
 
-        const client = new FormData();
-        client.append('company_name', data.company_name);
-        client.append('person_in_charge_name', data.person_in_charge_name);
-        client.append('person_in_charge_email', data.person_in_charge_email);
-        client.append('company_email', data.company_email);
-        client.append('contact_number', data.contact_number);
-        client.append('alt_contact_number', data.alt_contact_number);
-        client.append('industry', data.industry);
-        client.append('category', data.category);
-        client.append('is_non_monetary', data.is_non_monetary.toString());
-        client.append('discount', data.discount.toString());
-        client.append('ways_to_use', data.ways_to_use.toString());
-        client.append('status', data.status);
-        client.append('addresses', JSON.stringify(data.addresses));
-        console.log(data);
-        // try {
-        //     const res = await addClient(client);
-        //     if (res.message != null) {
-        //         toast({
-        //             title: 'Registration API Failure!',
-        //             description: 'An error occurred with the API.',
-        //             variant: 'destructive',
-        //             duration: 3000,
-        //         });
-        //     } else {
-        //         toast({
-        //             title: "Registeration is Successful",
-        //             description: `Successfully registered new client, ${data.company_name}.`,
-        //             duration: 3000
-        //         });
-        //     }
-        // } catch (error) {
-        //     handleApiError(error);
-        // }
+                // Delete clients
+                for (let clientId of clientIds) await deleteClient(clientId);
+                table.resetRowSelection();
+
+                toast({
+                    title: "Deletion is Successful",
+                    description: `Successfully deleted ${clientNames.join(", ")}'s profile(s).`,
+                    duration: 5000
+                })
+                await handleGetAllClients();
+            }
+        } catch (error) {
+            handleApiError(error);
+        }
+    };
+
+    const handleUpdate = async (clientId: number, data: UpdateClient) => {
+        try {
+            // Update client data
+            const client = new FormData();
+            if (data.company_name) client.append('company_name', data.company_name!);
+            if (data.person_in_charge_name) client.append('person_in_charge_name', data.person_in_charge_name!);
+            if (data.person_in_charge_email) client.append('person_in_charge_email', data.person_in_charge_email!);
+            if (data.company_email) client.append('company_email', data.company_email!);
+            if (data.contact_number) client.append('contact_number', data.contact_number!);
+            if (data.alt_contact_number) client.append('alt_contact_number', data.alt_contact_number!);
+            if (data.industry) client.append('industry', data.industry!);
+            if (data.category) client.append('category', data.category!);
+            if (data.is_non_monetary) client.append('is_non_monetary', data.is_non_monetary!.toString());
+            if (data.discount) client.append('discount', data.discount!.toString());
+            if (data.ways_to_use) client.append('ways_to_use', data.ways_to_use!.toString());
+            if (data.status) client.append('status', data.status!);
+
+            await updateClient(clientId, client);
+            if (data.addresses) {
+                // Update existing client addresses (or add new ones)
+                for (let address of data.addresses!) {
+                    if (address.client_location_id) {
+                        // Update existing address
+                        const updatedAddress = new FormData();
+                        if (address.client_id) updatedAddress.append('client_id', address.client_id?.toString()!);
+                        if (address.country) updatedAddress.append('country', address.country!);
+                        if (address.state) updatedAddress.append('state', address.state!);
+                        if (address.city) updatedAddress.append('city', address.city!);
+                        if (address.postcode) updatedAddress.append('postcode', address.postcode!);
+                        if (address.address) updatedAddress.append('address', address.address!);
+                        await updateClientAddress(address.client_location_id!, updatedAddress);
+                    } else {
+                        // Add new address
+                        const newAddress = new FormData();
+                        newAddress.append('client_id', address.client_id?.toString()!);
+                        newAddress.append('country', address.country!);
+                        newAddress.append('state', address.state!);
+                        newAddress.append('city', address.city!);
+                        newAddress.append('postcode', address.postcode!);
+                        newAddress.append('address', address.address!);
+                        await addClientAddress(newAddress!);
+                    }
+                }
+
+                // Delete existing client addresses
+                const addressLocationIds = data.addresses.map((address) => address.client_location_id);
+                const existingDeletedAddresses = selectedClient?.addresses.filter((address) => addressLocationIds.indexOf(address.client_location_id) < 0);
+                for (let address of existingDeletedAddresses!) {
+                    await deleteClientAddress(address.client_location_id);
+                }
+            }
+            toast({
+                title: "Update Profile is Successful",
+                description: `Successfully updated ${data.company_name}'s profile.`,
+                duration: 3000
+            });
+            await handleGetAllClients();
+        } catch (error) {
+            handleApiError(error);
+        }
     }
 
-    React.useEffect(() => {
-        const statusFilterCondition = statusFilter && statusFilter !== "All"
-            ? [{ id: "status", value: statusFilter }]
-            : [];
+    const handleRegister = async (data: CreateClient) => {
+        try {
+            const client = new FormData();
+            client.append('company_name', data.company_name);
+            client.append('person_in_charge_name', data.person_in_charge_name);
+            client.append('person_in_charge_email', data.person_in_charge_email);
+            client.append('company_email', data.company_email);
+            client.append('contact_number', data.contact_number);
+            client.append('alt_contact_number', data.alt_contact_number);
+            client.append('industry', data.industry);
+            client.append('category', data.category);
+            client.append('is_non_monetary', data.is_non_monetary.toString());
+            client.append('discount', data.discount.toString());
+            client.append('ways_to_use', data.ways_to_use.toString());
+            client.append('status', data.status);
+            client.append('addresses', JSON.stringify(data.addresses));
 
+            await addClient(client);
+            toast({
+                title: "Registeration is Successful",
+                description: `Successfully registered new client, ${data.company_name}.`,
+                duration: 3000
+            });
+            await handleGetAllClients();
+        } catch (error) {
+            handleApiError(error);
+        }
+    }
+    // ---------------------------------------------------------------------------------------
+
+    useEffect(() => {
+        handleGetAllClients();
+    }, [])
+
+    useEffect(() => {
         // Apply status filter without affecting other column filters
         setColumnFilters((prev) => [
             ...prev.filter((filter) => filter.id !== "status"),
-            ...statusFilterCondition
+            { id: "status", value: statusFilter && statusFilter !== "All" ? statusFilter : "" }
         ]);
     }, [statusFilter]);
 
@@ -491,7 +535,7 @@ export function ManageClientTable() {
 
             {/* Update & Register Modals */}
             <UpdateClientModal
-                clientData={clientData}
+                clientData={selectedClient as Client}
                 closeUpdateModal={handleCloseUpdateModal}
                 handleUpdate={handleUpdate}
                 updateModalVisibility={isUpdateModalVisible}
