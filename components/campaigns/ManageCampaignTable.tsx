@@ -32,12 +32,18 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Checkbox } from '../ui/checkbox';
-import { Campaign, CampaignLocations, CampaignWithLocation, dummyCampaignsData, getTotalBookedSlotsByCampaign } from '@/data/campaign';
+import {
+  Campaign,
+  CampaignLocations,
+  CampaignWithLocation,
+  dummyCampaignsData,
+  getTotalBookedSlotsByCampaign,
+} from '@/data/campaign';
 import { getCompanyNameById } from '@/data/clients';
 import RegisterCampaignModal from './RegisterCampaignModal';
 import UpdateCampaignModal from './UpdateCampaignModal';
 import { Filters } from '@/components/ui/filters';
-import CampaignDetailsModal from './details/CampaignDetailsModal';
+import CampaignInfluencersModal from './campaign-influencers/CampaignInfluencersModal';
 
 export function ManageCampaignTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -47,11 +53,9 @@ export function ManageCampaignTable() {
 
   const [isRegisterModalVisible, setIsRegisterModalVisible] = useState(false);
   const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-  const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
   const [isInfluencerModalVisible, setIsInfluencerModalVisible] = useState(false);
 
   const [filteredCampaignData, setFilteredCampaignData] = useState<Campaign[]>(dummyCampaignsData);
-  const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
   const [campaignData, setCampaignData] = useState<Campaign | null>(null);
 
   const { toast } = useToast();
@@ -192,14 +196,14 @@ export function ManageCampaignTable() {
       cell: ({ row }) => (
         <div className="flex flex-row gap-2">
           <ActionButton
-            icon="info"
-            label="info"
-            onClick={() => handleOpenDetailsModal(row.original)}
-          />
-          <ActionButton
             icon="pencil"
             label="update"
             onClick={() => handleOpenUpdateModal(row.original)}
+          />
+          <ActionButton
+            icon="world"
+            label="info"
+            onClick={() => handleOpenInfluencersModal(row.original)}
           />
         </div>
       ),
@@ -232,34 +236,33 @@ export function ManageCampaignTable() {
   };
 
   const handleDelete = () => {
-
     const selectedRows = table.getSelectedRowModel().rows;
 
     if (!selectedRows || selectedRows.length === 0) {
       toast({
-        variant: "destructive",
-        title: "User not Selected",
+        variant: 'destructive',
+        title: 'User not Selected',
         description: `Can't proceed, select a user to delete first!`,
-        duration: 3000
-      })
+        duration: 3000,
+      });
     } else {
       // Extract and log client_id from each selected row
       const campaignIds = selectedRows.map((row) => row.original.campaign_id);
       const campaignNames = selectedRows.map((row) => row.original.campaign_name);
-      var concatenatedNames = "";
+      var concatenatedNames = '';
 
       if (campaignNames.length > 1) {
-        concatenatedNames = campaignNames.join(", ");
+        concatenatedNames = campaignNames.join(', ');
       }
 
       //To add delete API here.
 
       table.resetRowSelection();
       toast({
-        title: "Deletion is Successful",
+        title: 'Deletion is Successful',
         description: `Successfully deleted ${concatenatedNames}'s profile(s).`,
-        duration: 5000
-      })
+        duration: 5000,
+      });
     }
   };
 
@@ -290,7 +293,6 @@ export function ManageCampaignTable() {
     campaign.append('slot_status', data.slot_status.toString());
     campaign.append('status', data.status.toString());
     campaign.append('campaign_locations', JSON.stringify(data.campaign_locations));
-
   };
 
   const handleOpenUpdateModal = (data: Campaign) => {
@@ -302,14 +304,14 @@ export function ManageCampaignTable() {
     setIsUpdateModalVisible(false);
   };
 
-  const handleOpenDetailsModal = (data: Campaign) => {
+  const handleOpenInfluencersModal = (data: Campaign) => {
     setCampaignData(data);
-    setIsDetailsModalVisible(true);
-  }
+    setIsInfluencerModalVisible(true);
+  };
 
-  const handleCloseCampaignDetailsModal = () => {
-    setIsDetailsModalVisible(false);
-  }
+  const handleCloseInfluencersModal = () => {
+    setIsInfluencerModalVisible(false);
+  };
 
   const handleUpdate = (data: CampaignWithLocation, initial_locations: CampaignLocations[]) => {
     const token = localStorage.getItem('token');
@@ -450,10 +452,10 @@ export function ManageCampaignTable() {
         updateModalVisibility={isUpdateModalVisible}
       />
 
-      <CampaignDetailsModal
+      <CampaignInfluencersModal
         campaignData={campaignData}
-        closeCampaignDetailsModal={handleCloseCampaignDetailsModal}
-        campaignDetailsModalVisibility={isDetailsModalVisible}
+        closeCampaignInfluencersModal={handleCloseInfluencersModal}
+        campaignInfluencersModalVisibility={isInfluencerModalVisible}
       />
     </div>
   );

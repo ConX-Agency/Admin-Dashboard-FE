@@ -78,8 +78,10 @@ export function formatInfluencerCategory(follower_count: number): string {
     return "Nano";
   } else if (follower_count < 100_000) {
     return "Micro";
+  } else if (follower_count < 500_000) {
+    return "Macro";
   } else {
-    return "Undecided";
+    return "Mega";
   }
 }
 

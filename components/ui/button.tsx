@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { cn } from "@/lib/utils";
-import { IconInfoCircle, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconInfoCircle, IconPencil, IconPlus, IconTrash, IconWorld } from "@tabler/icons-react";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
@@ -106,7 +106,7 @@ const AnimatedIconButton: React.FC<AnimatedIconButtonProps> = ({
 
 interface ActionButtonProps {
   onClick?: () => void;
-  icon: "trash" | "pencil" | "plus" | "info",
+  icon: "trash" | "pencil" | "plus" | "info" | "world",
   label: string
   textBtn?: string;
   className?: string;
@@ -125,6 +125,8 @@ const ActionButton = React.forwardRef<HTMLButtonElement, ActionButtonProps>(
       iconComponent = <IconPlus className="h-4 w-4 flex-shrink-0" />;
     } else if (icon === "info") {
       iconComponent = <IconInfoCircle className="h-4 w-4 flex-shrink-0" />;
+    } else if (icon === "world") {
+      iconComponent = <IconWorld className="h-4 w-4 flex-shrink-0" />;
     }
 
     return (

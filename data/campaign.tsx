@@ -1,3 +1,5 @@
+import { getInfluencerWithPlatformsById, InfluencerWithPlatforms } from "./influencer";
+
 export interface Services {
   id: string;
   platform: "Instagram" | "RED" | "TikTok" | "Google Review";
@@ -9,7 +11,9 @@ export interface Services {
 
 export type CampaignWithLocation = Campaign & { campaign_locations: CampaignLocations[] };
 
-export type packageType = "Bronze Tier" | "Silver Tier" | "Gold Tier";
+export type CampaignWithInfluencer = InfluencerCampaign & { campaign_influencers: InfluencerWithPlatforms }
+
+export type campaignInfluencerBookingStatus = "No Slot" | "Pending Attendance" | "Attended";
 
 export interface Campaign {
   campaign_id?: string;
@@ -198,7 +202,7 @@ export const dummyInfluencerCampaignsData: InfluencerCampaign[] = [
   {
     influencer_campaign_id: "IC001",
     campaign_id: "C001",
-    influencer_id: "I001",
+    influencer_id: "INF001",
     full_name: "John Doe",
     pax_no: 2,
     type: "Food Influencer",
@@ -210,9 +214,9 @@ export const dummyInfluencerCampaignsData: InfluencerCampaign[] = [
     campaign_feedback: "Great campaign!",
   },
   {
-    influencer_campaign_id: "IC002",
-    campaign_id: "C002",
-    influencer_id: "I002",
+    influencer_campaign_id: "IC003",
+    campaign_id: "C001",
+    influencer_id: "INF003",
     full_name: "Jane Smith",
     pax_no: 3,
     type: "Photographer",
@@ -338,6 +342,15 @@ export const getLocationsByCampaignId = (campaignId: string) => {
   return dummyCampaignLocationsData.filter(
     location => location.campaign_id === campaignId
   );
+};
+
+export const getInfluencerCampaignsByCampaignId = (campaignId: string): CampaignWithInfluencer[] => {
+  return dummyInfluencerCampaignsData
+    .filter(influencerCampaign => influencerCampaign.campaign_id === campaignId)
+    .map(influencerCampaign => ({
+      ...influencerCampaign,
+      campaign_influencers: getInfluencerWithPlatformsById(influencerCampaign.influencer_id) as InfluencerWithPlatforms
+    }));
 };
 
 export interface IconWithToolTipProps {

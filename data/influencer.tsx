@@ -238,3 +238,14 @@ export const getTotalFollowerCountByInfluencerId = (influencerId: string): numbe
   const platforms = getSocialMediaPlatformsByInfluencerId(influencerId);
   return platforms.reduce((total, platform) => total + platform.follower_count, 0);
 };
+
+export const getInfluencerWithPlatformsById = (influencerId: string): InfluencerWithPlatforms | undefined => {
+  const influencer = dummyInfluencerData.find(influencer => influencer.influencer_id === influencerId);
+  if (!influencer) return undefined;
+  const platforms = getSocialMediaPlatformsByInfluencerId(influencerId);
+  return { ...influencer, platforms };
+};
+
+export const getAllInfluencersWithPlatforms = (): InfluencerWithPlatforms[] => {
+  return dummyInfluencerDataWithPlatforms;
+};

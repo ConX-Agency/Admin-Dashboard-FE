@@ -212,7 +212,7 @@ const UpdateCampaignModal = ({
           modalTopRightClose={closeUpdateModal}
         >
           <DialogHeader>
-            <DialogTitle className='leading-7'>Register New Campaign</DialogTitle>
+            <DialogTitle className='leading-7'>Update New Campaign</DialogTitle>
             <DialogDescription>
               This is a campaign request form, please fill it up and click on the "Submit" button to
               proceed.
