@@ -71,6 +71,7 @@ const CampaignInfluencersModal = ({
   campaignInfluencersModalVisibility: boolean;
 }) => {
   const [influencerList, setInfluencerList] = useState<InfluencerWithPlatforms[]>();
+  const [influencerCategory, setInfluencerCategory] = useState<string>('All');
   const [campaignInfluencersData, setCampaignInfluencersData] =
     useState<CampaignWithInfluencer[]>();
   const [bookingAttendance, setBookingAttendance] = useState<campaignInfluencerBookingStatus>('Attended');
@@ -89,6 +90,10 @@ const CampaignInfluencersModal = ({
     setInitialCampaignInfluencers(campaignInfluencersData);
     setNewCampaignInfluencers(campaignInfluencersData);
   }, [campaignInfluencersData, influencerList]);
+
+  const filterInfluencerListByType = (category: string) => {
+    setInfluencerList(influencerList?.filter((influencer) => influencer.category === category));
+  }
 
   // const addInfluencer = (influencer: InfluencerCampaign) => {
   //   setNewCampaignInfluencers((prev = []) => {
@@ -117,6 +122,12 @@ const CampaignInfluencersModal = ({
             </DialogTitle>
             <Separator className="mb-0" />
           </DialogHeader>
+          <div className='flex flex-row gap-2'>
+            <Button>All</Button>
+            <Button>Nano</Button>
+            <Button>Micro</Button>
+            <Button>Macro</Button>
+          </div>
           <div className="grid w-full grid-cols-6 gap-4">
             {influencerList
               ?.slice()
@@ -154,18 +165,19 @@ const CampaignInfluencersModal = ({
                             </span>
                           </div>
                         </div>
+                        {/* Adding & Removing Influencer from Campaign */}
                         {influencerCampaign ? (
                           <ActionButton
                             label="delete"
                             icon="trash"
-                            onClick={() => console.log('test')}
+                            onClick={() => console.log("removing" + influencer.influencer_id)}
                             type="button"
                           />
                         ) : (
                           <ActionButton
                             label="add"
                             icon="plus"
-                            onClick={() => console.log('test')}
+                            onClick={() => console.log("adding" + influencer.influencer_id)}
                             type="button"
                           />
                         )}
